@@ -58,6 +58,45 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+
+
+	--neutral-1: #1A1D1A;
+	--neutral-2: #4A4D4A;
+	--neutral-3: #8E928E;
+	--neutral-4: #E4E4E4;
+	--neutral-5: #F9F9FB;
+	--neutral-6: #FFFFFF;
+	--primary-1: #5D68E6;
+	--primary-2: #717CFF;
+	--primary-3: #8B95FF;
+	--primary-4: #B4BAFF;
+	--primary-5: #E3E6FF;
+	--secondary-blue-1: #005FB7;
+	--secondary-blue-2: #2691FF;
+	--secondary-blue-3: #77BCFF;
+	--secondary-blue-4: #D1E4FF;
+	--secondary-blue-5: #E6F2FF;
+	--secondary-green-1: #008080;
+	--secondary-green-2: #26A69A;
+	--secondary-green-3: #4DB6AC;
+	--secondary-green-4: #B2DFDB;
+	--secondary-green-5: #E0F2F1;
+	--success-op1-1: #1B8044;
+	--success-op1-2: #34A853;
+	--success-op1-3: #66BB6A;
+	--success-op1-4: #A5D6A7;
+	--success-op1-5: #E8F5E9;
+	--success-op2-1: #00735E;
+	--success-op2-2: #00A175;
+	--success-op2-3: #00CF8B;
+	--success-op2-4: #99EDD2;
+	--success-op2-5: #CCF6E8;
+	--danger-1: #B71C1C;
+	--danger-2: #E53935;
+	--danger-3: #EF5350;
+	--danger-4: #FFAB91;
+	--danger-5: #FFEBEE;
+
 }
 
 @theme inline {
@@ -98,6 +137,55 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-neutral-1: var(--neutral-1);
+    --color-neutral-2: var(--neutral-2);
+    --color-neutral-3: var(--neutral-3);
+    --color-neutral-4: var(--neutral-4);
+    --color-neutral-5: var(--neutral-5);
+    --color-neutral-6: var(--neutral-6);
+
+    /* Primary Shades */
+    --color-primary-1: var(--primary-1);
+    --color-primary-2: var(--primary-2);
+    --color-primary-3: var(--primary-3);
+    --color-primary-4: var(--primary-4);
+    --color-primary-5: var(--primary-5);
+
+    /* Secondary Blue */
+    --color-secondary-blue-1: var(--secondary-blue-1);
+    --color-secondary-blue-2: var(--secondary-blue-2);
+    --color-secondary-blue-3: var(--secondary-blue-3);
+    --color-secondary-blue-4: var(--secondary-blue-4);
+    --color-secondary-blue-5: var(--secondary-blue-5);
+
+    /* Secondary Green */
+    --color-secondary-green-1: var(--secondary-green-1);
+    --color-secondary-green-2: var(--secondary-green-2);
+    --color-secondary-green-3: var(--secondary-green-3);
+    --color-secondary-green-4: var(--secondary-green-4);
+    --color-secondary-green-5: var(--secondary-green-5);
+
+    /* Success Option 1 */
+    --color-success-op1-1: var(--success-op1-1);
+    --color-success-op1-2: var(--success-op1-2);
+    --color-success-op1-3: var(--success-op1-3);
+    --color-success-op1-4: var(--success-op1-4);
+    --color-success-op1-5: var(--success-op1-5);
+
+    /* Success Option 2 */
+    --color-success-op2-1: var(--success-op2-1);
+    --color-success-op2-2: var(--success-op2-2);
+    --color-success-op2-3: var(--success-op2-3);
+    --color-success-op2-4: var(--success-op2-4);
+    --color-success-op2-5: var(--success-op2-5);
+
+    /* Danger Colors */
+    --color-danger-1: var(--danger-1);
+    --color-danger-2: var(--danger-2);
+    --color-danger-3: var(--danger-3);
+    --color-danger-4: var(--danger-4);
+    --color-danger-5: var(--danger-5);
 }
 
 .dark {
