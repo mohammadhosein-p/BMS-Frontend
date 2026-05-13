@@ -11,9 +11,11 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                iranyekan: ["Iranyekan", "Roboto"],
-            },
-
+				vazirmatn: ["Vazirmatn", "Roboto"],
+				iranyekan: ["Iranyekan", "Roboto"],
+				peyda: ["Peyda", "Roboto"],
+				sans: ["var(--font-sans)", "sans-serif"],
+			},
             colors: {
                 hover: "hsl(var(--hover))",
                 background: "hsl(var(--background))",
