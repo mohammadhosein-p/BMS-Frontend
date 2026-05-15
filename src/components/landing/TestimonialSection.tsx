@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 function TestimonialSection() {
     return (
         <section className="relative min-h-[1100px] overflow-hidden">
@@ -26,7 +28,13 @@ function TestimonialSection() {
             >
                 {/* Text Section */}
 
-                <div className="w-md md:w-lg lg:w-[28vw] lg:min-w-[300px] lg:max-w-[460px] text-white shrink-0">
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    viewport={{ once: true }}
+                    className="w-md md:w-lg lg:w-[28vw] lg:min-w-[300px] lg:max-w-[460px] text-white shrink-0"
+                >
                     <h2 className="text-[clamp(28px,2.5vw,48px)] font-extrabold leading-[1.5]">
                         نظر مدیران و ساکنین درباره آپارمو
                     </h2>
@@ -37,7 +45,7 @@ function TestimonialSection() {
                         تیکت‌ها، اطلاع‌رسانی و پیگیری خرابی‌ها در بسیاری از
                         ساختمان‌ها منظم‌تر و شفاف‌تر شده است.
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Cards Section */}
 
@@ -47,7 +55,13 @@ function TestimonialSection() {
                     <div className="hidden lg:flex justify-center gap-10 flex-wrap">
                         {/* Card 1 */}
 
-                        <div className="w-[46%] min-w-[300px] bg-white text-slate-700 p-8 rounded-[36px] shadow-2xl shadow-white/60 mt-16">
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 1.3, ease: "easeInOut" }}
+                            viewport={{ once: true }}
+                            className="w-[46%] min-w-[300px] bg-white text-slate-700 p-8 rounded-[36px] shadow-2xl shadow-white/60 mt-16"
+                        >
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-3 h-3 bg-blue-500 rounded-full" />
 
@@ -66,11 +80,17 @@ function TestimonialSection() {
                             <p className="text-[clamp(12px,0.8vw,15px)] text-[#717cff] font-medium text-center">
                                 حسین مرادی - مدیر ساختمان ۲۴ واحدی
                             </p>
-                        </div>
+                        </motion.div>
 
                         {/* Card 2 */}
 
-                        <div className="w-[46%] min-w-[300px] bg-white text-slate-700 p-8 rounded-[36px] h-[300px] shadow-2xl shadow-white/60">
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, x: -20 }}
+                            whileInView={{ opacity: 1, y: 0, x: 0 }}
+                            transition={{ duration: 1.3, ease: "easeInOut" }}
+                            viewport={{ once: true }}
+                            className="w-[46%] min-w-[300px] bg-white text-slate-700 p-8 rounded-[36px] h-[300px] shadow-2xl shadow-white/60"
+                        >
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-3 h-3 bg-blue-500 rounded-full" />
 
@@ -89,11 +109,17 @@ function TestimonialSection() {
                             <p className="text-[clamp(12px,0.8vw,15px)] text-[#717cff] font-medium text-center">
                                 لیلا نظری
                             </p>
-                        </div>
+                        </motion.div>
 
                         {/* Card 3 */}
 
-                        <div className="w-[60%] min-w-[320px] bg-white text-slate-700 p-8 rounded-[36px] shadow-2xl -mt-4 shadow-white/60">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20, x: -10 }}
+                            whileInView={{ opacity: 1, y: 0, x: 0 }}
+                            transition={{ duration: 1.3, ease: "easeInOut" }}
+                            viewport={{ once: true }}
+                            className="w-[60%] min-w-[320px] bg-white text-slate-700 p-8 rounded-[36px] shadow-2xl -mt-4 shadow-white/60"
+                        >
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-3 h-3 bg-blue-500 rounded-full" />
 
@@ -111,7 +137,7 @@ function TestimonialSection() {
                             <p className="text-[clamp(12px,0.8vw,15px)] text-[#717cff] font-medium text-center">
                                 مهدی قاسمی
                             </p>
-                        </div>
+                        </motion.div>
                     </div>
 
                     {/* Tablet Layout */}
@@ -188,7 +214,15 @@ function TestimonialSection() {
 
                     {/* Decorative Elements */}
 
-                    <div className="absolute top-[-20%] left-[30%] opacity-70 z-[-1]">
+                    <motion.div
+                        animate={{ x: [0, -20, 0] }}
+                        transition={{
+                            duration: 5,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                        }}
+                        className="absolute top-[-20%] left-[30%] opacity-70 z-[-1]"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="102"
@@ -203,7 +237,7 @@ function TestimonialSection() {
                                 fill="#1ca9f7"
                             />
                         </svg>
-                    </div>
+                    </motion.div>
 
                     <div className="absolute top-[40%] left-[40%] opacity-70 z-[-1]">
                         <svg
@@ -222,7 +256,15 @@ function TestimonialSection() {
                         </svg>
                     </div>
 
-                    <div className="absolute bottom-8 left-0 opacity-60 z-[-1]">
+                    <motion.div
+                        animate={{ rotate: [0, 90, 0] }}
+                        transition={{
+                            duration: 15,
+                            ease: "easeIn",
+                            repeat: Infinity,
+                        }}
+                        className="absolute bottom-8 left-0 opacity-60 z-[-1]"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="136.974"
@@ -237,9 +279,17 @@ function TestimonialSection() {
                                 fill="#e0f2f1"
                             />
                         </svg>
-                    </div>
+                    </motion.div>
 
-                    <div className="absolute bottom-[10%] right-0 opacity-60 z-[-1]">
+                    <motion.div
+                        animate={{ x: [0, -20, 0] }}
+                        transition={{
+                            duration: 5,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                        }}
+                        className="absolute bottom-[10%] right-0 opacity-60 z-[-1]"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="36"
@@ -255,7 +305,7 @@ function TestimonialSection() {
                                 fill="#89d6fb"
                             />
                         </svg>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </section>
