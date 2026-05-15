@@ -5,6 +5,9 @@ import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 import { Mail, Lock, User } from "lucide-react";
 import { useState } from "react";
+import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
+import SendingDots from "../ui/SignUp-Login/SendingDots";
+
 
 const registerSchema = z.object({
 	username: z.string().trim().min(3, "نام کاربری باید حداقل ۳ کاراکتر باشد"),
@@ -130,7 +133,6 @@ export const Register = () => {
 					)}
 				/>
 
-				{/* تکرار رمز عبور */}
 				<Controller
 					name="confirmPassword"
 					control={control}
@@ -146,29 +148,21 @@ export const Register = () => {
 					)}
 				/>
 				{firstError && (
-					<p className="text-xs text-danger-2 bg-danger-5/10 p-2.5 rounded-xl border border-danger-2/20 animate-in zoom-in-95 duration-300">
-						{firstError}
-					</p>
+					<ErrorMessage message={firstError} />
 				)}
 
 				<CustomButton
 					type="submit"
 					variant="primary"
 					className="w-full h-11"
-					disabled={isLoading}
+					disabled={isLoading || !isValid}
 				>
 					{isLoading ? (
-						<span className="flex items-center gap-1">
-                                در حال ثبت نام
-                                <span className="flex gap-0.5 mt-1">
-                                    <span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                                    <span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                                    <span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce"></span>
-                                </span>
-                            </span>
+						<SendingDots text="در حال ثبت نام" />
 					) : "ثبت نام"}
 				</CustomButton>
 			</form>
 		</div>
 	);
 };
+

@@ -16,16 +16,16 @@ const slides = [
     {
         image: slide1,
         title: "کارهای مدیریتیت رو راحت کن ",
-        subtitle: "با آپامو تجربه‌ای متفاوت داشته باش",
+        subtitle: "با آپارمو تجربه‌ای متفاوت داشته باش",
     },
 	{
         image: slide2,
         title: "بهترش کن",
-        subtitle: "با آپامو تجربه‌ای متفاوت داشته باش",
+        subtitle: "با آپارمو تجربه‌ای متفاوت داشته باش",
     },
 	{
         image: slide3,
-        title: "با آپامو تجربه‌ای متفاوت داشته باش",
+        title: "با آپارمو تجربه‌ای متفاوت داشته باش",
         subtitle: "کارهای مدیریتیت رو راحت کن ",
     },
 ];
@@ -88,7 +88,7 @@ const Login = () => {
                                 return (
                                     <UsernameLogin 
                                         onBack={() => setStep("PHONE")} 
-                                        onLoginSubmit={(data) => console.log("Logging in...", data)}
+                                        onLoginSubmit={(data) => console.log("Login...", data)}
                                     />
                                 );
                             case "REGISTER":

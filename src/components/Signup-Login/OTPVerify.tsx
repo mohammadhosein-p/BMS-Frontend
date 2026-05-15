@@ -2,6 +2,7 @@ import { translateNumber } from "@/utils/translateNumber";
 import CustomButton from "../ui/CustomeButton";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { useEffect, useState, useCallback } from "react";
+import SendingDots from "../ui/SignUp-Login/SendingDots";
 
 interface OTPVerifyProps {
 	onBack: () => void;
@@ -11,7 +12,7 @@ interface OTPVerifyProps {
 	onPassword?: () => void;
 }
 
-export const OTPVerify = ({ onBack, OnNext,onPassword, isUserExists = true, phoneNumber }: OTPVerifyProps) => {
+export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, phoneNumber }: OTPVerifyProps) => {
 	const [value, setValue] = useState("");
 	const [timer, setTimer] = useState(120);
 	const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +81,7 @@ export const OTPVerify = ({ onBack, OnNext,onPassword, isUserExists = true, phon
 							<InputOTPSlot
 								key={index}
 								index={index}
-								className="w-[54px] h-[64px] border rounded-[12px] text-xl transition-all"
+								className="w-14 h-16 text-xl font-semibold text-center border rounded-[12px] transition-all"
 							/>
 						))}
 					</InputOTPGroup>
@@ -111,17 +112,10 @@ export const OTPVerify = ({ onBack, OnNext,onPassword, isUserExists = true, phon
 					disabled={value.length !== 5 || isLoading}
 				>
 					{isLoading ? (
-							<span className="flex items-center gap-1">
-								در حال تایید
-								<span className="flex gap-0.5 mt-1">
-									<span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-									<span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-									<span className="w-1 h-1 bg-neutral-3 rounded-full animate-bounce"></span>
-								</span>
-							</span>
-						) : (
-							"تایید و ادامه"
-						)}
+						<SendingDots text="در حال تایید" />
+					) : (
+						"تایید و ادامه"
+					)}
 				</CustomButton>
 
 				{isUserExists && (
@@ -138,3 +132,4 @@ export const OTPVerify = ({ onBack, OnNext,onPassword, isUserExists = true, phon
 		</div>
 	);
 };
+

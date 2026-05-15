@@ -3,8 +3,10 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
-import { User, Lock, ArrowRight, ArrowLeft } from "lucide-react";
+import { User, Lock, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
+import SendingDots from "../ui/SignUp-Login/SendingDots";
 
 const loginSchema = z.object({
 	username: z.string().trim().min(3, "نام کاربری را وارد کنید"),
@@ -83,9 +85,7 @@ export const UsernameLogin = ({ onBack, onLoginSubmit }: UsernameLoginProps) => 
 				/>
 
 				{firstError && (
-					<p className="text-xs text-danger-2 bg-danger-5/10 p-2 rounded-lg border border-danger-2/20 animate-in zoom-in-95 duration-300">
-						{firstError as string}
-					</p>
+					<ErrorMessage message={firstError} />
 				)}
 
 				<div className="pt-2 flex flex-col gap-3">
@@ -96,10 +96,7 @@ export const UsernameLogin = ({ onBack, onLoginSubmit }: UsernameLoginProps) => 
 						disabled={isLoading || !isValid}
 					>
 						{isLoading ? (
-							<span className="flex items-center gap-2">
-								<span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-								در حال بررسی...
-							</span>
+							<SendingDots text="در حال بررسی"/>
 						) : "ورود"}
 					</CustomButton>
 
