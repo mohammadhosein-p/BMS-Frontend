@@ -7,6 +7,8 @@ import { Mail, Lock, User } from "lucide-react";
 import { useState } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
+import SelectOptions from "../ui/SelectOptions/SelectOptions";
+import useAuthStore from "@/store/userStore/userStore";
 
 
 const registerSchema = z.object({
@@ -15,6 +17,7 @@ const registerSchema = z.object({
 	lastName: z.string().trim().min(1, "نام خانوادگی الزامی است"),
 	email: z.string().trim().email("ایمیل معتبر نیست"),
 	password: z.string().min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد"),
+	gender: z.enum(["male", "female"], "لطفا جنسیت را انتخاب کنید"),
 	confirmPassword: z.string().min(1, "تکرار رمز عبور الزامی است"),
 }).refine((data) => data.password === data.confirmPassword, {
 	message: "رمز عبور و تکرار آن مطابقت ندارند",
@@ -23,8 +26,14 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+const gender = [
+	{ value: "male", label: "مرد", color: "blue" },
+	{ value: "female", label: "زن", color: "pink" },
+];
+
 export const Register = () => {
 	const [isLoading, setIsLoading] = useState(false);
+	const setAuth = useAuthStore((state) => state.setAuth);
 
 	const {
 		control,
@@ -32,7 +41,7 @@ export const Register = () => {
 		formState: { errors, isValid },
 	} = useForm<RegisterFormData>({
 		resolver: zodResolver(registerSchema),
-		mode: "onTouched", 
+		mode: "onTouched",
 		defaultValues: {
 			username: "",
 			firstName: "",
@@ -40,6 +49,7 @@ export const Register = () => {
 			email: "",
 			password: "",
 			confirmPassword: "",
+			gender: "male",
 		},
 	});
 
@@ -102,6 +112,19 @@ export const Register = () => {
 						)}
 					/>
 				</div>
+
+				<Controller
+					name="gender"
+					control={control}
+					render={({ field }) => (
+						<SelectOptions
+							options={gender}
+							value={field.value}
+							onChange={field.onChange}
+							disabled={isLoading}
+						/>
+					)}
+				/>
 
 				<Controller
 					name="email"

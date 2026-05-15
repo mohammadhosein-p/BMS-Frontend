@@ -1,14 +1,33 @@
-// src/services/authService.ts
+import type { LoginPayload, LoginResponse, RegisterPayload, User } from "../types/authTypes";
+import { postData, getData } from "./services"; 
 
-import type { LoginPayload, LoginResponse } from "../types/authTypes";
-import { postData } from "./services";
-
-// Login function
 export const loginService = async (
-	credentials: LoginPayload
+    credentials: LoginPayload
 ): Promise<LoginResponse> => {
-	return postData({
-		endPoint: `/v1/auth/login`,
-		data: credentials,
-	});
+    return postData({
+        endPoint: `/v1/auth/login`,
+        data: credentials,
+    });
+};
+
+export const registerService = async (
+    userData: RegisterPayload
+): Promise<LoginResponse> => {
+    return postData({
+        endPoint: `/v1/auth/register`,
+        data: userData,
+    });
+};
+
+export const getCurrentUserService = async (): Promise<User> => {
+    return getData({
+        endPoint: `/v1/auth/me`,
+    });
+};
+
+export const logoutService = async (): Promise<void> => {
+    return postData({
+        endPoint: `/v1/auth/logout`,
+        data: {},
+    });
 };

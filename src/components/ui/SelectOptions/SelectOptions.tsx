@@ -79,7 +79,7 @@ export default function SelectOptions({ value, onChange, className, options, dis
                   value={opt.value}
                   disabled={opt.disabled}
                   className={`
-                    group relative flex items-center px-4 py-3 rounded-xl transition-colors text-right text-sm
+                    group relative flex items-center px-4 py-3 rounded-md transition-colors text-right text-sm
                     
                     /* 5. Logic for styling disabled vs active options */
                     data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed data-[disabled]:grayscale-[0.5]
