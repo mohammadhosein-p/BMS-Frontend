@@ -1,6 +1,8 @@
+import FeatureCard from "@/components/landing/FeatureCard";
+
 function Landing() {
     return (
-        <div className="relative min-h-screen overflow-hidden bg-white">
+        <div className="relative min-h-screen overflow-hidden bg-white pb-20">
             {/* Background Shapes */}
 
             <svg
@@ -78,13 +80,13 @@ function Landing() {
 
                     {/* CTA Buttons */}
 
-                    <div className="mt-12 flex items-center justify-center gap-28">
-                        <button className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg shadow-xl transition hover:scale-105">
-                           ورود با نام کاربری
+                    <div className="mt-12 flex items-center justify-center gap-6 lg:gap-28">
+                        <button className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg transition hover:scale-105">
+                            ورود با نام کاربری
                         </button>
 
                         <button className="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg transition hover:bg-white hover:text-[#717cff]">
-                           ثبت نام
+                            ثبت نام
                         </button>
                     </div>
                 </div>
@@ -97,8 +99,49 @@ function Landing() {
                     className="absolute top-[10px] right-[2%] w-[30vw] min-w-[320px] max-w-[540px] z-20"
                 />
             </section>
+
+            <section className="flex justify-center gap-10 flex-wrap px-8">
+                {cardItem.map((item) => (
+                    <FeatureCard
+                        alt={item.alt}
+                        description={item.description}
+                        image={item.image}
+                        title={item.title}
+                        key={item.title}
+                    />
+                ))}
+            </section>
         </div>
     );
 }
 
 export default Landing;
+
+const cardItem: {
+    image: string;
+    alt: string;
+    title: string;
+    description: string;
+}[] = [
+    {
+        image: "./src/assets/landing/card-clock.svg",
+        alt: "clock",
+        title: "ثبت و پیگیری سریع خرابی‌ها",
+        description:
+            "ساکنان می‌توانند خرابی‌ها را در چند ثانیه ثبت کنند و مدیران نیز روند رسیدگی تا رفع کامل مشکل را شفاف و مرحله‌به‌مرحله مشاهده می‌کنند",
+    },
+    {
+        image: "./src/assets/landing/card-building.svg",
+        alt: "building",
+        title: "مدیریت ساده ساکنین و واحدها",
+        description:
+            "پروفایل هر واحد و ساکن به‌صورت منظم ثبت می‌شود تا مدیر ساختمان بدون پیچیدگی بتواند اطلاعات را مدیریت و به‌روزرسانی کند",
+    },
+    {
+        image: "./src/assets/landing/card-bell.svg",
+        alt: "bell",
+        title: "اطلاع‌رسانی فوری و بدون خطا",
+        description:
+            "قوانین، بخشنامه‌ها و اعلان‌های مهم تنها با یک کلیک برای همه اعضای ساختمان ارسال می‌شود و هیچ خبری از قلم نمی‌افتد",
+    },
+];
