@@ -1,3 +1,4 @@
+import FAQSection from "@/components/landing/FAQSection";
 import HeroSection from "@/components/landing/HeroSection";
 import SupportSection from "@/components/landing/SupportSection";
 import TestimonialSection from "@/components/landing/TestimonialSection";
@@ -10,6 +11,7 @@ function Landing() {
             <TopSection />
             <TestimonialSection />
             <SupportSection />
+            <FAQSection />
         </div>
     );
 }
