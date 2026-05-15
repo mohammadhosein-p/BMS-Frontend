@@ -1,6 +1,6 @@
 function TestimonialSection() {
     return (
-        <section className="relative min-h-[1400px] overflow-hidden">
+        <section className="relative min-h-[1100px] overflow-hidden">
             {/* Background Shape */}
 
             <div className="absolute left-[-40vw] sm:left-[-20vw] lg:left-[-8vw]">

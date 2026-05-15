@@ -1,4 +1,5 @@
 import FeatureCard from "@/components/landing/FeatureCard";
+import SupportSection from "@/components/landing/SupportSection";
 import TestimonialSection from "@/components/landing/TestimonialSection";
 
 function Landing() {
@@ -265,6 +266,7 @@ function Landing() {
             </section>
 
             <TestimonialSection />
+            <SupportSection />
         </div>
     );
 }
