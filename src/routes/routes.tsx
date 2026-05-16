@@ -3,9 +3,10 @@ import PublicLayout from "@/layouts/PublicLayout/PublicLayout";
 import Landing from "@/pages/Landing";
 import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
-// import Home from "@/pages/Home";
 import HomePageLayout from "@/components/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
+import { homeItems } from "@/config/homeItems";
+import RoleGuard from "@/components/home/RoleGaurd";
 
 export const router = createBrowserRouter([
     {
@@ -33,12 +34,14 @@ export const router = createBrowserRouter([
                     {
                         element: <HomePageLayout />,
                         path: "/home",
-                        children: [
-                            {
-                                index: true,
-                                element: <p>items</p>,
-                            },
-                        ],
+                        children: homeItems.map((item) => ({
+                            path: item.path,
+                            element: (
+                                <RoleGuard roles={item.roles}>
+                                    {item.component}
+                                </RoleGuard>
+                            ),
+                        })),
                     },
                 ],
             },
