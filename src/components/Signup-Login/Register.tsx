@@ -4,11 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 import { Mail, Lock, User } from "lucide-react";
-import { useState } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 import useAuthStore from "@/store/userStore/userStore";
+import { useMutation } from "@tanstack/react-query";
+import { registerService } from "@/services/authService";
 
 
 const registerSchema = z.object({
@@ -31,9 +32,16 @@ const gender = [
 	{ value: "female", label: "زن", color: "pink" },
 ];
 
-export const Register = () => {
-	const [isLoading, setIsLoading] = useState(false);
+
+export const Register = ({phoneNumber}: {phoneNumber : string}) => {
 	const setAuth = useAuthStore((state) => state.setAuth);
+
+	const registerMutation = useMutation({
+        mutationFn: registerService,
+        onSuccess: (data) => {
+            setAuth({user: data.user, access: data.access, refresh: data.refresh});
+        },
+    });
 
 	const {
 		control,
@@ -53,17 +61,24 @@ export const Register = () => {
 		},
 	});
 
-	const onSubmit = async (data: RegisterFormData) => {
-		setIsLoading(true);
-		try {
-			console.log("Form Data:", data);
-			await new Promise(resolve => setTimeout(resolve, 2000));
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const onSubmit = (data: RegisterFormData) => {
+        const finalData = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            username: data.username,
+            email: data.email,
+            password: data.password,
+            gender: data.gender,
+            phone: phoneNumber,
+			role: "user",
+        };
+
+        registerMutation.mutate(finalData);
+    };
 
 	const firstError = Object.values(errors)[0]?.message as string;
+	const isLoading = registerMutation.isPending;
+	const isSuccess = registerMutation.isSuccess;
 
 	return (
 		<div className="flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -80,7 +95,7 @@ export const Register = () => {
 							{...field}
 							placeholder="نام کاربری"
 							icon={<User size={18} />}
-							variant={errors.username ? "error" : "default"}
+							variant={errors.username ? "error" : isSuccess ? "success" : "default"}
 							disabled={isLoading}
 						/>
 					)}
@@ -94,7 +109,7 @@ export const Register = () => {
 							<CustomField
 								{...field}
 								placeholder="نام"
-								variant={errors.firstName ? "error" : "default"}
+								variant={errors.firstName ? "error" : isSuccess ? "success" : "default"}
 								disabled={isLoading}
 							/>
 						)}
@@ -106,7 +121,7 @@ export const Register = () => {
 							<CustomField
 								{...field}
 								placeholder="نام خانوادگی"
-								variant={errors.lastName ? "error" : "default"}
+								variant={errors.lastName ? "error" : isSuccess ? "success" : "default"}
 								disabled={isLoading}
 							/>
 						)}
@@ -135,7 +150,7 @@ export const Register = () => {
 							type="email"
 							placeholder="ایمیل"
 							icon={<Mail size={18} />}
-							variant={errors.email ? "error" : "default"}
+							variant={errors.email ? "error" : isSuccess ? "success" : "default"}
 							disabled={isLoading}
 						/>
 					)}
@@ -150,7 +165,7 @@ export const Register = () => {
 							type="password"
 							placeholder="رمز عبور"
 							icon={<Lock size={18} />}
-							variant={errors.password ? "error" : "default"}
+							variant={errors.password ? "error" : isSuccess ? "success" : "default"}
 							disabled={isLoading}
 						/>
 					)}
@@ -165,7 +180,7 @@ export const Register = () => {
 							type="password"
 							placeholder="تکرار رمز عبور"
 							icon={<Lock size={18} />}
-							variant={errors.confirmPassword ? "error" : "default"}
+							variant={errors.confirmPassword ? "error" : isSuccess ? "success" : "default"}
 							disabled={isLoading}
 						/>
 					)}
@@ -173,6 +188,9 @@ export const Register = () => {
 				{firstError && (
 					<ErrorMessage message={firstError} />
 				)}
+				{registerMutation.isError && (
+                    <ErrorMessage message="خطایی در برقراری ارتباط با سرور رخ داده است" />
+                )}
 
 				<CustomButton
 					type="submit"

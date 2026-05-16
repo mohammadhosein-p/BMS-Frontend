@@ -5,6 +5,8 @@ import { translateNumber } from "@/utils/translateNumber";
 import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
+import { useMutation } from "@tanstack/react-query";
+import { sendOtpService } from "@/services/authService";
 
 export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: { 
     onOTPlogin: (number: string) => void; 
@@ -12,7 +14,17 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
     onPhoneSubmit: (number: string) => void 
 }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+
+    const sendOtpMutation = useMutation({
+        mutationFn: sendOtpService,
+        onSuccess: () => {
+            onOTPlogin(phoneNumber);
+            onPhoneSubmit(phoneNumber);
+        },
+        onError: () => {
+            onOTPlogin(phoneNumber);
+        }
+    });
 
     const validation = useMemo(() => {
         const englishNumber = translateNumber(phoneNumber, true);
@@ -40,15 +52,12 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); 
-        if (!validation.isValid || isLoading) return;
+        if (!validation.isValid || sendOtpMutation.isPending) return;
 
-        setIsLoading(true);
-        setTimeout(() => {
-            onOTPlogin(phoneNumber);
-            onPhoneSubmit(phoneNumber);
-            setIsLoading(false);
-        }, 2000);
+        sendOtpMutation.mutate(phoneNumber);
     };
+
+    const isLoading = sendOtpMutation.isPending;
 
     return (
         <form 
@@ -68,10 +77,15 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
                     type="tel"
                     direction="rtl"
                     inputMode="numeric"
+                    disabled={isLoading}
                 />
 
                 {validation.variant === "error" && (
                     <ErrorMessage message="شماره موبایل وارد شده معتبر نیست" />
+                )}
+
+                {sendOtpMutation.isError && (
+                    <ErrorMessage message="خطایی در ارسال کد تایید رخ داد. مجدداً تلاش کنید" />
                 )}
 
                 <div className="flex flex-col gap-2 mt-4">
@@ -93,6 +107,7 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
                         variant="secondary"
                         className="w-full h-11"
                         onClick={onUsernameLogin}
+                        disabled={isLoading}
                     >
                         ورود با نام کاربری
                     </CustomButton>
@@ -101,4 +116,3 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
         </form>
     );
 };
-

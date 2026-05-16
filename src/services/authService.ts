@@ -5,7 +5,7 @@ export const loginService = async (
     credentials: LoginPayload
 ): Promise<LoginResponse> => {
     return postData({
-        endPoint: `/v1/auth/login`,
+        endPoint: `/login`, 
         data: credentials,
     });
 };
@@ -14,20 +14,31 @@ export const registerService = async (
     userData: RegisterPayload
 ): Promise<LoginResponse> => {
     return postData({
-        endPoint: `/v1/auth/register`,
+        endPoint: `/users`, 
         data: userData,
     });
 };
 
-export const getCurrentUserService = async (): Promise<User> => {
+export const getCurrentUserService = async (userId: string): Promise<User> => {
     return getData({
-        endPoint: `/v1/auth/me`,
+        endPoint: `/users/${userId}`,
     });
 };
 
 export const logoutService = async (): Promise<void> => {
+    console.log("Logged out from mockAPI");
+};
+
+export const sendOtpService = async (phone: string): Promise<{ success: boolean }> => {
     return postData({
-        endPoint: `/v1/auth/logout`,
-        data: {},
+        endPoint: `/send-otp`,
+        data: { phone },
+    });
+};
+
+export const verifyOtpService = async (payload: { phone: string; code: string }): Promise<LoginResponse> => {
+    return postData({
+        endPoint: `/verify-otp`,
+        data: payload,
     });
 };

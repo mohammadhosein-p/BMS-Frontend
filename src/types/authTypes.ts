@@ -14,7 +14,7 @@ export interface User {
 }
 
 export interface LoginPayload {
-    email: string;
+    username: string;
     password: string;
 }
 
@@ -38,5 +38,6 @@ export interface RegisterPayload {
     email: string;
     phone: string;
     password: string;
+    role : "admin" | "user" | string;
     gender: "male" | "female";
 }

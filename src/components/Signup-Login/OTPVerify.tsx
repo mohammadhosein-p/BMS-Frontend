@@ -3,10 +3,13 @@ import CustomButton from "../ui/CustomeButton";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { useEffect, useState, useCallback } from "react";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
+import { useMutation } from "@tanstack/react-query";
+import { verifyOtpService, sendOtpService } from "@/services/authService";
+import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 
 interface OTPVerifyProps {
 	onBack: () => void;
-	OnNext: (otp: string) => void;
+	OnNext: () => void;
 	isUserExists?: boolean;
 	phoneNumber: string;
 	onPassword?: () => void;
@@ -15,7 +18,21 @@ interface OTPVerifyProps {
 export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, phoneNumber }: OTPVerifyProps) => {
 	const [value, setValue] = useState("");
 	const [timer, setTimer] = useState(120);
-	const [isLoading, setIsLoading] = useState(false);
+
+	const verifyOtpMutation = useMutation({
+		mutationFn: verifyOtpService,
+		onSuccess: () => {
+			OnNext();
+		},
+	});
+
+	const sendOtpMutation = useMutation({
+		mutationFn: sendOtpService,
+		onSuccess: () => {
+			setTimer(120);
+			setValue("");
+		},
+	});
 
 	useEffect(() => {
 		if (timer <= 0) return;
@@ -34,18 +51,15 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 	}, []);
 
 	const handleResend = () => {
-		setTimer(120);
-		setValue("");
+		sendOtpMutation.mutate(phoneNumber);
 	};
 
-	const handleSubmit = async () => {
+	const handleSubmit = () => {
 		if (value.length !== 5) return;
-		setIsLoading(true);
-		setTimeout(() => {
-			OnNext(value);
-			setIsLoading(false);
-		}, 2000);
+		verifyOtpMutation.mutate({ phone: phoneNumber, code: translateNumber(value,true) });
 	};
+
+	const isLoading = verifyOtpMutation.isPending || sendOtpMutation.isPending;
 
 	return (
 		<div className="flex flex-col text-right animate-in slide-in-from-left-4 duration-500">
@@ -64,6 +78,7 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 				<button
 					onClick={onBack}
 					className="text-primary-2 text-xs font-bold mr-2 hover:text-primary-1 transition-colors cursor-pointer"
+					disabled={isLoading}
 				>
 					تغییر شماره
 				</button>
@@ -74,7 +89,11 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 					maxLength={5}
 					value={value}
 					onChange={(val) => setValue(translateNumber(val))}
-
+					onComplete={(finalValue) => {
+						verifyOtpMutation.mutate({ phone: phoneNumber, code: translateNumber(finalValue, true) });
+					}}
+					disabled={isLoading}
+					aria-invalid={verifyOtpMutation.isError ? "true" : "false"}
 				>
 					<InputOTPGroup className="gap-3">
 						{[...Array(5)].map((_, index) => (
@@ -86,7 +105,12 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 						))}
 					</InputOTPGroup>
 				</InputOTP>
+			</div>
 
+			<div className="mb-3">
+			{verifyOtpMutation.isError && 
+			<ErrorMessage message="OTP نامعتبر است" />
+			}
 			</div>
 
 			<div className="text-sm mb-6 text-center h-5">
@@ -98,6 +122,7 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 					<button
 						onClick={handleResend}
 						className="text-primary-2 font-bold hover:underline transition-all"
+						disabled={isLoading}
 					>
 						ارسال دوباره کد
 					</button>
@@ -111,7 +136,7 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 					onClick={handleSubmit}
 					disabled={value.length !== 5 || isLoading}
 				>
-					{isLoading ? (
+					{verifyOtpMutation.isPending ? (
 						<SendingDots text="در حال تایید" />
 					) : (
 						"تایید و ادامه"
@@ -124,6 +149,7 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 						styleType="outline"
 						className="w-full h-11 border-none shadow-none hover:bg-neutral-100"
 						onClick={onPassword}
+						disabled={isLoading}
 					>
 						ورود با رمز عبور
 					</CustomButton>
@@ -132,4 +158,3 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 		</div>
 	);
 };
-

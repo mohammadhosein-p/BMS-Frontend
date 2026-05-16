@@ -88,11 +88,10 @@ const Login = () => {
                                 return (
                                     <UsernameLogin 
                                         onBack={() => setStep("PHONE")} 
-                                        onLoginSubmit={(data) => console.log("Login...", data)}
                                     />
                                 );
                             case "REGISTER":
-                                return <Register />;
+                                return <Register phoneNumber={phoneNumber}/>;
                             default:
                                 return null;
                         }
