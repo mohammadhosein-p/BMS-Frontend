@@ -7,7 +7,7 @@ function HomePageLayout() {
         <div className="h-screen bg-white p-4">
             <div className="flex flex-row-reverse gap-4 h-full">
                 {/* Sidebar */}
-                <aside className="flex-1 shrink-0 border border-neutral-4/80 bg-white rounded-3xl p-4 shadow-wm hidden md:block">
+                <aside className="flex-1 shrink-0 border border-neutral-4/80 bg-white rounded-3xl p-4 shadow-sm hidden md:block">
                     <SidebarContent />
                 </aside>
 
@@ -17,7 +17,7 @@ function HomePageLayout() {
                     <HomeHeader />
 
                     {/* Outlet Container */}
-                    <section className="flex-1 min-h-0 bg-white rounded-3xl p-6 shadow overflow-auto">
+                    <section className="flex-1 min-h-0 bg-white rounded-3xl p-6 shadow-sm border border-neutral-4/80 overflow-auto">
                         <Outlet />
                     </section>
                 </main>
