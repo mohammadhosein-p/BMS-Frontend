@@ -18,11 +18,11 @@ function HomeHeader() {
     // console.log("currentItem", currentItem);
 
     return (
-        <header className="h-20 shrink-0 rounded-3xl border border-neutral-4/80 bg-white px-5 shadow-sm">
+        <header className="h-20 shrink-0 rounded-2xl border border-neutral-4/80 bg-white px-5 shadow-sm">
             <div className="flex h-full items-center justify-between">
                 {/* Left Side */}
                 <div className="flex items-center gap-2 md:gap-3">
-                    <button className="flex items-center gap-3 rounded-2xl px-2 py-1.5 transition hover:bg-neutral-5">
+                    <button className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition hover:bg-neutral-5">
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
@@ -46,7 +46,7 @@ function HomeHeader() {
 
                 {/* Right Side */}
                 <div className="flex items-center gap-2 md:gap-4">
-                    <h1 className="text-[24px] md:text-[32px] font-extrabold text-neutral-1">
+                    <h1 className="text-[24px] md:text-[30px] font-extrabold text-neutral-1">
                         {currentItem?.title || "داشبورد"}
                     </h1>
 
