@@ -8,9 +8,8 @@ import SendingDots from "../ui/SignUp-Login/SendingDots";
 import { useMutation } from "@tanstack/react-query";
 import { sendOtpService } from "@/services/authService";
 
-export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: { 
+export const PhoneLogin = ({ onOTPlogin, onPhoneSubmit }: { 
     onOTPlogin: (number: string) => void; 
-    onUsernameLogin: () => void; 
     onPhoneSubmit: (number: string) => void 
 }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -22,6 +21,7 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
             onPhoneSubmit(phoneNumber);
         },
         onError: () => {
+            onPhoneSubmit(phoneNumber);
             onOTPlogin(phoneNumber);
         }
     });
@@ -62,7 +62,7 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
     return (
         <form 
             onSubmit={handleSubmit} 
-            className="flex flex-col justify-center text-right animate-in fade-in duration-500"
+            className="relative bottom-10 flex flex-col justify-center text-right animate-in fade-in duration-500"
         >
             <h2 className="text-[24px] font-black text-neutral-1 mb-2">ورود یا ثبت‌نام در آپارمو</h2>
             <p className="text-sm text-neutral-2 mb-6">لطفا شماره موبایل خود را وارد کنید</p>
@@ -100,16 +100,6 @@ export const PhoneLogin = ({ onOTPlogin, onUsernameLogin, onPhoneSubmit }: {
                         ) : (
                             "ورود به آپامو"
                         )}
-                    </CustomButton>
-
-                    <CustomButton
-                        type="button" 
-                        variant="secondary"
-                        className="w-full h-11"
-                        onClick={onUsernameLogin}
-                        disabled={isLoading}
-                    >
-                        ورود با نام کاربری
                     </CustomButton>
                 </div>
             </div>

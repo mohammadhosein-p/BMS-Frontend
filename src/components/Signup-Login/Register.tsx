@@ -33,13 +33,14 @@ const gender = [
 ];
 
 
-export const Register = ({phoneNumber}: {phoneNumber : string}) => {
+export const Register = ({phoneNumber, onHome}: {phoneNumber : string, onHome: () => void}) => {
 	const setAuth = useAuthStore((state) => state.setAuth);
 
 	const registerMutation = useMutation({
         mutationFn: registerService,
         onSuccess: (data) => {
             setAuth({user: data.user, access: data.access, refresh: data.refresh});
+			onHome();
         },
     });
 

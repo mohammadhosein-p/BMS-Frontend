@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Phone, User } from "lucide-react";
+
 import backgroundImage from "@/assets/Login-background-picture.png";
 import slide1 from "@/assets/Picture.png";
 import slide2 from "@/assets/Picture2.png";
 import slide3 from "@/assets/Picture3.png";
 
-
-
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PhoneLogin } from "@/components/Signup-Login/PhoneLogin";
 import { OTPVerify } from "@/components/Signup-Login/OTPVerify";
 import { UsernameLogin } from "@/components/Signup-Login/UserNameLogin";
@@ -18,12 +19,12 @@ const slides = [
         title: "کارهای مدیریتیت رو راحت کن ",
         subtitle: "با آپارمو تجربه‌ای متفاوت داشته باش",
     },
-	{
+    {
         image: slide2,
         title: "بهترش کن",
         subtitle: "با آپارمو تجربه‌ای متفاوت داشته باش",
     },
-	{
+    {
         image: slide3,
         title: "با آپارمو تجربه‌ای متفاوت داشته باش",
         subtitle: "کارهای مدیریتیت رو راحت کن ",
@@ -33,7 +34,10 @@ const slides = [
 const Login = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [step, setStep] = useState("PHONE");
+
+    const [step, setStep] = useState<"PHONE" | "OTP" | "USERNAME" | "REGISTER">("PHONE");
+
+    const currentTab = step === "USERNAME" ? "username" : "phone";
 
     useEffect(() => {
         if (slides.length <= 1) return;
@@ -42,6 +46,14 @@ const Login = () => {
         }, 5000);
         return () => clearInterval(interval);
     }, []);
+
+    const handleTabChange = (value: string) => {
+        if (value === "username") {
+            setStep("USERNAME");
+        } else {
+            setStep("PHONE");
+        }
+    };
 
     const pageVariants = {
         initial: { opacity: 0, x: 20 },
@@ -54,71 +66,104 @@ const Login = () => {
         ease: "easeInOut",
     };
 
-    const renderRightSection = () => {
-        return (
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={step}
-                    variants={pageVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    transition={pageTransition}
-                    className="w-full"
-                >
-                    {(() => {
-                        switch (step) {
-                            case "PHONE":
-                                return (
-                                    <PhoneLogin 
-                                        onOTPlogin={() => setStep("OTP")} 
-                                        onUsernameLogin={() => setStep("USERNAME")} 
-                                        onPhoneSubmit={setPhoneNumber} 
-                                    />
-                                );
-                            case "OTP":
-                                return (
-                                    <OTPVerify 
-                                        OnNext={() => setStep("REGISTER")} 
-                                        onBack={() => setStep("PHONE")} 
-                                        phoneNumber={phoneNumber} 
-                                    />
-                                );
-                            case "USERNAME":
-                                return (
-                                    <UsernameLogin 
-                                        onBack={() => setStep("PHONE")} 
-                                    />
-                                );
-                            case "REGISTER":
-                                return <Register phoneNumber={phoneNumber}/>;
-                            default:
-                                return null;
-                        }
-                    })()}
-                </motion.div>
-            </AnimatePresence>
-        );
-    };
-
     return (
         <div
             className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center font-iranyekan"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
             <div className="relative z-10 w-full max-w-[1000px] bg-white/95 backdrop-blur-sm rounded-[32px] shadow-2xl flex flex-row-reverse overflow-hidden p-6 md:p-8 gap-8">
-                
-                <div className="w-full md:w-1/2 flex flex-col justify-center px-2 md:px-4 min-h-[500px] overflow-hidden">
-                    {renderRightSection()}
+
+                <div className="w-full md:w-1/2 flex flex-col px-2 md:px-4 min-h-[520px] overflow-hidden">
+
+                    <AnimatePresence mode="wait">
+                        {(step === "PHONE" || step === "USERNAME") && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="w-full mb-6"
+                            >
+                                <Tabs
+                                    value={currentTab}
+                                    onValueChange={handleTabChange}
+                                    className="w-full"
+                                    dir="rtl"
+                                >
+                                    <TabsList className="grid w-full h-12 grid-cols-2 p-1.5 bg-[#F1F2F4] rounded-lg border border-neutral-1/5 gap-1">
+                                        <TabsTrigger
+                                            value="phone"
+                                            className="flex items-center justify-center gap-2 text-[15px] font-bold h-full rounded-lg transition-all duration-300 text-neutral-2 data-[state=active]:bg-primary-2 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-[#6D7CFF]/20"
+                                        >
+                                            <Phone size={16} strokeWidth={2.5} />
+                                            ورود با شماره
+                                        </TabsTrigger>
+
+                                        <TabsTrigger
+                                            value="username"
+                                            className="flex items-center justify-center gap-2 text-[15px] font-bold h-full rounded-lg transition-all duration-300 text-neutral-2 data-[state=active]:bg-secondary-blue-3 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-[#54A9FF]/20"
+                                        >
+                                            <User size={16} strokeWidth={2.5} />
+                                            ورود با نام کاربری
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <div className="flex-1 flex flex-col justify-center">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={step}
+                                variants={pageVariants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
+                                transition={pageTransition}
+                                className="w-full"
+                            >
+                                {(() => {
+                                    switch (step) {
+                                        case "PHONE":
+                                            return (
+                                                <PhoneLogin
+                                                    onOTPlogin={() => setStep("OTP")}
+                                                    onPhoneSubmit={setPhoneNumber}
+                                                />
+                                            );
+                                        case "OTP":
+                                            return (
+                                                <OTPVerify
+                                                    OnRegister={() => setStep("REGISTER")}
+                                                    onHomePage={() => { }}
+                                                    onBack={() => setStep("PHONE")}
+                                                    phoneNumber={phoneNumber}
+                                                />
+                                            );
+                                        case "REGISTER":
+                                            return <Register onHome={() => { }} phoneNumber={phoneNumber} />;
+                                        case "USERNAME":
+                                            return (
+                                                <UsernameLogin
+                                                    onHomePage={() => { }}
+                                                />
+                                            );
+                                        default:
+                                            return null;
+                                    }
+                                })()}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </div>
 
                 <div className="hidden md:flex w-1/2 rounded-[24px] relative overflow-hidden min-h-[520px]">
                     {slides.map((slide, index) => (
                         <div
                             key={index}
-                            className={`absolute inset-0 transition-opacity duration-1000 ${
-                                index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-                            }`}
+                            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                                }`}
                         >
                             <img
                                 src={slide.image}
@@ -144,11 +189,10 @@ const Login = () => {
                                 <button
                                     key={index}
                                     onClick={() => setCurrentSlide(index)}
-                                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                                        currentSlide === index
-                                            ? "w-8 bg-white"
-                                            : "w-2 bg-white/40 hover:bg-white/60"
-                                    }`}
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === index
+                                        ? "w-8 bg-white"
+                                        : "w-2 bg-white/40 hover:bg-white/60"
+                                        }`}
                                 />
                             ))}
                         </div>

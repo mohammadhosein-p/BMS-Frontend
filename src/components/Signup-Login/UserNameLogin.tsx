@@ -1,34 +1,40 @@
 import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CustomButton from "../ui/CustomeButton";
-import CustomField from "../ui/CutsomeFiled";
-import { User, Lock, ArrowLeft } from "lucide-react";
+import { User, Lock } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
 import useAuthStore from "@/store/userStore/userStore";
-import { useMutation } from "@tanstack/react-query";
 import { loginService } from "@/services/authService";
+import CustomeField from "../ui/CutsomeFiled";
+import CustomeButton from "../ui/CustomeButton";
 
 const loginSchema = z.object({
-    username: z.string().trim().min(3, "نام کاربری را وارد کنید"),
-    password: z.string().min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد"),
+    username: z.string()
+        .trim()
+        .min(1, "نام کاربری را وارد کنید")
+        .min(3, "نام کاربری باید حداقل ۳ کاراکتر باشد"),
+    password: z.string()
+        .min(1, "رمز عبور را وارد کنید")
+        .min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 interface UsernameLoginProps {
-    onBack: () => void;
+    onHomePage: () => void;
 }
 
-export const UsernameLogin = ({ onBack }: UsernameLoginProps) => {
+export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
     const setAuth = useAuthStore((state) => state.setAuth);
 
     const loginMutation = useMutation({
         mutationFn: loginService,
         onSuccess: (data) => {
             setAuth({ user: data.user, access: data.access, refresh: data.refresh });
-			console.log("Login successful:", data);
+            onHomePage();
         },
     });
 
@@ -46,30 +52,39 @@ export const UsernameLogin = ({ onBack }: UsernameLoginProps) => {
     });
 
     const onSubmit = (data: LoginFormData) => {
-        const finalData = {
-            username: data.username,
-            password: data.password,
-        };
-        loginMutation.mutate(finalData);
+        if (loginMutation.isPending) return;
+        loginMutation.mutate(data);
     };
 
-    const firstError = Object.values(errors)[0]?.message;
+    const getErrorMessage = () => {
+        const firstClientError = Object.values(errors)[0]?.message;
+        if (firstClientError) return firstClientError;
+
+        if (loginMutation.isError) {
+            const serverMessage = (loginMutation.error as any)?.response?.data?.message;
+            return serverMessage || "نام کاربری یا رمز عبور اشتباه است";
+        }
+
+        return null;
+    };
+
+    const activeError = getErrorMessage();
     const isLoading = loginMutation.isPending;
     const isSuccess = loginMutation.isSuccess;
 
     return (
-        <div className="flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="relative bottom-8 flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
             <header className="mb-6">
                 <h2 className="text-2xl font-black text-neutral-1 mb-2">ورود به حساب</h2>
                 <p className="text-sm text-neutral-2">نام کاربری و رمز عبور خود را وارد کنید</p>
             </header>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Controller
                     name="username"
                     control={control}
                     render={({ field }) => (
-                        <CustomField
+                        <CustomeField
                             {...field}
                             placeholder="نام کاربری"
                             icon={<User size={18} />}
@@ -83,7 +98,7 @@ export const UsernameLogin = ({ onBack }: UsernameLoginProps) => {
                     name="password"
                     control={control}
                     render={({ field }) => (
-                        <CustomField
+                        <CustomeField
                             {...field}
                             type="password"
                             placeholder="رمز عبور"
@@ -94,34 +109,21 @@ export const UsernameLogin = ({ onBack }: UsernameLoginProps) => {
                     )}
                 />
 
-                {firstError && <ErrorMessage message={firstError} />}
-                {loginMutation.isError && (
-                    <ErrorMessage message="نام کاربری یا رمز عبور اشتباه است" />
-                )}
+                {activeError && <ErrorMessage message={activeError} />}
 
-                <div className="pt-2 flex flex-col gap-3">
-                    <CustomButton
+                <div className="pt-1">
+                    <CustomeButton
                         type="submit"
                         variant="primary"
-                        className="w-full h-11"
+                        className="w-full h-11 cursor-pointer"
                         disabled={isLoading || !isValid}
                     >
                         {isLoading ? (
                             <SendingDots text="در حال بررسی" />
-                        ) : "ورود"}
-                    </CustomButton>
-
-                    <CustomButton
-                        type="button"
-                        variant="primary"
-                        styleType="soft"
-                        onClick={onBack}
-                        icon={ArrowLeft}
-                        className="w-full h-11 border-none shadow-none"
-                        disabled={isLoading}
-                    >
-                        بازگشت به ورود با شماره
-                    </CustomButton>
+                        ) : (
+                            "ورود"
+                        )}
+                    </CustomeButton>
                 </div>
             </form>
         </div>

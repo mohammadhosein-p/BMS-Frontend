@@ -6,23 +6,31 @@ import SendingDots from "../ui/SignUp-Login/SendingDots";
 import { useMutation } from "@tanstack/react-query";
 import { verifyOtpService, sendOtpService } from "@/services/authService";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
+import useAuthStore from "@/store/userStore/userStore";
 
 interface OTPVerifyProps {
 	onBack: () => void;
-	OnNext: () => void;
+	OnRegister: () => void;
+	onHomePage: () => void;
 	isUserExists?: boolean;
 	phoneNumber: string;
-	onPassword?: () => void;
 }
 
-export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, phoneNumber }: OTPVerifyProps) => {
+export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false, phoneNumber }: OTPVerifyProps) => {
 	const [value, setValue] = useState("");
 	const [timer, setTimer] = useState(120);
+	const setAuth = useAuthStore((state) => state.setAuth);
 
 	const verifyOtpMutation = useMutation({
 		mutationFn: verifyOtpService,
-		onSuccess: () => {
-			OnNext();
+		onSuccess: (data) => {
+			if ("isUser" in data && data.isUser === false) {
+				OnRegister();
+			}
+			else if ("access" in data && "refresh" in data && "user" in data) {
+				setAuth({ user: data.user, access: data.access, refresh: data.refresh });
+				onHomePage();
+			}
 		},
 	});
 
@@ -56,9 +64,12 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 
 	const handleSubmit = () => {
 		if (value.length !== 5) return;
-		verifyOtpMutation.mutate({ phone: phoneNumber, code: translateNumber(value,true) });
+		verifyOtpMutation.mutate({ phone: phoneNumber, code: translateNumber(value, true) });
 	};
 
+	const errorMessage = verifyOtpMutation.error 
+        ? (verifyOtpMutation.error as any)?.response?.data?.message || "کد ورود نامعتبر است"
+        : null;
 	const isLoading = verifyOtpMutation.isPending || sendOtpMutation.isPending;
 
 	return (
@@ -108,10 +119,8 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 			</div>
 
 			<div className="mb-3">
-			{verifyOtpMutation.isError && 
-			<ErrorMessage message="OTP نامعتبر است" />
-			}
-			</div>
+                {verifyOtpMutation.isError && <ErrorMessage message={errorMessage} />}
+            </div>
 
 			<div className="text-sm mb-6 text-center h-5">
 				{timer > 0 ? (
@@ -121,7 +130,7 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 				) : (
 					<button
 						onClick={handleResend}
-						className="text-primary-2 font-bold hover:underline transition-all"
+						className="text-primary-2 font-bold hover:underline transition-all cursor-pointer"
 						disabled={isLoading}
 					>
 						ارسال دوباره کد
@@ -142,18 +151,6 @@ export const OTPVerify = ({ onBack, OnNext, onPassword, isUserExists = true, pho
 						"تایید و ادامه"
 					)}
 				</CustomButton>
-
-				{isUserExists && (
-					<CustomButton
-						variant="primary"
-						styleType="outline"
-						className="w-full h-11 border-none shadow-none hover:bg-neutral-100"
-						onClick={onPassword}
-						disabled={isLoading}
-					>
-						ورود با رمز عبور
-					</CustomButton>
-				)}
 			</div>
 		</div>
 	);

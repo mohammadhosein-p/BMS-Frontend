@@ -10,6 +10,7 @@ export const loginService = async (
     });
 };
 
+
 export const registerService = async (
     userData: RegisterPayload
 ): Promise<LoginResponse> => {
@@ -36,7 +37,14 @@ export const sendOtpService = async (phone: string): Promise<{ success: boolean 
     });
 };
 
-export const verifyOtpService = async (payload: { phone: string; code: string }): Promise<LoginResponse> => {
+export interface OtpNotRegisteredResponse {
+    isUser: false;
+}
+
+export const verifyOtpService = async (payload: { 
+    phone: string; 
+    code: string; 
+}): Promise<LoginResponse | OtpNotRegisteredResponse> => {
     return postData({
         endPoint: `/verify-otp`,
         data: payload,
