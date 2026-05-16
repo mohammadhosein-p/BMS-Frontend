@@ -54,7 +54,7 @@ function SidebarContent() {
                                     <div className="text-right">
                                         <h3
                                             className={`
-                                                text-xl font-black leading-none
+                                                text-xl font-extrabold xl:font-black leading-none
                                                 ${
                                                     isActive
                                                         ? "text-primary-2"
@@ -67,7 +67,7 @@ function SidebarContent() {
 
                                         <p
                                             className={`
-                                                mt-1 text-sm
+                                                mt-1 text-sm font-medium xl:font-bold
                                                 ${
                                                     isActive
                                                         ? "text-primary-3"

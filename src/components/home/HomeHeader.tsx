@@ -28,18 +28,18 @@ function HomeHeader() {
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
 
-                        <ChevronDown className="hidden md:block h-6 w-6 text-neutral-3" />
+                        <ChevronDown className="block h-6 w-6 text-neutral-3" />
                     </button>
 
-                    <Separator className="hidden sm:block h-10 w-px bg-neutral-4" />
+                    <Separator className="block h-10 w-px bg-neutral-4" />
 
-                    <button className="hidden relative sm:flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
+                    <button className=" relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
                         <Mail className="h-5 w-5 text-neutral-2" />
 
                         <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500" />
                     </button>
 
-                    <button className="relative hidden sm:flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
+                    <button className="relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
                         <Bell className="h-5 w-5 text-neutral-2" />
                     </button>
                 </div>
@@ -50,7 +50,7 @@ function HomeHeader() {
                         {currentItem?.title || "داشبورد"}
                     </h1>
 
-                    <div className="md:hidden">
+                    <div className="block lg:hidden">
                         <MobileSidebar />
                     </div>
                 </div>

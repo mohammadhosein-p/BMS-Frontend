@@ -7,12 +7,12 @@ function HomePageLayout() {
         <div className="h-screen bg-white p-4">
             <div className="flex flex-row-reverse gap-4 h-full">
                 {/* Sidebar */}
-                <aside className="flex-1 shrink-0 border border-neutral-4/80 bg-white rounded-3xl p-4 shadow-sm hidden md:block">
+                <aside className="flex-1 shrink-0 border border-neutral-4/80 bg-white rounded-3xl pt-4 px-2 shadow-sm hidden lg:block">
                     <SidebarContent />
                 </aside>
 
                 {/* Main Section */}
-                <main className="flex-3 lg:flex-5 flex flex-col gap-4 min-h-0">
+                <main className="flex-3 lg:flex-4 flex flex-col gap-4 min-h-0">
                     {/* Header */}
                     <HomeHeader />
 

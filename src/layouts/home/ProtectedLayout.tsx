@@ -25,7 +25,7 @@ function ProtectedLayout() {
                 const userData = {
                     id: "1",
                     name: "Mohammad",
-                    role: "admin" as const,
+                    role: "user" as const,
                 };
 
                 setUser(userData);

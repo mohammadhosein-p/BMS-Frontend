@@ -9,7 +9,7 @@ function MobileSidebar() {
         <div className="transition-all">
             <Sheet>
                 <SheetTrigger asChild>
-                    <button className=" p-2 rounded-xl border bg-white md:hidden">
+                    <button className=" p-2 rounded-xl border bg-white lg:hidden">
                         <Menu />
                     </button>
                 </SheetTrigger>
