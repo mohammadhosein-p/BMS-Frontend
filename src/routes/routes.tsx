@@ -3,7 +3,7 @@ import PublicLayout from "@/layouts/PublicLayout/PublicLayout";
 import Landing from "@/pages/Landing";
 import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
-import HomePageLayout from "@/components/home/HomePageLayout";
+import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
