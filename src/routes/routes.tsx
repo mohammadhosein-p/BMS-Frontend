@@ -5,6 +5,7 @@ import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
 // import Home from "@/pages/Home";
 import HomePageLayout from "@/components/home/HomePageLayout";
+import ProtectedLayout from "@/layouts/home/ProtectedLayout";
 
 export const router = createBrowserRouter([
     {
@@ -27,12 +28,17 @@ export const router = createBrowserRouter([
                 element: <Login />,
             },
             {
-                element: <HomePageLayout />,
-                path: "/home",
+                element: <ProtectedLayout />,
                 children: [
                     {
-                        index: true,
-                        element: <p>items</p>,
+                        element: <HomePageLayout />,
+                        path: "/home",
+                        children: [
+                            {
+                                index: true,
+                                element: <p>items</p>,
+                            },
+                        ],
                     },
                 ],
             },
