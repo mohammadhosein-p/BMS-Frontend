@@ -22,24 +22,24 @@ function HomeHeader() {
             <div className="flex h-full items-center justify-between">
                 {/* Left Side */}
                 <div className="flex items-center gap-2 md:gap-3">
-                    <button className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition hover:bg-neutral-5">
+                    <button className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition md:hover:bg-neutral-5">
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
 
-                        <ChevronDown className="block h-6 w-6 text-neutral-3" />
+                        <ChevronDown className="hidden sm:block h-6 w-6 text-neutral-3" />
                     </button>
 
-                    <Separator className="block h-10 w-px bg-neutral-4" />
+                    <Separator className="hidden sm:block h-10 w-px bg-neutral-4" />
 
-                    <button className=" relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
+                    <button className=" relative hidden sm:flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
                         <Mail className="h-5 w-5 text-neutral-2" />
 
                         <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500" />
                     </button>
 
-                    <button className="relative flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
+                    <button className="relative hidden sm:flex h-11 w-11 items-center justify-center rounded-full border border-neutral-4 bg-white transition shadow-md hover:bg-neutral-5">
                         <Bell className="h-5 w-5 text-neutral-2" />
                     </button>
                 </div>

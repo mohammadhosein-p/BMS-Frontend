@@ -4,12 +4,15 @@ import { homeItems } from "@/config/homeItems";
 import useAuthStore from "@/store/useAuthStore";
 import { motion } from "framer-motion";
 
+import Logo from "@/assets/home/Logo.png";
+import Logo1 from "@/assets/home/Logo1.png";
+
 const containerVariants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.05, 
+            staggerChildren: 0.05,
         },
     },
 };
@@ -29,12 +32,12 @@ function SidebarContent() {
             <div className="mb-2 px-4 w-full">
                 <div className="flex justify-center items-center flex-row-reverse w-full">
                     <img
-                        src="./src/assets/home/Logo1.png"
+                        src={Logo1}
                         className="h-12 object-contain"
                         alt="Logo Text"
                     />
                     <img
-                        src="./src/assets/home/Logo.png"
+                        src={Logo}
                         className="h-20 w-22 object-contain"
                         alt="Logo Icon"
                     />
@@ -44,7 +47,7 @@ function SidebarContent() {
             <Separator className="mb-4 bg-gray-200" />
 
             {/* Navigation container with Stagger animation */}
-            <motion.nav 
+            <motion.nav
                 className="flex flex-col gap-2"
                 variants={containerVariants}
                 initial="hidden"
@@ -61,7 +64,7 @@ function SidebarContent() {
                     return (
                         <motion.div
                             key={item.path}
-                            variants={itemVariants}
+                            variants={itemVariants as any}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -70,11 +73,11 @@ function SidebarContent() {
                                 className="group relative rounded-lg overflow-hidden block"
                             >
                                 <motion.div
-                                    layout 
+                                    layout
                                     className={`flex flex-row-reverse items-center justify-between rounded-lg px-6 py-4 border-2 transition-colors duration-300
                                         ${isActive
-                                            ? "bg-white"
-                                            : `bg-gradient-to-r ${item.color} border-accent text-white`
+                                                ? "bg-white"
+                                                : `bg-gradient-to-r ${item.color} border-accent text-white`
                                         }`}
                                     style={isActive ? { borderColor: rawColor } : {}}
                                 >
@@ -89,7 +92,7 @@ function SidebarContent() {
                                                     className={`transition-colors duration-300 ${isActive
                                                             ? item.text_color
                                                             : "text-white opacity-90 group-hover:opacity-100"
-                                                        }`}
+                                                    }`}
                                                 />
                                             );
                                         })()}
