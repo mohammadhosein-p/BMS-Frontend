@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, User } from "lucide-react";
 
-import backgroundImage from "@/assets/Login-background-picture.png";
+import backgroundImage from "@/assets/Login-background-pictur.jpeg";
 import slide1 from "@/assets/Picture.png";
 import slide2 from "@/assets/Picture2.png";
 import slide3 from "@/assets/Picture3.png";

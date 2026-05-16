@@ -32,6 +32,9 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false
 				onHomePage();
 			}
 		},
+		onError: () => {
+			OnRegister();
+		}
 	});
 
 	const sendOtpMutation = useMutation({
