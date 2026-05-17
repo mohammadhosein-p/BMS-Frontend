@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@plugin "tailwindcss-animate";
+
 @layer utilities {
     .rtl {
         direction: rtl;
