@@ -13,7 +13,7 @@ import type {
 	PutParams,
 } from "../types/apiTypes";
 
-export const baseURL = "http://1.2.3.4:8000"; // backend URL
+export const baseURL = "https://6a077dccfa9b27c848fa1fe9.mockapi.io/api/v1"; // backend URL
 
 const apiClient: AxiosInstance = axios.create({
 	baseURL,

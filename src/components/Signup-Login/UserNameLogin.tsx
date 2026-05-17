@@ -1,0 +1,131 @@
+import z from "zod";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { User, Lock } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+
+import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
+import SendingDots from "../ui/SignUp-Login/SendingDots";
+import useAuthStore from "@/store/userStore/userStore";
+import { loginService } from "@/services/authService";
+import CustomeField from "../ui/CutsomeFiled";
+import CustomeButton from "../ui/CustomeButton";
+
+const loginSchema = z.object({
+    username: z.string()
+        .trim()
+        .min(1, "نام کاربری را وارد کنید")
+        .min(3, "نام کاربری باید حداقل ۳ کاراکتر باشد"),
+    password: z.string()
+        .min(1, "رمز عبور را وارد کنید")
+        .min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+interface UsernameLoginProps {
+    onHomePage: () => void;
+}
+
+export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
+    const setAuth = useAuthStore((state) => state.setAuth);
+
+    const loginMutation = useMutation({
+        mutationFn: loginService,
+        onSuccess: (data) => {
+            setAuth({ user: data.user, access: data.access, refresh: data.refresh });
+            onHomePage();
+        },
+    });
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isValid },
+    } = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+        mode: "onTouched",
+        defaultValues: {
+            username: "",
+            password: "",
+        },
+    });
+
+    const onSubmit = (data: LoginFormData) => {
+        if (loginMutation.isPending) return;
+        loginMutation.mutate(data);
+    };
+
+    const getErrorMessage = () => {
+        const firstClientError = Object.values(errors)[0]?.message;
+        if (firstClientError) return firstClientError;
+
+        if (loginMutation.isError) {
+            const serverMessage = (loginMutation.error as any)?.response?.data?.message;
+            return serverMessage || "نام کاربری یا رمز عبور اشتباه است";
+        }
+
+        return null;
+    };
+
+    const activeError = getErrorMessage();
+    const isLoading = loginMutation.isPending;
+    const isSuccess = loginMutation.isSuccess;
+
+    return (
+        <div className="relative bottom-8 flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <header className="mb-6">
+                <h2 className="text-2xl font-black text-neutral-1 mb-2">ورود به حساب</h2>
+                <p className="text-sm text-neutral-2">نام کاربری و رمز عبور خود را وارد کنید</p>
+            </header>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <Controller
+                    name="username"
+                    control={control}
+                    render={({ field }) => (
+                        <CustomeField
+                            {...field}
+                            placeholder="نام کاربری"
+                            icon={<User size={18} />}
+                            variant={errors.username ? "error" : isSuccess ? "success" : "default"}
+                            disabled={isLoading}
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                        <CustomeField
+                            {...field}
+                            type="password"
+                            placeholder="رمز عبور"
+                            icon={<Lock size={18} />}
+                            variant={errors.password ? "error" : isSuccess ? "success" : "default"}
+                            disabled={isLoading}
+                        />
+                    )}
+                />
+
+                {activeError && <ErrorMessage message={activeError} />}
+
+                <div className="pt-1">
+                    <CustomeButton
+                        type="submit"
+                        variant="primary"
+                        className="w-full h-11 cursor-pointer"
+                        disabled={isLoading || !isValid}
+                    >
+                        {isLoading ? (
+                            <SendingDots text="در حال بررسی" />
+                        ) : (
+                            "ورود"
+                        )}
+                    </CustomeButton>
+                </div>
+            </form>
+        </div>
+    );
+};

@@ -59,7 +59,6 @@ const CustomField = React.forwardRef<HTMLInputElement, CustomFieldProps>(
         )}
 
         <div className="relative flex items-center">
-          {/* آیکون اصلی (شروع فیلد) */}
           {icon && (
             <div className={cn(
               "absolute z-10 text-neutral-3",
