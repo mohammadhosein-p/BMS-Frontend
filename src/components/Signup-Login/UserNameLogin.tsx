@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
-import useAuthStore from "@/store/userStore/userStore";
+import useAuthStore from "@/store/useAuthStore";
 import { loginService } from "@/services/authService";
 import CustomeField from "../ui/CutsomeFiled";
 import CustomeButton from "../ui/CustomeButton";

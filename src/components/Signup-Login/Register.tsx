@@ -7,7 +7,7 @@ import { Mail, Lock, User } from "lucide-react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SendingDots from "../ui/SignUp-Login/SendingDots";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
-import useAuthStore from "@/store/userStore/userStore";
+import useAuthStore from "@/store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { registerService } from "@/services/authService";
 import { motion, AnimatePresence } from "framer-motion";

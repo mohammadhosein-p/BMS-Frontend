@@ -6,8 +6,7 @@ import SendingDots from "../ui/SignUp-Login/SendingDots";
 import { useMutation } from "@tanstack/react-query";
 import { verifyOtpService, sendOtpService } from "@/services/authService";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import useAuthStore from "@/store/userStore/userStore";
-
+import useAuthStore from "@/store/useAuthStore";
 interface OTPVerifyProps {
 	onBack: () => void;
 	OnRegister: () => void;

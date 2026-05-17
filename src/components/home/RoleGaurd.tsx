@@ -9,7 +9,7 @@ type Props = {
 
 function RoleGuard({ children, roles }: Props) {
     const user = useAuthStore((state) => state.user);
-
+    
     if (!user) {
         return <Navigate to="/login" />;
     }

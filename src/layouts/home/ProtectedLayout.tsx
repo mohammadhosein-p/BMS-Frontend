@@ -1,72 +1,58 @@
 import { Navigate, Outlet } from "react-router-dom";
-
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import useAuthStore from "@/store/useAuthStore";
-
 import HomePageSkeleton from "@/components/home/HomePageSkeleton";
+import { getCurrentUserService } from "@/services/authService";
 
 function ProtectedLayout() {
-    const { user, loading, setUser, setLoading } = useAuthStore();
+    const { user, access, updateUser, logout } = useAuthStore();
+    const [isVerifying, setIsVerifying] = useState(!!access && !user);
 
     useEffect(() => {
         async function verifyUser() {
             try {
-                /**
-                 * fake api request
-                 */
+                    // const userId = user?.id;
+                    // const userData = await getCurrentUserService(userId);
+                    // updateUser(userData);
 
-                await new Promise((resolve) => setTimeout(resolve, 1500));
+                    const mockUserData = {
+                        id: "1",
+                        apartment_id: "apt_102_b",
+                        first_name: "امیرحسین",
+                        last_name: "رضایی",
+                        username: "amir_rezaei",
+                        email: "amir.rezaei@example.com",
+                        phone: "09123456789",
+                        role: "user",
+                        gender: "male",
+                        profile_image_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=amir",
+                    };
 
-                /**
-                 * fake response
-                 */
-
-                const userData = {
-                    id: "1",
-                    name: "Mohammad",
-                    role: "user" as const,
-                };
-
-                setUser(userData);
+                    updateUser(mockUserData);
             } catch (error) {
-                setUser(null);
+                console.error("Verification failed:", error);
+                logout();
             } finally {
-                setLoading(false);
+                setIsVerifying(false);
             }
         }
+        verifyUser();
+        // if (access && !user) {
+        //     verifyUser();
+        // }
+        // else {
+        //     setIsVerifying(false);
+        // }
 
-        /**
-         * جلوگیری از request اضافی
-         */
-
-        if (!user) {
-            verifyUser();
-        } else {
-            setLoading(false);
-        }
     }, []);
-
-    /**
-     * loading state
-     */
-
-    if (loading) {
+    
+    if (isVerifying) {
         return <HomePageSkeleton />;
     }
 
-    /**
-     * unauthenticated
-     */
-
-    if (!user) {
-        return <Navigate to="/login" replace />;
-    }
-
-    /**
-     * authenticated
-     */
-
+    // if (!access || !user) {
+    //     return <Navigate to="/login" replace />;
+    // }
     return <Outlet />;
 }
 

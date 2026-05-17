@@ -10,7 +10,6 @@ export const loginService = async (
     });
 };
 
-
 export const registerService = async (
     userData: RegisterPayload
 ): Promise<LoginResponse> => {
@@ -26,8 +25,11 @@ export const getCurrentUserService = async (userId: string): Promise<User> => {
     });
 };
 
-export const logoutService = async (): Promise<void> => {
-    console.log("Logged out from mockAPI");
+export const refreshTokenRequest = async (refresh: string): Promise<{ access: string , refresh: string }> => {
+    return postData({
+        endPoint: `/refresh`, 
+        data: { refresh },
+    });
 };
 
 export const sendOtpService = async (phone: string): Promise<{ success: boolean }> => {

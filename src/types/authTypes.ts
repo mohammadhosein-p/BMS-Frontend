@@ -9,8 +9,6 @@ export interface User {
     role: "admin" | "user" | string; 
     gender: "male" | "female" | string;
     profile_image_url: string | null;
-    created_at: string;
-    updated_at: string;
 }
 
 export interface LoginPayload {
