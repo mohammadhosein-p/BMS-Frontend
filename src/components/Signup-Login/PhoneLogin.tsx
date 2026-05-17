@@ -62,7 +62,7 @@ export const PhoneLogin = ({ onOTPlogin, onPhoneSubmit }: {
     return (
         <form 
             onSubmit={handleSubmit} 
-            className="relative bottom-10 flex flex-col justify-center text-right animate-in fade-in duration-500"
+            className="relative bottom-10 flex flex-col justify-center text-right animate-in fade-in"
         >
             <h2 className="text-[24px] font-black text-neutral-1 mb-2">ورود یا ثبت‌نام در آپارمو</h2>
             <p className="text-sm text-neutral-2 mb-6">لطفا شماره موبایل خود را وارد کنید</p>

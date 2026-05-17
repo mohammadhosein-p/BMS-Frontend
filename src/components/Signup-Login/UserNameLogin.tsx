@@ -73,7 +73,7 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
     const isSuccess = loginMutation.isSuccess;
 
     return (
-        <div className="relative bottom-8 flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="relative bottom-8 flex flex-col justify-center text-right animate-in fade-in">
             <header className="mb-6">
                 <h2 className="text-2xl font-black text-neutral-1 mb-2">ورود به حساب</h2>
                 <p className="text-sm text-neutral-2">نام کاربری و رمز عبور خود را وارد کنید</p>

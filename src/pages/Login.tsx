@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import backgroundImage from "@/assets/Login-background-pictur.jpeg";
 import slide1 from "@/assets/Picture.png";
@@ -32,6 +33,8 @@ const slides = [
 ];
 
 const Login = () => {
+=    const navigate = useNavigate();
+    
     const [currentSlide, setCurrentSlide] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -71,9 +74,9 @@ const Login = () => {
             className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center font-iranyekan"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
-            <div className="relative z-10 w-full max-w-[1000px] bg-white/95 backdrop-blur-sm rounded-[32px] shadow-2xl flex flex-row-reverse overflow-hidden p-6 md:p-8 gap-8">
+            <div className="relative z-10 w-full max-w-250 bg-white/95 backdrop-blur-sm rounded-4xl shadow-2xl flex flex-row-reverse overflow-hidden p-6 md:p-8 gap-8">
 
-                <div className="w-full md:w-1/2 flex flex-col px-2 md:px-4 min-h-[520px] overflow-hidden">
+                <div className="w-full md:w-1/2 flex flex-col px-2 md:px-4 min-h-130 overflow-hidden">
 
                     <AnimatePresence mode="wait">
                         {(step === "PHONE" || step === "USERNAME") && (
@@ -136,17 +139,17 @@ const Login = () => {
                                             return (
                                                 <OTPVerify
                                                     OnRegister={() => setStep("REGISTER")}
-                                                    onHomePage={() => { }}
+                                                    onHomePage={() => navigate("/home")}
                                                     onBack={() => setStep("PHONE")}
                                                     phoneNumber={phoneNumber}
                                                 />
                                             );
                                         case "REGISTER":
-                                            return <Register onHome={() => { }} phoneNumber={phoneNumber} />;
+                                            return <Register onHome={() => navigate("/home")} phoneNumber={phoneNumber} />;
                                         case "USERNAME":
                                             return (
                                                 <UsernameLogin
-                                                    onHomePage={() => { }}
+                                                    onHomePage={() => navigate("/home")}
                                                 />
                                             );
                                         default:
@@ -158,7 +161,7 @@ const Login = () => {
                     </div>
                 </div>
 
-                <div className="hidden md:flex w-1/2 rounded-[24px] relative overflow-hidden min-h-[520px]">
+                <div className="hidden md:flex w-1/2 rounded-3xl relative overflow-hidden min-h-130">
                     {slides.map((slide, index) => (
                         <div
                             key={index}
@@ -170,7 +173,7 @@ const Login = () => {
                                 alt={slide.title}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
 
                             <div className="absolute bottom-16 left-8 right-8 text-white text-right" dir="rtl">
                                 <h3 className="text-2xl lg:text-3xl font-bold leading-snug mb-3">

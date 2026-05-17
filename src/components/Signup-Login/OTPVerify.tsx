@@ -76,7 +76,7 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false
 	const isLoading = verifyOtpMutation.isPending || sendOtpMutation.isPending;
 
 	return (
-		<div className="flex flex-col text-right animate-in slide-in-from-left-4 duration-500">
+		<div className="flex flex-col text-right animate-in">
 			<h2 className="text-[24px] font-black text-neutral-1 mb-2">کد تایید را وارد کنید</h2>
 
 			<div className="text-sm leading-7 mb-6" dir="rtl">

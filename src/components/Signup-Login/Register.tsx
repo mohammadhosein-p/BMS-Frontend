@@ -82,7 +82,7 @@ export const Register = ({phoneNumber, onHome}: {phoneNumber : string, onHome: (
 	const isSuccess = registerMutation.isSuccess;
 
 	return (
-		<div className="flex flex-col justify-center text-right animate-in fade-in slide-in-from-bottom-4 duration-500">
+		<div className="flex flex-col justify-center text-right animate-in fade-in">
 			<h2 className="text-[24px] font-black text-neutral-1 mb-2">ثبت نام جدید</h2>
 			<p className="text-sm text-neutral-2 mb-6">لطفا اطلاعات خود را وارد کنید</p>
 
