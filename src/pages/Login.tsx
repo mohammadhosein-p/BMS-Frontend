@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, User } from "lucide-react";
+// 1. Import useNavigate from react-router-dom
 import { useNavigate } from "react-router-dom";
 
 import backgroundImage from "@/assets/Login-background-pictur.jpeg";
@@ -33,7 +34,7 @@ const slides = [
 ];
 
 const Login = () => {
-=    const navigate = useNavigate();
+    const navigate = useNavigate();
     
     const [currentSlide, setCurrentSlide] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
