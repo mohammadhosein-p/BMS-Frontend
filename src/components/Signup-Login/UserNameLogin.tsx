@@ -79,7 +79,7 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
                 <p className="text-sm text-neutral-2">نام کاربری و رمز عبور خود را وارد کنید</p>
             </header>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
                 <Controller
                     name="username"
                     control={control}
