@@ -14,6 +14,7 @@ import { PhoneLogin } from "@/components/Signup-Login/PhoneLogin";
 import { OTPVerify } from "@/components/Signup-Login/OTPVerify";
 import { UsernameLogin } from "@/components/Signup-Login/UserNameLogin";
 import { Register } from "@/components/Signup-Login/Register";
+import { BuildingInviteCode } from "@/components/Signup-Login/BuildingInviteCode";
 
 const slides = [
     {
@@ -35,12 +36,11 @@ const slides = [
 
 const Login = () => {
     const navigate = useNavigate();
-    
+
     const [currentSlide, setCurrentSlide] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
 
-    const [step, setStep] = useState<"PHONE" | "OTP" | "USERNAME" | "REGISTER">("PHONE");
-
+    const [step, setStep] = useState<"PHONE" | "OTP" | "USERNAME" | "REGISTER" | "BUILDING_CODE">("PHONE");
     const currentTab = step === "USERNAME" ? "username" : "phone";
 
     useEffect(() => {
@@ -146,11 +146,21 @@ const Login = () => {
                                                 />
                                             );
                                         case "REGISTER":
-                                            return <Register onHome={() => navigate("/home")} phoneNumber={phoneNumber} />;
+                                            return <Register onInviteCode={() => setStep("BUILDING_CODE")} phoneNumber={phoneNumber} />;
                                         case "USERNAME":
                                             return (
                                                 <UsernameLogin
                                                     onHomePage={() => navigate("/home")}
+                                                    onInviteCode={() => setStep("BUILDING_CODE")}
+                                                />
+                                            );
+                                        case "BUILDING_CODE":
+                                            return (
+                                                <BuildingInviteCode
+                                                    onSuccess={() => {
+                                                        navigate("/home");
+                                                    }}
+                                                    onBack={() => setStep("PHONE")}
                                                 />
                                             );
                                         default:

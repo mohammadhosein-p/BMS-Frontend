@@ -25,16 +25,22 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 interface UsernameLoginProps {
     onHomePage: () => void;
+    onInviteCode: () => void;
 }
 
-export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
+export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) => {
     const setAuth = useAuthStore((state) => state.setAuth);
 
     const loginMutation = useMutation({
         mutationFn: loginService,
         onSuccess: (data) => {
             setAuth({ user: data.user, access: data.access, refresh: data.refresh });
-            onHomePage();
+            
+            if (!data.user?.apartment_id || data.user?.apartment_id === null) {
+                onInviteCode();
+            } else {
+                onHomePage();
+            }
         },
     });
 

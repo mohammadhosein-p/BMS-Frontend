@@ -32,15 +32,18 @@ const gender = [
     { value: "female", label: "زن", color: "pink" },
 ];
 
-export const Register = ({ phoneNumber, onHome }: { phoneNumber: string; onHome: () => void }) => {
+export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; onInviteCode: () => void }) => {
     const setAuth = useAuthStore((state) => state.setAuth);
 
     const registerMutation = useMutation({
         mutationFn: registerService,
         onSuccess: (data) => {
             setAuth({ user: data.user, access: data.access, refresh: data.refresh });
-            onHome();
+            onInviteCode();
         },
+        onError: () => {
+            onInviteCode();
+        }
     });
 
     const {
