@@ -141,6 +141,7 @@ const Login = () => {
                                                 <OTPVerify
                                                     OnRegister={() => setStep("REGISTER")}
                                                     onHomePage={() => navigate("/home")}
+                                                    onInviteCode={() => setStep("BUILDING_CODE")}
                                                     onBack={() => setStep("PHONE")}
                                                     phoneNumber={phoneNumber}
                                                 />

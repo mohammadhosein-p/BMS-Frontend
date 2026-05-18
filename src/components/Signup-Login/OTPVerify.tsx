@@ -11,11 +11,12 @@ interface OTPVerifyProps {
 	onBack: () => void;
 	OnRegister: () => void;
 	onHomePage: () => void;
+	onInviteCode: () => void;
 	isUserExists?: boolean;
 	phoneNumber: string;
 }
 
-export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false, phoneNumber }: OTPVerifyProps) => {
+export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, isUserExists = false, phoneNumber }: OTPVerifyProps) => {
 	const [value, setValue] = useState("");
 	const [timer, setTimer] = useState(120);
 	const setAuth = useAuthStore((state) => state.setAuth);
@@ -28,7 +29,11 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false
 			}
 			else if ("access" in data && "refresh" in data && "user" in data) {
 				setAuth({ user: data.user, access: data.access, refresh: data.refresh });
-				onHomePage();
+				if (!data.user?.apartment_id || data.user?.apartment_id === null) {
+					onInviteCode();
+				} else {
+					onHomePage();
+				}
 			}
 		},
 		onError: () => {
@@ -69,9 +74,9 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false
 		verifyOtpMutation.mutate({ phone: phoneNumber, code: translateNumber(value, true) });
 	};
 
-	const errorMessage = verifyOtpMutation.error 
-        ? (verifyOtpMutation.error as any)?.response?.data?.message || "کد ورود نامعتبر است"
-        : null;
+	const errorMessage = verifyOtpMutation.error
+		? (verifyOtpMutation.error as any)?.response?.data?.message || "کد ورود نامعتبر است"
+		: null;
 	const isLoading = verifyOtpMutation.isPending || sendOtpMutation.isPending;
 
 	return (
@@ -121,8 +126,8 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, isUserExists = false
 			</div>
 
 			<div className="mb-3">
-                {verifyOtpMutation.isError && <ErrorMessage message={errorMessage} />}
-            </div>
+				{verifyOtpMutation.isError && <ErrorMessage message={errorMessage} />}
+			</div>
 
 			<div className="text-sm mb-6 text-center h-5">
 				{timer > 0 ? (
