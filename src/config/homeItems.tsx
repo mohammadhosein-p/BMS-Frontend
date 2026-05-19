@@ -1,3 +1,4 @@
+import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
 
 export const homeItems: {
@@ -42,7 +43,7 @@ export const homeItems: {
         border_color: "border-[var(--primary-1)]",
         text_color: "text-[var(--primary-1)]",
         roles: ["user"],
-        component: <p>tickets</p>,
+        component: <TicketTab />,
     },
     {
         path: "member",
