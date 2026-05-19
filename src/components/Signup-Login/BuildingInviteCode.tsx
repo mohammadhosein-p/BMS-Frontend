@@ -1,10 +1,9 @@
-import { Home, ArrowRight, ArrowLeft } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 import { translateNumber } from "@/utils/translateNumber";
 import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import SendingDots from "../ui/SignUp-Login/SendingDots";
 import { useMutation } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
 
@@ -24,11 +23,9 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
         },
         onSuccess: (data: any) => {
             updateUser({ apartment_id: data?.apartment_id || inviteCode });
-
             onSuccess();
         },
         onError: () => {
-
             updateUser({ apartment_id: inviteCode });
             onSuccess();
         }
@@ -75,7 +72,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                 <CustomField
                     placeholder="مثلاً ۱۲۳۴۵"
                     icon={<Home size={18} />}
-                    value={inviteCode}
+                    value={translateNumber(inviteCode)}
                     onChange={handleChange}
                     variant={validation.variant}
                     type="text"
@@ -92,14 +89,14 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                         type="submit"
                         variant="primary"
                         className="w-full h-11"
-                        disabled={isLoading || !validation.isValid}
+                        disabled={!validation.isValid} 
+                        isLoading={isLoading} 
+                        loadingText="در حال بررسی" 
+                        
                     >
-                        {isLoading ? (
-                            <SendingDots text="در حال بررسی" />
-                        ) : (
-                            "تایید و ادامه"
-                        )}
+                        تایید و ادامه
                     </CustomButton>
+                    
                     <CustomButton
                         type="button"
                         variant="secondary"
@@ -111,7 +108,6 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                     >
                         بازگشت
                     </CustomButton>
-
                 </div>
             </div>
         </form>

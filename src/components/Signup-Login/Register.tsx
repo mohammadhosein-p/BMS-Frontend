@@ -1,11 +1,10 @@
 import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CustomButton from "../ui/CustomeButton";
+import CustomButton from "../ui/CustomeButton"; 
 import CustomField from "../ui/CutsomeFiled";
 import { Mail, Lock, User } from "lucide-react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import SendingDots from "../ui/SignUp-Login/SendingDots";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 import useAuthStore from "@/store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
@@ -221,11 +220,11 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                     type="submit"
                     variant="primary"
                     className="w-full h-11"
-                    disabled={isLoading || !isValid}
+                    disabled={!isValid}
+                    isLoading={isLoading}
+                    loadingText="در حال ثبت نام" 
                 >
-                    {isLoading ? (
-                        <SendingDots text="در حال ثبت نام" />
-                    ) : "ثبت نام"}
+                    ثبت نام
                 </CustomButton>
             </form>
         </div>

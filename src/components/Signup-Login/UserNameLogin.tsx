@@ -3,9 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, Lock } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import SendingDots from "../ui/SignUp-Login/SendingDots";
 import useAuthStore from "@/store/useAuthStore";
 import { loginService } from "@/services/authService";
 import CustomeField from "../ui/CutsomeFiled";
@@ -122,13 +120,11 @@ export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) 
                         type="submit"
                         variant="primary"
                         className="w-full h-11 cursor-pointer"
-                        disabled={isLoading || !isValid}
+                        disabled={!isValid}
+                        isLoading={isLoading} 
+                        loadingText="در حال بررسی"
                     >
-                        {isLoading ? (
-                            <SendingDots text="در حال بررسی" />
-                        ) : (
-                            "ورود"
-                        )}
+                        ورود
                     </CustomeButton>
                 </div>
             </form>

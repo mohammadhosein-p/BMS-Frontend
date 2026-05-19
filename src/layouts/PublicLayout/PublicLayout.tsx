@@ -5,14 +5,13 @@ const PublicLayout = () => {
 	return (
 		<>
 			<Toaster
-				position="bottom-right"
-				richColors={true}
-				duration={5000}
-				// toastOptions={{
-				// 	style: {
-				// 		color: "red",
-				// 	},
-				// }}
+				position="top-center"
+				dir="rtl"
+				closeButton
+				toastOptions={{
+					unstyled: true,
+					className: "w-full flex justify-center",
+				}}
 			/>
 			<Outlet />
 		</>

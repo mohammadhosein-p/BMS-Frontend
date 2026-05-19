@@ -3,6 +3,19 @@ import { type LucideProps } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const SendingDots = ({ text = "در حال ارسال", dotColor = "bg-current" }) => {
+  return (
+    <span className="flex items-center gap-1">
+      {text}
+      <span className="flex gap-0.5 mt-1">
+        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce [animation-delay:-0.3s]`} />
+        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce [animation-delay:-0.15s]`} />
+        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce`} />
+      </span>
+    </span>
+  );
+};
+
 type ButtonVariant = 'primary' | 'secondary' | 'disabled';
 type StyleType = 'solid' | 'outline' | 'soft';
 
@@ -12,6 +25,8 @@ interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   children?: ReactNode;
   icon?: ElementType<LucideProps>;
   className?: string;
+  isLoading?: boolean;
+  loadingText?: string;
 }
 
 const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
@@ -22,10 +37,13 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
     icon: Icon, 
     className, 
     disabled,
+    isLoading = false,
+    loadingText,
     ...props 
   }, ref) => {
     
-    const activeVariant = disabled || variant === 'disabled' ? 'disabled' : variant;
+    const isButtonDisabled = disabled || isLoading || variant === 'disabled';
+    const activeVariant = isButtonDisabled ? 'disabled' : variant;
 
     const variants: Record<ButtonVariant, Record<StyleType, string>> = {
       primary: {
@@ -66,7 +84,7 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
     return (
       <Button
         ref={ref}
-        disabled={activeVariant === 'disabled'}
+        disabled={isButtonDisabled} 
         dir="rtl"
         className={cn(
           "flex items-center justify-center gap-3 rounded-xl font-iranyekan font-extrabold transition-all duration-200 active:scale-[0.97] shrink-0 transform-gpu backface-hidden h-auto py-2 px-4",
@@ -75,14 +93,20 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
         )}
         {...props}
       >
-        <span className="leading-none">{children}</span>
-        {Icon && (
-          <span className={cn(
-            "flex items-center justify-center rounded-lg p-1.5",
-            iconColors[activeVariant][styleType]
-          )}>
-            <Icon size={18} />
-          </span>
+        {isLoading ? (
+          <SendingDots text={loadingText} />
+        ) : (
+          <>
+            <span className="leading-none">{children}</span>
+            {Icon && (
+              <span className={cn(
+                "flex items-center justify-center rounded-lg p-1.5",
+                iconColors[activeVariant][styleType]
+              )}>
+                <Icon size={18} />
+              </span>
+            )}
+          </>
         )}
       </Button>
     );
