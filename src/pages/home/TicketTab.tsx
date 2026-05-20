@@ -1,5 +1,5 @@
 import RegisterTicketDialog from "@/components/ticket/RegisterTicketDialog";
-import TicketDetailsDialog from "@/components/ticket/TicketDetailsDialog";
+import TicketTable from "@/components/ticket/TicketTable";
 import CustomField from "@/components/ui/CutsomeFiled";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -22,6 +22,7 @@ const tickets = [
         icon: Wrench,
         iconBg: "bg-yellow-100",
         iconColor: "text-yellow-700",
+        isPublic: false,
     },
     {
         id: 2,
@@ -34,6 +35,7 @@ const tickets = [
         icon: Sparkles,
         iconBg: "bg-green-100",
         iconColor: "text-green-700",
+        isPublic: false,
     },
     {
         id: 3,
@@ -46,6 +48,7 @@ const tickets = [
         icon: Wallet,
         iconBg: "bg-blue-100",
         iconColor: "text-blue-700",
+        isPublic: true,
     },
     {
         id: 4,
@@ -58,6 +61,7 @@ const tickets = [
         icon: House,
         iconBg: "bg-red-100",
         iconColor: "text-red-700",
+        isPublic: false,
     },
     {
         id: 5,
@@ -70,6 +74,7 @@ const tickets = [
         icon: Wrench,
         iconBg: "bg-yellow-100",
         iconColor: "text-yellow-700",
+        isPublic: true,
     },
     {
         id: 6,
@@ -82,6 +87,7 @@ const tickets = [
         icon: Wrench,
         iconBg: "bg-yellow-100",
         iconColor: "text-yellow-700",
+        isPublic: false,
     },
 ];
 
@@ -119,12 +125,7 @@ function TicketsTab() {
                             {filters.map((filter) => (
                                 <button
                                     key={filter}
-                                    className="
-                        h-10 shrink-0 whitespace-nowrap
-                        rounded-xl border border-neutral-4
-                        bg-white px-3 text-sm font-bold
-                        text-neutral-1 transition hover:bg-neutral-5
-                    "
+                                    className=" h-10 shrink-0 whitespace-nowrap rounded-xl border border-neutral-4 bg-white px-3 text-sm font-bold text-neutral-1 transition hover:bg-neutral-5"
                                 >
                                     {filter}
                                 </button>
@@ -135,88 +136,7 @@ function TicketsTab() {
             </div>
 
             {/* Table */}
-            <div className="flex-1 overflow-hidden rounded-3xl border border-neutral-4 bg-white">
-                <div className="custom-scrollbar h-full overflow-y-auto divide-y divide-neutral-4">
-                    {tickets.map((ticket) => {
-                        const Icon = ticket.icon;
-
-                        return (
-                            <div
-                                key={ticket.id}
-                                className="
-                                    flex flex-col gap-4 p-4 transition
-                                    hover:bg-neutral-5/60
-                                    sm:flex-row-reverse sm:items-center sm:gap-4 sm:px-6 sm:py-4
-                                "
-                            >
-                                {/* Right */}
-                                <div className="flex flex-3 flex-row-reverse items-center gap-4 min-w-0 text-right">
-                                    {/* Icon */}
-                                    <div
-                                        className={`flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl ${ticket.iconBg}`}
-                                    >
-                                        <Icon
-                                            className={`h-7 w-7 sm:h-8 sm:w-8 ${ticket.iconColor}`}
-                                        />
-                                    </div>
-
-                                    {/* Title */}
-                                    <div className="min-w-0">
-                                        <h3 className="truncate font-bold text-neutral-1">
-                                            {ticket.title}
-                                        </h3>
-
-                                        <p className="mt-1 text-sm text-neutral-3">
-                                            {ticket.date}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Mobile Info */}
-                                <div className="flex flex-wrap items-center justify-between gap-2 sm:hidden">
-                                    <div className="text-sm font-medium text-neutral-2">
-                                        {ticket.unit}
-                                    </div>
-
-                                    <div className="text-sm font-medium text-neutral-2">
-                                        {ticket.category}
-                                    </div>
-
-                                    <div
-                                        className={`rounded-full px-3 py-1 text-xs font-bold ${ticket.statusColor}`}
-                                    >
-                                        {ticket.status}
-                                    </div>
-                                </div>
-
-                                {/* Desktop Unit */}
-                                <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
-                                    {ticket.unit}
-                                </div>
-
-                                {/* Desktop Status */}
-                                <div className="hidden flex-2 justify-center sm:flex">
-                                    <div
-                                        className={`w-32 rounded-full px-4 py-2 text-center text-sm font-bold ${ticket.statusColor}`}
-                                    >
-                                        {ticket.status}
-                                    </div>
-                                </div>
-
-                                {/* Desktop Category */}
-                                <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
-                                    {ticket.category}
-                                </div>
-
-                                {/* Button */}
-                                <div className="flex flex-2 justify-end">
-                                    <TicketDetailsDialog />
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <TicketTable tickets={tickets} />
         </div>
     );
 }

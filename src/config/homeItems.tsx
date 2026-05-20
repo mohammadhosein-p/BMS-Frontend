@@ -42,7 +42,7 @@ export const homeItems: {
         color: "from-[var(--primary-3)] to-[var(--primary-1)]",
         border_color: "border-[var(--primary-1)]",
         text_color: "text-[var(--primary-1)]",
-        roles: ["user"],
+        roles: ["user", "admin"],
         component: <TicketTab />,
     },
     {
