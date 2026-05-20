@@ -1,9 +1,8 @@
-import CustomButton from "@/components/ui/CustomeButton";
+import RegisterTicketDialog from "@/components/ticket/RegisterTicketDialog";
 import CustomField from "@/components/ui/CutsomeFiled";
 import { Separator } from "@/components/ui/separator";
 import {
     Search,
-    PlusCircle,
     Wrench,
     Sparkles,
     Wallet,
@@ -96,12 +95,7 @@ function TicketsTab() {
                     تیکت های من
                 </h1>
 
-                <CustomButton
-                    icon={PlusCircle}
-                    className="ltr p-2 md:p-4"
-                >
-                    ثبت تیکت جدید
-                </CustomButton>
+                <RegisterTicketDialog />
             </div>
 
             <Separator />
