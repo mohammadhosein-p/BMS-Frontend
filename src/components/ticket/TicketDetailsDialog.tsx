@@ -1,234 +1,187 @@
+"use client";
+
+import React, { useState } from "react";
+import { Send, ShieldCheck, ShieldClose, X } from "lucide-react";
+import { Avatar } from "../ui/avatar";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import CustomButton from "../ui/CustomeButton";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-
-import { Send, ShieldCheck, Clock3, Wrench } from "lucide-react";
-import { Avatar } from "../ui/avatar";
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+    DialogDescription,
+    DialogClose,
+} from "../ui/CustomeDialog";
+import CustomField from "../ui/CutsomeFiled";
 
 const comments = [
-    {
-        id: 1,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 2,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: false,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
-    {
-        id: 3,
-        user: "نام کاربری",
-        text: "اوضاع لامپ ها اصلا خوب نیست",
-        date: "1402/05/02 19:03",
-        isOwner: true,
-    },
+    { id: 1, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 2, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: false },
+    { id: 3, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 4, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 5, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 6, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 7, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 8, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 9, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
+    { id: 10, user: "نام کاربری", text: "اوضاع لامپ ها اصلا خوب نیست", date: "1402/05/02 19:03", isOwner: true },
 ];
 
 export default function TicketDetailsDialog() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <button className="w-full rounded-xl border border-neutral-4 px-5 py-2 text-sm font-medium transition hover:bg-neutral-4 cursor-pointer sm:w-auto">
-                    مشاهده جزئیات
-                </button>
-            </DialogTrigger>
-
-            <DialogContent
-                dir="rtl"
-                className="custom-scrollbar w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-[28px] border bg-[#f8f8f8] p-0"
+        <>
+            <CustomButton
+                variant="secondary"
+                styleType="outline"
+                className="w-full h-9 rounded-lg text-sm font-medium sm:w-auto"
+                onClick={() => setIsOpen(true)}
             >
-                <div className="p-4 md:p-6">
-                    {/* Top Actions */}
-                    <div className=" flex items-center justify-between">
-                        <DialogClose className="absolute left-2 md:left-4 top-8 rounded-sm opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                            <div className="-translate-y-1/2 bg-white/20 rounded-xl border-2 border-red-400 px-7 py-1 text-red-500 transition hover:bg-red-50">
-                                خروج
+                مشاهده جزئیات
+            </CustomButton>
+
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogContent
+                    isOpen={isOpen}
+                    className="max-w-xl max-h-[90vh] bg-[#f8f8f8] p-4 md:p-6"
+                >
+                    {/* دکمه کلوز اختصاصی در بالا سمت چپ برای ممانعت از تداخل بصری با عنوان */}
+                    <DialogClose asChild>
+                        <button
+                            className="absolute top-5 left-5 p-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors z-10"
+                            aria-label="Close"
+                        >
+                            <X size={16} strokeWidth={3} />
+                        </button>
+                    </DialogClose>
+
+                    <div>
+                        {/* هدر تیکت شامل آیکون شیلد و محتوای متنی */}
+                        <div className="mb-3 sm:mt-6 flex flex-col items-center gap-4 text-center md:flex-row md:items-start md:gap-4 md:text-right">
+                            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#f3ddb0] md:h-24 md:w-24">
+                                <ShieldCheck className="h-10 w-10 text-[#9a6b00] md:h-14 md:w-14" />
                             </div>
-                        </DialogClose>
 
-                        {/* <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-400 bg-white">
-                            <ShieldCheck className="h-6 w-6 text-red-500" />
-                        </div> */}
-                    </div>
+                            {/* عناوین و بدج‌ها */}
+                            <div className="flex-1 w-full flex flex-col items-center md:items-start gap-2">
+                                <DialogHeader className="mb-0 gap-0 w-full">
+                                    {/* ردیف اصلی عنوان و آیکون روبروی آن */}
+                                    <div className="flex items-center justify-center md:justify-start gap-2">
+                                        <DialogTitle className="text-xl font-bold md:text-2xl text-zinc-900">
+                                            خرابی لامپ ها
+                                        </DialogTitle>
 
-                    {/* Ticket Header */}
-                    <div className="mb-3 mt-0 sm:mt-3 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-                        {/* Ticket Image */}
-                        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-3xl bg-[#f3ddb0] md:h-32 md:w-32">
-                            <ShieldCheck className="h-16 w-16 text-[#9a6b00] md:h-20 md:w-20" />
+                                        {/* آیکون سپر خطر که حالا دقیقاً روبروی متن قرار دارد */}
+                                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-danger-3">
+                                            <ShieldClose className="h-4 w-4 text-danger-3" />
+                                        </div>
+                                    </div>
+
+                                    {/* توضیحات زیر عنوان */}
+                                    <DialogDescription className="text-sm text-zinc-600 md:text-base mt-1">
+                                        لامپای راهرو باید تعویض بشن
+                                    </DialogDescription>
+                                </DialogHeader>
+
+                                {/* بدج‌های وضعیت (کوچک و مینی‌مال) */}
+                                <div className="flex flex-wrap items-center gap-1.5 justify-center md:justify-start">
+                                    <div className="flex items-center gap-1 rounded-sm border font-medium border-yellow-400 bg-yellow-50 px-3 py-1  text-xs text-yellow-800">
+                                        در حال بررسی
+                                    </div>
+                                    <div className="flex items-center gap-1 rounded-sm border font-medium border-blue-400 bg-blue-50 px-4 py-1 text-xs text-blue-700">
+                                        تعمیرات
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Right Content */}
-                        <div className="flex-1">
-                            <DialogHeader className="mb-4 text-right">
-                                <DialogTitle className="text-3xl font-bold md:font-extrabold text-right text-zinc-900 ">
-                                    خرابی لامپ ها
-                                </DialogTitle>
-
-                                <p className="text-right text-lg text-zinc-700 ">
-                                    لامپای راهرو باید تعویض بشن
+                        <div className="mb-3 flex flex-row overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+                            <div className="w-3 shrink-0 bg-neutral-3" />
+                            <div className="flex-1 pr-2 pl-2 py-2.5 md:px-4 md:py-4">
+                                <p className="text-right text-sm font-medium leading-6 text-zinc-600 md:text-base md:leading-7">
+                                    سلام وقتتون بخیر نیاز هست لامپای تموم راهرو طبقه سوم بلوک 5 عوض شه
+                                    چون همشون خراب شده و نیاز به تعویض همشون هست لطفا هر چه زودتر پیگیری
+                                    کنین چون به شدت محیط تاریک و ترسناکی داره
                                 </p>
-                            </DialogHeader>
-
-                            {/* Status */}
-                            <div className="flex flex-wrap items-center gap-2">
-                                <div className="flex items-center gap-1 rounded-xl border font-light border-yellow-500 bg-yellow-100 px-3 py-2 text-sm text-yellow-800">
-                                    <Clock3 className="h-4 w-4" />
-                                    در حال بررسی
-                                </div>
-
-                                <div className="flex items-center gap-1 rounded-xl border font-light border-blue-500 bg-blue-100 px-3 py-2 text-sm text-blue-700">
-                                    <Wrench className="h-4 w-4" />
-                                    تعمیرات
-                                </div>
                             </div>
+
                         </div>
-                    </div>
 
-                    {/* Description */}
-                    <div className="mb-3 rounded-3xl bg-white px-3 md:px-6 text-justify py-4 leading-5 text-neutral-2 border-r-6 border-r-neutral-3 border-2">
-                        سلام وقتتون بخیر نیاز هست لامپای تموم راهرو طبقه سوم
-                        بلوک 5 عوض شه چون همشون خراب شده و نیاز به تعویض همشون
-                        هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک و
-                        ترسناکی داره
-                    </div>
+                        <div className="overflow-hidden rounded-3xl border bg-[#f6f6f8]">
+                            {/* هدر بخش پیام‌ها */}
+                            <div className="border-b border-zinc-200 bg-white px-6 py-4 text-right">
+                                <h3 className="text-lg font-bold text-zinc-900 md:text-xl flex items-center gap-2">
+                                کامنت ها 
+                                </h3>
+                            </div>
 
-                    {/* <div className="mb-5 flex flex-wrap justify-end gap-3">
-                        {["تگ1", "تگ2", "تگ3"].map((tag) => (
+                            {/* تاریخچه گفتگو: لایه اصلی چپ‌چین شده تا اسکرول‌بار در سمت راست بیفتد */}
                             <div
-                                key={tag}
-                                className="rounded-xl border bg-white px-5 py-2 text-sm text-zinc-500"
+                                dir="ltr"
+                                className="space-y-4 px-1 py-6 md:px-4 overflow-y-auto max-h-[45vh] custom-scrollbar"
                             >
-                                {tag}
-                            </div>
-                        ))}
-                    </div> */}
+                                {/* لایه داخلی: مجدداً راست‌چین شده تا پیام‌ها و آواتارهای فارسی درست رندر شوند */}
+                                <div dir="rtl" className="space-y-4 w-full text-right">
+                                    {comments.map((comment, index) => (
+                                        <div
+                                            key={`${comment.id}-${index}`}
+                                            className={`flex items-end w-full gap-3 ${comment.isOwner ? "flex-row-reverse" : "flex-row"
+                                                }`}
+                                        >
+                                            {/* آواتار کاربر */}
+                                            <div className="bg-neutral-4 rounded-full shrink-0">
+                                                <Avatar className="items-center justify-center">
+                                                    <AvatarImage src="https://github.com/shadcn.png" />
+                                                    <AvatarFallback>CN</AvatarFallback>
+                                                </Avatar>
+                                            </div>
 
-                    {/* Comments Section */}
-                    <div className="overflow-hidden rounded-3xl border bg-[#f6f6f8]">
-                        {/* Header */}
-                        <div className="border-b bg-white px-6 py-2">
-                            <h2 className="text-2xl font-bold text-zinc-900 md:text-3xl">
-                                پیام ها
-                            </h2>
-                        </div>
+                                            {/* باکس پیام با استایل هماهنگ تصویر */}
+                                            <div
+                                                className={`w-fit max-w-[85%] rounded-2xl border  px-3 py-2 shadow-sm ${comment.isOwner ? "bg-white border-zinc-300 rounded-bl-none" : "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"}`}
+                                            >
+                                                <div className="mb-1 text-xs font-light text-neutral-1 text-right">
+                                                    {comment.user}
+                                                </div>
 
-                        {/* Comments */}
-                        <div className="space-y-4 px-1 py-6 md:px-4 overflow-y-auto max-h-[60vh] custom-scrollbar">
-                            {comments.map((comment) => (
-                                <div
-                                    key={comment.id}
-                                    className={`flex items-end w-full gap-3 ${comment.isOwner ? "justify-right flex-row-reverse" : "justify-left"}`}
-                                >
-                                    {/* Avatar */}
-                                    <div className="bg-neutral-4 rounded-full">
-                                        <Avatar className="items-center justify-center">
-                                            <AvatarImage src="https://github.com/shadcn.png" />
-                                            <AvatarFallback>CN</AvatarFallback>
-                                        </Avatar>
-                                    </div>
+                                                <p className="text-sm text-zinc-800 md:text-base text-right">
+                                                    {comment.text}
+                                                </p>
 
-                                    {/* Bubble */}
-                                    <div
-                                        className={`w-fit max-w-[85%] rounded-2xl border  px-3 py-2 shadow-sm ${comment.isOwner ? "bg-white border-zinc-300 rounded-bl-none" : "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"}`}
-                                    >
-                                        <div className="mb-1 text-xs font-light text-neutral-1">
-                                            {comment.user}
+                                                <div className="mt-2 text-[10px] font-extralight text-black text-left">
+                                                    {comment.date}
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <p className="text-sm text-zinc-800 md:text-base">
-                                            {comment.text}
-                                        </p>
-
-                                        <div className="mt-2 text-[10px] font-extralight text-black text-left">
-                                            {comment.date}
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
+                            </div>
 
-                        {/* Input */}
-                        <div className="p-4 pt-1 md:p-6 md:pt-1">
-                            <div className="flex items-center rounded-2xl border bg-white px-2 md:px-4 py-3">
-                                <button className="flex p-3 items-center justify-center rounded-full bg-neutral-4 transition hover:bg-neutral-4">
-                                    {true ? (
-                                        <Send className="h-5 w-5 text-neutral-2" />
-                                    ) : (
-                                        <p>loading</p>
-                                    )}
-                                </button>
-
-                                <input
-                                    type="text"
-                                    placeholder="نوشتن کامنت..."
-                                    className="flex-1 bg-transparent px-4 text-base outline-none placeholder:text-neutral-3"
-                                />
+                            {/* بخش ورودی پیام جدید */}
+                            <div className="p-4 bg-white border-t border-zinc-100">
+                                <div className="flex items-end gap-2 w-full">
+                                    <button
+                                        type="button"
+                                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-2 text-white shadow-md transition-all hover:bg-primary-1 active:scale-95 mb-[1.5px] cursor-pointer"
+                                    >
+                                        <Send className="h-5 w-5 -rotate-45 translate-y-0.5" />
+                                    </button>
+                                    <CustomField
+                                        type="text"
+                                        placeholder="پاسخ خود را بنویسید..."
+                                        direction="rtl"
+                                        variant="default"
+                                        containerClassName="flex-1"
+                                    />
+                                </div>
                             </div>
                         </div>
+
                     </div>
-                </div>
-            </DialogContent>
-        </Dialog>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }

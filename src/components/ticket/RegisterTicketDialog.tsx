@@ -1,102 +1,114 @@
+"use client";
+
+import React, { useState } from "react";
+import { PlusCircle, Send, X } from "lucide-react";
+import CustomButton from "../ui/CustomeButton";
+import CustomField from "../ui/CutsomeFiled";
+
+// ایمپورت کامپوننت دیالوگ اختصاصی که خودتان ساختید
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogClose,
-} from "@/components/ui/dialog";
+} from "../ui/CustomeDialog";
+import SelectOptions from "../ui/SelectOptions/SelectOptions";
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-
-import { PlusCircle, Send, X } from "lucide-react";
-import CustomButton from "../ui/CustomeButton";
-import CustomField from "../ui/CutsomeFiled";
 
 function RegisterTicketDialog() {
-    return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <CustomButton icon={PlusCircle} className="ltr p-2 md:p-4 cursor-pointer">
-                    ثبت تیکت جدید
-                </CustomButton>
-            </DialogTrigger>
+    const [isOpen, setIsOpen] = useState(false);
+    const ticketTypeOptions = [
+        { value: "private", label: "خصوصی", color: "red" }, 
+        { value: "public", label: "عمومی", color: "blue" }
+    ];
 
+    // ۲. این State را داخل بدنه تابع RegisterTicketDialog اضافه کنید
+    const [ticketType, setTicketType] = useState("private");
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <CustomButton icon={PlusCircle} className="ltr w-1/7 h-13 cursor-pointer" onClick={() => setIsOpen(true)}>
+                ثبت تیکت جدید
+            </CustomButton>
             <DialogContent
-                dir="rtl"
-                className="max-w-md rounded-3xl p-0 overflow-hidden"
+                isOpen={isOpen}
+                className="max-w-md rounded-3xl p-0 overflow-hidden bg-white"
             >
-                {/* Header */}
-                <DialogHeader className="relative bg-indigo-500 text-white px-6 py-4 m-0">
-                    <DialogTitle className="text-center text-2xl font-bold md:font-extrabold">
+                <DialogHeader className="relative bg-indigo-500 text-white px-14 py-5 m-0 flex flex-col items-center justify-center">
+
+                    <DialogClose asChild>
+                        <button
+                            type="button"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-1.5 hover:bg-white/30 transition-all cursor-pointer border-none outline-none"
+                            aria-label="Close"
+                        >
+                            <X className="w-4 h-4 text-white" strokeWidth={3} />
+                        </button>
+                    </DialogClose>
+
+                    <DialogTitle className="text-center text-xl font-bold md:text-2xl md:font-extrabold text-white w-full">
                         ساخت تیکت جدید
                     </DialogTitle>
 
-                    {/* close icon */}
-                    <DialogClose className="absolute right-4 top-8 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                        <div className="-translate-y-1/2 rounded-full bg-white/20 p-1 hover:bg-white/30 transition ">
-                            <X className="w-5 h-5 text-white" />
-                        </div>
-                    </DialogClose>
                 </DialogHeader>
 
-                {/* Form */}
-                <div className="space-y-3 p-5">
-                    {/* title */}
+                {/* فرم داخلی ثبت تیکت */}
+                <div className="space-y-2 p-6 bg-white">
+                    {/* تیتر */}
                     <CustomField
-                        placeholder="تیتر"
-                        className="h-12 rounded-xl border-gray-200 focus-visible:ring-indigo-500 text-right"
+                        placeholder="تیتر تیکت"
+                        direction="rtl"
+                        variant="default"
+                        className="focus-visible:border-indigo-400"
                     />
 
-                    {/* short description */}
+                    {/* توضیحات کوتاه */}
                     <CustomField
-                        placeholder="توضیحات"
-                        className="h-12 rounded-xl border-gray-200 focus-visible:ring-indigo-500 text-right"
+                        placeholder="توضیحات کوتاه"
+                        direction="rtl"
+                        variant="default"
+                        className="focus-visible:border-indigo-400"
                     />
 
-                    {/* body */}
-                    <textarea
-                        placeholder="بدنه"
-                        className="custom-scrollbar min-h-35 w-full rounded-xl border transition-all duration-200 shadow-none outline-none placeholder:text-neutral-3/60 focus-visible:ring-0 focus-visible:border-primary-1 focus-visible:shadow-[0_0_0_4px_var(--color-primary-5)] focus-visible:bg-neutral-6 border-neutral-4 bg-neutral-5 text-neutral-1 resize-none text-right px-4 py-3"
+                    {/* بدنه اصلی متن */}
+                    <CustomField
+                        as="textarea"
+                        placeholder="متن تیکت خود را اینجا بنویسید..."
+                        direction="rtl"
+                        variant="default"
+                        className="text-sm placeholder:text-sm focus-visible:border-indigo-400"
                     />
 
-                    {/* category */}
+                    {/* نوع دسترسی یا اولویت تیکت با کامپوننت جدید و اختصاصی شما */}
+                    <SelectOptions
+                        value={ticketType}
+                        onChange={setTicketType}
+                        options={ticketTypeOptions}
+                    />
+                    {/* دسته بندی */}
                     <CustomField
                         placeholder="دسته بندی"
-                        className="h-12 rounded-xl border-gray-200 focus-visible:ring-indigo-500 text-right"
+                        direction="rtl"
+                        variant="default"
+                        className="focus-visible:border-indigo-400"
                     />
 
-                    {/* tags */}
+
+                    {/* تگ ها */}
                     <CustomField
-                        placeholder="تگ ها"
-                        className="h-12 rounded-xl border-gray-200 focus-visible:ring-indigo-500 text-right"
+                        placeholder="تگ‌ها (با کاما جدا کنید)"
+                        direction="rtl"
+                        variant="default"
+                        className="focus-visible:border-indigo-400"
                     />
 
-                    {/* priority */}
-                    <Select dir="rtl">
-                        <SelectTrigger className="h-12 rounded-xl border-gray-200 focus:ring-indigo-500">
-                            <SelectValue placeholder="نوع" />
-                        </SelectTrigger>
 
-                        <SelectContent>
-                            <SelectItem value="private">خصوصی</SelectItem>
-                            <SelectItem value="public">عمومی</SelectItem>
-                        </SelectContent>
-                    </Select>
 
-                    {/* submit */}
+                    {/* دکمه ارسال نهایی فرم */}
                     <div className="flex justify-center pt-2">
-                        <CustomButton
-                            icon={Send}
-                            className="rounded-2xl ltr px-7 py-3 text-base shadow-md"
-                        >
-                            ارسال
+                        <CustomButton icon={Send} className="ltr h-11 cursor-pointer">
+                            ارسال تیکت
                         </CustomButton>
                     </div>
                 </div>

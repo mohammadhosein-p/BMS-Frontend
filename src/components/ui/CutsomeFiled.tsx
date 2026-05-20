@@ -7,16 +7,17 @@ type FieldVariant = "default" | "success" | "error" | "disabled";
 type Direction = "rtl" | "ltr";
 
 interface CustomFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   label?: string;
   variant?: FieldVariant;
   icon?: ReactNode; 
   suffixIcon?: ReactNode;
   containerClassName?: string;
   direction?: Direction; 
+  as?: "input" | "textarea";
 }
 
-const CustomField = React.forwardRef<HTMLInputElement, CustomFieldProps>(
+const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, CustomFieldProps>(
   (
     {
       label,
@@ -27,6 +28,7 @@ const CustomField = React.forwardRef<HTMLInputElement, CustomFieldProps>(
       containerClassName,
       type,
       direction = "rtl", 
+      as = "input", 
       ...props
     },
     ref
@@ -43,6 +45,25 @@ const CustomField = React.forwardRef<HTMLInputElement, CustomFieldProps>(
     };
 
     const inputType = isPassword ? (isVisible ? 'text' : 'password') : type;
+
+    const sharedClassName = cn(
+      "w-full rounded-xl border transition-all duration-200",
+      "shadow-none outline-none",
+      "placeholder:text-neutral-3/60",
+      "focus-visible:ring-0",
+      "focus-visible:border-primary-1",
+      "focus-visible:shadow-[0_0_0_4px_var(--color-primary-5)]",
+      "focus-visible:bg-neutral-6",
+      variantStyles[variant],
+      
+      isRtl ? (icon ? "pr-10" : "pr-4") : (icon ? "pl-10" : "pl-4"),
+      isRtl ? ((isPassword || suffixIcon) ? "pl-12" : "pl-4") : ((isPassword || suffixIcon) ? "pr-12" : "pr-4"),
+      
+      "text-right",
+      !isRtl && "text-left",
+      as === "input" ? "h-11" : "p-3 min-h-[120px] resize-none custom-scrollbar", 
+      className
+    );
 
     return (
       <div
@@ -62,38 +83,34 @@ const CustomField = React.forwardRef<HTMLInputElement, CustomFieldProps>(
           {icon && (
             <div className={cn(
               "absolute z-10 text-neutral-3",
-              isRtl ? "right-3" : "left-3"
+              isRtl ? "right-3" : "left-3",
+              as === "textarea" && "top-3"
             )}>
               {icon}
             </div>
           )}
 
-          <Input
-            ref={ref}
-            type={inputType}
-            disabled={variant === "disabled" || props.disabled}
-            className={cn(
-              "h-11 rounded-xl border transition-all duration-200",
-              "shadow-none outline-none",
-              "placeholder:text-neutral-3/60",
-              "focus-visible:ring-0",
-              "focus-visible:border-primary-1",
-              "focus-visible:shadow-[0_0_0_4px_var(--color-primary-5)]",
-              "focus-visible:bg-neutral-6",
-              variantStyles[variant],
-              
-              isRtl ? (icon ? "pr-10" : "pr-4") : (icon ? "pl-10" : "pl-4"),
-              isRtl ? ((isPassword || suffixIcon) ? "pl-12" : "pl-4") : ((isPassword || suffixIcon) ? "pr-12" : "pr-4"),
-              
-              "text-right",
-              !isRtl && "text-left",
-              className
-            )}
-            {...props}
-          />
+          {as === "textarea" ? (
+            <textarea
+              ref={ref as any}
+              disabled={variant === "disabled" || props.disabled}
+              className={sharedClassName}
+              {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            />
+          ) : (
+            <Input
+              ref={ref as any}
+              type={inputType}
+              disabled={variant === "disabled" || props.disabled}
+              className={sharedClassName}
+              {...props}
+            />
+          )}
+
           <div className={cn(
             "absolute inset-y-0 flex items-center justify-center w-12",
-            isRtl ? "left-0" : "right-0"
+            isRtl ? "left-0" : "right-0",
+            as === "textarea" && "top-3 bottom-auto" 
           )}>
             {isPassword ? (
               <button

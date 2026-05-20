@@ -36,6 +36,9 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
             setAuth({ user: data.user, access: data.access, refresh: data.refresh });
             onHomePage();
         },
+        onError :() => {
+            onHomePage();
+        }
     });
 
     const {

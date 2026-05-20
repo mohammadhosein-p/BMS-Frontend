@@ -1,30 +1,32 @@
 import { ShieldClose, ShieldUser, Trash2, type LucideIcon } from "lucide-react";
 import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
+import { motion } from "framer-motion";
+import { translateDate } from "@/utils/translateDate";
 
 interface Prop {
     tickets:
-        | {
-              id: number;
-              title: string;
-              date: string;
-              unit: string;
-              category: string;
-              status: string;
-              statusColor: string;
-              icon: LucideIcon;
-              iconBg: string;
-              iconColor: string;
-              isPublic: boolean;
-          }[]
-        | null;
+    | {
+        id: number;
+        title: string;
+        date: string;
+        unit: string;
+        category: string;
+        status: string;
+        statusColor: string;
+        icon: LucideIcon;
+        iconBg: string;
+        iconColor: string;
+        isPublic: boolean;
+    }[]
+    | null;
 }
 
 function TicketTable({ tickets }: Prop) {
     const isAdmin = useAuthStore((store) => store.user?.role == "admin");
 
     return (
-        <div className="flex-1 overflow-hidden rounded-3xl border border-neutral-4 bg-white">
+        <div className="flex-1 overflow-hidden rounded-lg border border-neutral-4 bg-white">
             <div className="custom-scrollbar h-full overflow-y-auto divide-y divide-neutral-4">
                 {tickets?.map((ticket) => {
                     const Icon = ticket.icon;
@@ -49,21 +51,22 @@ function TicketTable({ tickets }: Prop) {
                                 <div className="min-w-0">
                                     <div className="flex gap-2 items-center">
                                         {ticket.isPublic ? (
-                                            <div className="p-0.75 border border-secondary-blue-3 rounded-full">
-                                                <ShieldUser className="text-secondary-blue-3 w-6" />
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
+                                                <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
                                             </div>
                                         ) : (
-                                            <div className="p-0.75 border border-danger-3 rounded-full">
-                                                <ShieldClose className="text-danger-3 w-6" />
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-danger-3">
+                                                <ShieldClose className="h-4 w-4 text-danger-3" />
                                             </div>
                                         )}
+
                                         <h3 className="truncate font-bold text-neutral-1">
                                             {ticket.title}
                                         </h3>
                                     </div>
 
                                     <p className="mt-1 text-sm text-neutral-3">
-                                        {ticket.date}
+                                        {translateDate(ticket.date)}
                                     </p>
                                 </div>
                             </div>
@@ -97,14 +100,14 @@ function TicketTable({ tickets }: Prop) {
                             {/* Desktop Status */}
                             <div className="hidden flex-2 justify-center sm:flex">
                                 <div
-                                    className={`w-32 rounded-full px-4 py-2 text-center text-sm font-bold ${ticket.statusColor}`}
+                                    className={`w-32 rounded-lg py-1.5 text-center text-sm font-bold ${ticket.statusColor}`}
                                 >
                                     {ticket.status}
                                 </div>
                             </div>
 
                             {/* Desktop Category */}
-                            <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
+                            <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
                                 {ticket.category}
                             </div>
 
@@ -112,11 +115,16 @@ function TicketTable({ tickets }: Prop) {
                             <div className="flex flex-2 justify-end items-center gap-2">
                                 <TicketDetailsDialog />
                                 {!isAdmin && (
-                                    // must be creator!!!!!!!!!!!
-                                    <div className="bg-white border-2 p-1 rounded-lg text-danger-2 border-danger-3">
-                                        <Trash2 />
-                                    </div>
+                                    <motion.button
+                                        type="button"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
+                                    >
+                                        <Trash2 size={18} />
+                                    </motion.button>
                                 )}
+
                             </div>
                         </div>
                     );
