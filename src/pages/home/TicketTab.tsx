@@ -1,4 +1,5 @@
 import RegisterTicketDialog from "@/components/ticket/RegisterTicketDialog";
+import TicketDetailsDialog from "@/components/ticket/TicketDetailsDialog";
 import CustomField from "@/components/ui/CutsomeFiled";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -209,9 +210,7 @@ function TicketsTab() {
 
                                 {/* Button */}
                                 <div className="flex flex-2 justify-end">
-                                    <button className="w-full rounded-xl border border-neutral-4 px-5 py-2 text-sm font-medium transition hover:bg-neutral-5 sm:w-auto">
-                                        مشاهده جزئیات
-                                    </button>
+                                    <TicketDetailsDialog />
                                 </div>
                             </div>
                         );

@@ -23,7 +23,7 @@ function RegisterTicketDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <CustomButton icon={PlusCircle} className="ltr p-2 md:p-4">
+                <CustomButton icon={PlusCircle} className="ltr p-2 md:p-4 cursor-pointer">
                     ثبت تیکت جدید
                 </CustomButton>
             </DialogTrigger>
