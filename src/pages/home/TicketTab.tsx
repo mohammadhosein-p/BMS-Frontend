@@ -2,13 +2,8 @@ import RegisterTicketDialog from "@/components/ticket/RegisterTicketDialog";
 import TicketTable from "@/components/ticket/TicketTable";
 import CustomField from "@/components/ui/CutsomeFiled";
 import { Separator } from "@/components/ui/separator";
-import {
-    Search,
-    Wrench,
-    Sparkles,
-    Wallet,
-    House,
-} from "lucide-react";
+import { Search, Wrench, Sparkles, Wallet, House } from "lucide-react";
+import { useState } from "react";
 
 const tickets = [
     {
@@ -91,9 +86,24 @@ const tickets = [
     },
 ];
 
-const filters = ["همه وضعیت ها", "در حال بررسی", "بسته شده", "در انتظار قطعات"];
+type FilterState = "all" | "closed" | "checking" | "pending";
+
+interface FilterOption {
+    state: FilterState;
+    label: string;
+}
+
+const filters: FilterOption[] = [
+    { state: "all", label: "همه تیکت‌ها" },
+    { state: "pending", label: "در انتظار بررسی" },
+    { state: "checking", label: "در حال پیگیری" },
+    { state: "closed", label: "بسته شده" },
+];
+
 
 function TicketsTab() {
+    const [filterState, setFilterState] = useState<FilterState>("all");
+
     return (
         <div className="flex h-full flex-col gap-3 overflow-hidden bg-neutral-5 p-3 sm:p-4 lg:p-6">
             {/* Header */}
@@ -124,10 +134,11 @@ function TicketsTab() {
                         <div className="flex max-w-[89vw] flex-row-reverse gap-2 overflow-x-auto">
                             {filters.map((filter) => (
                                 <button
-                                    key={filter}
-                                    className=" h-10 shrink-0 whitespace-nowrap rounded-xl border border-neutral-4 bg-white px-3 text-sm font-bold text-neutral-1 transition hover:bg-neutral-5"
+                                    key={filter.state}
+                                    className={`h-10 shrink-0 whitespace-nowrap rounded-xl border border-neutral-4 px-3 text-sm font-bold text-neutral-1 transition  ${filter.state == filterState ? "bg-neutral-4 hover:bg-neutral-3/60" : "bg-white hover:bg-neutral-5"}`}
+                                    onClick={() => setFilterState(filter.state)}
                                 >
-                                    {filter}
+                                    {filter.label}
                                 </button>
                             ))}
                         </div>
