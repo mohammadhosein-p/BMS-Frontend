@@ -5,7 +5,7 @@ import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
 import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
-import ProfileTab from "@/pages/home/ProfileTab";
+import ProfileTab from "@/pages/home/profileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
 
