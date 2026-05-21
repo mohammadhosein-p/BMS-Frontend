@@ -3,7 +3,7 @@ import MobileSidebar from "./MobileSidebar";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import { useLocation, useNavigate } from "react-router-dom"; 
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { homeItems } from "@/config/homeItems";
 
 function HomeHeader() {
@@ -21,22 +21,21 @@ function HomeHeader() {
             <div className="flex h-full items-center justify-between">
                 {/* Left Side */}
                 <div className="flex items-center gap-2 md:gap-3">
-                    
-                    <button 
-                        onClick={() => navigate("/home/profile")}
 
-                        className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition-colors duration-200 hover:bg-blue-50"
+                    <Link
+                        to="/home/profile"
+                        className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition-all duration-200 hover:bg-blue-50 hover:scale-[1.03] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        dir="rtl"
                     >
+                        <Avatar className="h-10 w-10 shrink-0">
+                            <AvatarImage src="https://github.com/shadcn.png" alt="علی نقی نژاد" />
+                            <AvatarFallback>ع‌ن</AvatarFallback>
+                        </Avatar>
+
                         <span className="hidden sm:block text-[15px] font-bold text-neutral-1 whitespace-nowrap">
                             علی نقی نژاد
                         </span>
-
-                        <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-
-                    </button>
+                    </Link>
 
                     <Separator className="hidden sm:block h-10 w-px bg-neutral-4" />
 
