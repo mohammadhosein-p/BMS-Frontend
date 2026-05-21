@@ -5,8 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/types/authTypes";
 
-import MaleIcon from "@/assets/profile/man.svg";
-import FemaleIcon from "@/assets/profile/woman.svg";
+import MaleIcon from "@/assets/profile/icons8-man-60 (2).png";
+import FemaleIcon from "@/assets/profile/icons8-woman-50.png";
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg"; 
 
 interface ProfileHeaderProps {
@@ -39,11 +39,11 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full">
             
             {/* Left Section: Join Date & Logout */}
-            <div className="flex flex-col justify-between items-start h-[112px]">
+            <div className="flex flex-col justify-between items-start h-28">
                 <div className="flex items-center gap-2 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-lg px-3 py-1.5 text-xs font-medium">
                      <Clock size={16} />
                      <span>تاریخ ورود به ساختمان</span>
-                     <span className="pt-0.5" dir="ltr">1404/12/02</span>
+                     <span className="pt-0.5" dir="ltr">{transale("1405/02/05")}</span>
                 </div>
 
                 <Button 
@@ -61,9 +61,13 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 {/* User Details */}
                 <div className="flex flex-col gap-3 items-end">
             
-                    <div className="flex items-center gap-2 text-2xl font-bold text-neutral-800">
+                    <div className="flex items-center gap-1 text-2xl font-bold text-neutral-800">
                         <span>{user.first_name} {user.last_name}</span>
-                        <img src={genderIconSrc} alt="gender" className="w-12 h-9" />
+                        <img 
+                            src={genderIconSrc} 
+                            alt="gender" 
+                            className="w-10 h-10 object-contain ml-1" 
+                        />
                     </div>
                     
                     <div className="flex items-center gap-3 text-sm">

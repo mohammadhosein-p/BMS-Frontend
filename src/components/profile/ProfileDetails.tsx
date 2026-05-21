@@ -37,10 +37,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     };
 
     return (
-        // اضافه شدن dir="rtl" برای تضمین چیدمان راست‌چین در کل این بخش
         <div className="w-full flex flex-row gap-8 pt-2 flex-1 h-full overflow-hidden" dir="rtl">
             
-            {/* بخش فرم (سمت راست) */}
             <div className="flex-1 overflow-y-auto pl-2 pb-4 
                 [&::-webkit-scrollbar]:w-1.5 
                 [&::-webkit-scrollbar-track]:bg-transparent 
@@ -50,7 +48,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5">
                     
-                    {/* ردیف اول: راست (نام کاربری) - چپ (ایمیل) */}
                     <CustomField
                         label="نام کاربری"
                         name="username"
@@ -58,8 +55,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         onChange={handleInputChange}
                         disabled={!isEditing}
                         icon={<UserIcon size={18} />}
-                        className="text-center"
-                        dir="ltr"
                     />
                     <CustomField
                         label="ایمیل"
@@ -68,18 +63,14 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         onChange={handleInputChange}
                         disabled={!isEditing}
                         icon={<Mail size={18} />}
-                        className="text-center"
-                        dir="ltr"
                     />
 
-                    {/* ردیف دوم: راست (نام) - چپ (نام خانوادگی) */}
                     <CustomField
                         label="نام"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
                         disabled={!isEditing}
-                        className="text-center"
                     />
                     <CustomField
                         label="نام خانوادگی"
@@ -87,10 +78,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         value={formData.lastName}
                         onChange={handleInputChange}
                         disabled={!isEditing}
-                        className="text-center"
                     />
 
-                    {/* ردیف سوم: راست (رمز عبور) - چپ (شماره تماس) */}
                     <CustomField
                         label="رمز عبور"
                         name="password"
@@ -99,8 +88,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         onChange={handleInputChange}
                         disabled={!isEditing}
                         icon={<Lock size={18} />}
-                        className="text-center"
-                        dir="ltr"
                     />
                     <CustomField
                         label="شماره تماس"
@@ -108,8 +95,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         value={formData.phone}
                         onChange={handleInputChange}
                         disabled={!isEditing}
-                        className="text-center"
-                        dir="ltr"
                     />
 
                     {/* ردیف چهارم: راست (شماره ساختمان) - چپ (شماره واحد) */}
@@ -119,8 +104,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         value={formData.buildingNumber}
                         onChange={handleInputChange}
                         disabled={true} 
-                        className="text-center"
-                        dir="ltr"
                     />
                     <CustomField
                         label="شماره واحد"
@@ -128,8 +111,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                         value={formData.unitNumber}
                         onChange={handleInputChange}
                         disabled={!isEditing}
-                        className="text-center"
-                        dir="ltr"
                     />
                     
                 </div>

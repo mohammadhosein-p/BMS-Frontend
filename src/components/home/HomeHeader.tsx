@@ -25,7 +25,7 @@ function HomeHeader() {
                     <button 
                         onClick={() => navigate("/home/profile")}
 
-                        className="flex items-center gap-3 rounded-2xl px-2 py-1.5 transition-colors duration-200 hover:bg-blue-50"
+                        className="flex items-center gap-2 rounded-2xl px-2 py-1.5 transition-colors duration-200 hover:bg-blue-50"
                     >
                         <span className="hidden sm:block text-[15px] font-bold text-neutral-1 whitespace-nowrap">
                             علی نقی نژاد
