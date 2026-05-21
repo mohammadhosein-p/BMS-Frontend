@@ -5,6 +5,7 @@ import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
 import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
+import ProfileTab from "@/pages/home/ProfileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
 
@@ -34,17 +35,28 @@ export const router = createBrowserRouter([
                     {
                         element: <HomePageLayout />,
                         path: "/home",
-                        children: homeItems.map((item) => ({
-                            path: item.path,
-                            element: (
-                                <RoleGuard roles={item.roles}>
-                                    {item.component}
-                                </RoleGuard>
-                            ),
-                        })),
+                        children: [
+                            ...homeItems.map((item) => ({
+                                path: item.path,
+                                element: (
+                                    <RoleGuard roles={item.roles}>
+                                        {item.component}
+                                    </RoleGuard>
+                                ),
+                            })),
+                            {
+                                path: "profile",
+                                element: (
+                                    <RoleGuard roles={["user", "admin"]}>
+                                        <ProfileTab />
+                                    </RoleGuard>
+                                )
+                            }
+                        ],
                     },
                 ],
             },
+
             // {
             // 	path: "/AboutUs",
             // 	element: <AboutUs />,
