@@ -138,7 +138,7 @@ function RegisterTicketDialog() {
             {/* Trigger */}
             <CustomButton
                 icon={PlusCircle}
-                className="ltr w-1/7 h-13 cursor-pointer"
+                className="ltr h-13 cursor-pointer"
                 onClick={() => setIsOpen(true)}
             >
                 ثبت تیکت جدید

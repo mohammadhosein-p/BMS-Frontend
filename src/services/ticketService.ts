@@ -1,8 +1,8 @@
 import { deleteData, getData, patchData, postData } from "./services";
 import type {
+    AllTicketResponse,
     CreateTicketPayload,
     TicketFullyDetailsResponse,
-    TicketResponse,
     UpdateTicketStatusPayload,
 } from "@/types/ticketTypes";
 
@@ -18,7 +18,7 @@ export const createTicketService = async (
 export const getTicketsService = async (params?: {
     status?: string;
     category?: string;
-}): Promise<TicketResponse[]> => {
+}): Promise<AllTicketResponse> => {
     return getData({
         endPoint: "/tickets",
         params,

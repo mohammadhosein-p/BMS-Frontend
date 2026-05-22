@@ -1,5 +1,34 @@
 // types/ticketTypes.ts
 
+
+export interface Comment {
+    ID: string;
+    CreatedAt: string;
+    UpdatedAt: string;
+    DeletedAt: string | null;
+    UserID: string;
+    TicketID: string;
+    Body: string;
+    User: {
+        Username: string;
+        ProfileImageURL: string;
+    };
+}
+
+export interface Ticket {
+    ID: string;
+    UserID: string;
+    Title: string;
+    Description: string;
+    Body: string;
+    Category: string;
+    Accessibility: "private" | "public";
+    CreatedAt: string;
+    UpdatedAt: string;
+    DeletedAt: string | null;
+    Status: "open" | "close" | "in-progress";
+    Comments: Comment[]
+}
 export interface CreateTicketPayload {
     title: string;
     description: string;
@@ -8,23 +37,8 @@ export interface CreateTicketPayload {
     accessibility: "private" | "public";
 }
 
-// =========================
-// Backend Ticket
-// =========================
-
-export interface TicketResponse {
-    id: string;
-    user_id: string;
-    title: string;
-    description: string;
-    body: string;
-    category: string;
-    accessibility: "private" | "public";
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
-    status: string;
-    unit?: string;
+export interface AllTicketResponse {
+    data: Ticket[];
 }
 
 export interface UpdateTicketStatusPayload {
@@ -32,23 +46,6 @@ export interface UpdateTicketStatusPayload {
     status: string;
 }
 
-export interface TicketComment {
-    id: number;
-    user: string;
-    text: string;
-    date: string;
-    isOwner: boolean;
-}
-
 export interface TicketFullyDetailsResponse {
-    id: number;
-    title: string;
-    description: string;
-    body: string;
-    category: string;
-    status: "open" | "in_progress" | "closed";
-    accessibility: "private" | "public";
-    created_at: string;
-
-    comments: TicketComment[];
+    data: Ticket
 }

@@ -120,5 +120,12 @@ export const useCreateTicketComment = () => {
             });
             toast.success("کامنت با موفقیت ارسال شد.");
         },
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            toast.error(err.response?.data?.message || "خطا در حذف تیکت");
+        },
     });
 };

@@ -34,7 +34,6 @@ interface UiTicket {
     user_id: string;
     title: string;
     date: string;
-    unit: string;
     category: string;
     status: string;
     statusLabel: string;
@@ -67,34 +66,34 @@ function TicketTable({filterState, categoryFilter}: Prop) {
     const { mutate: deleteTicket } = useDeleteTicket();
 
 
-    const tickets: UiTicket[] | undefined = data?.map((ticket) => ({
-        id: ticket.id,
-        user_id: ticket.user_id,
-        title: ticket.title,
-        date: ticket.created_at,
-        unit: ticket.unit || "نامشخص",
-        category: ticket.category,
-        status: ticket.status,
+    const tickets: UiTicket[] | undefined = data?.data?.map((ticket) => ({
+        id: ticket.ID,
+        user_id: ticket.UserID,
+        title: ticket.Title,
+        date: ticket.CreatedAt,
+        // unit: ticket.unit || "نامشخص",
+        category: ticket.Category,
+        status: ticket.Status,
         statusLabel:
-            ticket.status === "open"
+            ticket.Status === "open"
                 ? "باز"
-                : ticket.status === "in_progress"
+                : ticket.Status === "in-progress"
                   ? "در حال بررسی"
                     : "بسته شده",
         statusColor:
-            ticket.status === "open"
+            ticket.Status === "open"
                 ? "bg-green-100 text-green-700"
-                : ticket.status === "in_progress"
+                : ticket.Status === "in-progress"
                   ? "bg-yellow-100 text-yellow-700"
                     : "bg-red-100 text-red-700",
-        icon: ticket.accessibility === "public" ? ShieldUser : ShieldClose,
+        icon: ticket.Accessibility === "public" ? ShieldUser : ShieldClose,
         iconBg:
-            ticket.accessibility === "public" ? "bg-blue-100" : "bg-red-100",
+            ticket.Accessibility === "public" ? "bg-blue-100" : "bg-red-100",
         iconColor:
-            ticket.accessibility === "public"
+            ticket.Accessibility === "public"
                 ? "text-blue-600"
                 : "text-red-600",
-        isPublic: ticket.accessibility === "public",
+        isPublic: ticket.Accessibility === "public",
     }));
 
     if (isLoading) {
@@ -189,11 +188,11 @@ function TicketTable({filterState, categoryFilter}: Prop) {
 
                             {/* Mobile Info */}
                             <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
-                                {isAdmin && (
+                                {/* {isAdmin && (
                                     <div className="text-sm font-medium text-neutral-2">
                                         {ticket.unit}
                                     </div>
-                                )}
+                                )} */}
 
                                 <div className="text-sm font-medium text-neutral-2">
                                     {ticket.category}
@@ -211,11 +210,11 @@ function TicketTable({filterState, categoryFilter}: Prop) {
                             </div>
 
                             {/* Desktop Unit */}
-                            {isAdmin && (
+                            {/* {isAdmin && (
                                 <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
                                     {ticket.unit}
                                 </div>
-                            )}
+                            )} */}
 
                             {/* Desktop Status */}
                             <div className="hidden flex-2 justify-center sm:flex">
