@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { PlusCircle, Send, X } from "lucide-react";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 
-// ایمپورت کامپوننت دیالوگ اختصاصی که خودتان ساختید
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogClose,
+    DialogTrigger,
 } from "../ui/CustomeDialog";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 
@@ -19,18 +19,26 @@ import SelectOptions from "../ui/SelectOptions/SelectOptions";
 function RegisterTicketDialog() {
     const [isOpen, setIsOpen] = useState(false);
     const ticketTypeOptions = [
-        { value: "private", label: "خصوصی", color: "red" }, 
+        { value: "private", label: "خصوصی", color: "red" },
         { value: "public", label: "عمومی", color: "blue" }
     ];
 
-    // ۲. این State را داخل بدنه تابع RegisterTicketDialog اضافه کنید
     const [ticketType, setTicketType] = useState("private");
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <CustomButton icon={PlusCircle} className="ltr w-1/7 h-13 cursor-pointer" onClick={() => setIsOpen(true)}>
-                ثبت تیکت جدید
-            </CustomButton>
+            <DialogTrigger asChild>
+                <CustomButton
+                    icon={PlusCircle}
+                    variant="primary"
+                    className="w-auto h-12 px-3 text-xs sm:text-sm cursor-pointer"
+                    onClick={() => setIsOpen(true)}
+                    dir="rtl"
+                >
+                    ثبت تیکت جدید
+                </CustomButton>
+            </DialogTrigger>
+
             <DialogContent
                 isOpen={isOpen}
                 className="max-w-md rounded-3xl p-0 overflow-hidden bg-white"

@@ -4,7 +4,6 @@ import CustomField from "../ui/CutsomeFiled";
 import { translateNumber } from "@/utils/translateNumber";
 import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import SendingDots from "../ui/SignUp-Login/SendingDots";
 import { useMutation } from "@tanstack/react-query";
 import { sendOtpService } from "@/services/authService";
 
@@ -94,12 +93,10 @@ export const PhoneLogin = ({ onOTPlogin, onPhoneSubmit }: {
                         variant="primary"
                         className="w-full h-11"
                         disabled={isLoading || !validation.isValid}
+                        isLoading = {isLoading}
+                        loadingText="در حال ارسال"
                     >
-                        {isLoading ? (
-                            <SendingDots text="در حال ارسال" />
-                        ) : (
-                            "ورود به آپامو"
-                        )}
+                        ورود به آپامو
                     </CustomButton>
                 </div>
             </div>
