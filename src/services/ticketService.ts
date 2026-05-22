@@ -1,16 +1,17 @@
-import type { CreateTicketPayload } from "../types/ticketTypes";
-
-import { postData } from "./services";
-
-// =========================
-// Create Ticket Service
-// =========================
+import { getData, postData } from "./services";
+import type { CreateTicketPayload, TicketResponse } from "@/types/ticketTypes";
 
 export const createTicketService = async (
     ticketData: CreateTicketPayload,
 ): Promise<void> => {
-    return postData({
-        endPoint: `/tickets`,
+    await postData({
+        endPoint: "/tickets",
         data: ticketData,
+    });
+};
+
+export const getTicketsService = async (): Promise<TicketResponse[]> => {
+    return getData({
+        endPoint: "/tickets",
     });
 };

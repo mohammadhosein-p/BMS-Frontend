@@ -17,9 +17,8 @@ import {
 } from "../ui/CustomeDialog";
 
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
-import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
-import { createTicketService } from "@/services/ticketService";
+import { useCreateTicket } from "@/hooks/useTicket";
 
 // =========================
 // Validation Schema
@@ -56,7 +55,7 @@ function RegisterTicketDialog() {
         handleSubmit,
         setValue,
         watch,
-        formState: { errors, isSubmitting },
+        formState: { errors },
         reset,
     } = useForm<TicketFormData>({
         resolver: zodResolver(ticketSchema),
@@ -71,33 +70,24 @@ function RegisterTicketDialog() {
 
     const accessibility = watch("accessibility");
 
+    const { mutateAsync, isPending } = useCreateTicket();
+
     // =========================
     // Submit Handler
     // =========================
 
     const onSubmit = async (data: TicketFormData) => {
-        // ساختار نهایی برای بک‌اند
-        const payload = {
+        await mutateAsync({
             title: data.title,
             description: data.description,
             body: data.body,
             category: data.category,
             accessibility: data.accessibility,
-        };
-
-        console.log("FORM DATA => ", payload);
-
-        /**
-         * Example API Request
-         *
-         * await axios.post("/tickets", payload)
-         */
-
-        await createTicketService(payload)
+        });
 
         reset();
+
         setIsOpen(false);
-        toast.success("تیکت با موفقیت ایجاد شد.");
     };
 
     return (
@@ -232,7 +222,7 @@ function RegisterTicketDialog() {
 
                     {/* Submit Button */}
                     <div className="flex justify-center pt-2">
-                        {isSubmitting ? (
+                        {isPending ? (
                             <div className="text-white p-3 px-4 rounded-xl bg-primary-2">
                                 <Spinner className="w-5 h-5" />
                             </div>
@@ -240,7 +230,7 @@ function RegisterTicketDialog() {
                             <CustomButton
                                 icon={Send}
                                 className="ltr h-11 cursor-pointer"
-                                disabled={isSubmitting}
+                                disabled={isPending}
                             >
                                 ارسال تیکت
                             </CustomButton>
