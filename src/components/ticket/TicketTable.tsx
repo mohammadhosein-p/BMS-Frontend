@@ -74,6 +74,7 @@ function TicketTable({ tickets }: Prop) {
                             {/* Mobile Info */}
                             <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
                                 {isAdmin && (
+                                    // must be creator!!!!!!!!!!!
                                     <div className="text-sm font-medium text-neutral-2">
                                         {ticket.unit}
                                     </div>
@@ -124,7 +125,6 @@ function TicketTable({ tickets }: Prop) {
                                         <Trash2 size={18} />
                                     </motion.button>
                                 )}
-
                             </div>
                         </div>
                     );
