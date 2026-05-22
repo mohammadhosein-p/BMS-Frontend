@@ -1,29 +1,94 @@
 import { ShieldClose, ShieldUser, Trash2, type LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
-import { motion } from "framer-motion";
 import { translateDate } from "@/utils/translateDate";
+import { Spinner } from "../ui/spinner";
+import { useAllTickets } from "@/hooks/useTicket";
 
-interface Prop {
-    tickets:
-    | {
-        id: number;
-        title: string;
-        date: string;
-        unit: string;
-        category: string;
-        status: string;
-        statusColor: string;
-        icon: LucideIcon;
-        iconBg: string;
-        iconColor: string;
-        isPublic: boolean;
-    }[]
-    | null;
+interface UiTicket {
+    id: number;
+    title: string;
+    date: string;
+    unit: string;
+    category: string;
+    status: string;
+    statusColor: string;
+    icon: LucideIcon;
+    iconBg: string;
+    iconColor: string;
+    isPublic: boolean;
 }
 
-function TicketTable({ tickets }: Prop) {
-    const isAdmin = useAuthStore((store) => store.user?.role == "admin");
+function TicketTable() {
+    const isAdmin = useAuthStore((store) => store.user?.role === "admin");
+
+    const { data, isLoading, isError } = useAllTickets();
+
+
+    const tickets: UiTicket[] | undefined = data?.map((ticket) => ({
+        id: ticket.id,
+        title: ticket.title,
+        date: ticket.createdAt,
+        unit: ticket.unit || "نامشخص",
+        category: ticket.category,
+        status:
+            ticket.status === "open"
+                ? "باز"
+                : ticket.status === "in_progress"
+                  ? "در حال بررسی"
+                  : "بسته شده",
+        statusColor:
+            ticket.status === "open"
+                ? "bg-green-100 text-green-700"
+                : ticket.status === "in_progress"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-red-100 text-red-700",
+        icon: ticket.accessibility === "public" ? ShieldUser : ShieldClose,
+        iconBg:
+            ticket.accessibility === "public" ? "bg-blue-100" : "bg-red-100",
+        iconColor:
+            ticket.accessibility === "public"
+                ? "text-blue-600"
+                : "text-red-600",
+        isPublic: ticket.accessibility === "public",
+    }));
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <Spinner className="h-8 w-8" />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="mb-4 flex h-20 w-20 items-center p-2 justify-center rounded-full bg-neutral-4 text-neutral-3">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-10 w-10"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"
+                        />
+                    </svg>
+                </div>
+
+                <h3 className="text-lg font-extrabold text-danger-2">
+                   خطا در دریافت لیست تیکت ها
+                </h3>
+                <p>لطفا بعدا دوباره تلاش کنید</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex-1 overflow-hidden rounded-lg border border-neutral-4 bg-white">
@@ -40,10 +105,18 @@ function TicketTable({ tickets }: Prop) {
                             <div className="flex flex-3 flex-row-reverse items-center gap-4 min-w-0 text-right">
                                 {/* Icon */}
                                 <div
-                                    className={`flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl ${ticket.iconBg}`}
+                                    className={`
+                                        flex h-14 w-14 sm:h-16 sm:w-16
+                                        shrink-0 items-center justify-center
+                                        rounded-2xl
+                                        ${ticket.iconBg}
+                                    `}
                                 >
                                     <Icon
-                                        className={`h-7 w-7 sm:h-8 sm:w-8 ${ticket.iconColor}`}
+                                        className={`
+                                            h-7 w-7 sm:h-8 sm:w-8
+                                            ${ticket.iconColor}
+                                        `}
                                     />
                                 </div>
 
@@ -74,7 +147,6 @@ function TicketTable({ tickets }: Prop) {
                             {/* Mobile Info */}
                             <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
                                 {isAdmin && (
-                                    // must be creator!!!!!!!!!!!
                                     <div className="text-sm font-medium text-neutral-2">
                                         {ticket.unit}
                                     </div>
@@ -85,7 +157,11 @@ function TicketTable({ tickets }: Prop) {
                                 </div>
 
                                 <div
-                                    className={`rounded-full px-3 py-1 text-xs font-bold ${ticket.statusColor}`}
+                                    className={`
+                                        rounded-full px-3 py-1
+                                        text-xs font-bold
+                                        ${ticket.statusColor}
+                                    `}
                                 >
                                     {ticket.status}
                                 </div>
@@ -101,7 +177,11 @@ function TicketTable({ tickets }: Prop) {
                             {/* Desktop Status */}
                             <div className="hidden flex-2 justify-center sm:flex">
                                 <div
-                                    className={`w-32 rounded-lg py-1.5 text-center text-sm font-bold ${ticket.statusColor}`}
+                                    className={`
+                                        w-32 rounded-lg py-1.5
+                                        text-center text-sm font-bold
+                                        ${ticket.statusColor}
+                                    `}
                                 >
                                     {ticket.status}
                                 </div>
@@ -112,15 +192,21 @@ function TicketTable({ tickets }: Prop) {
                                 {ticket.category}
                             </div>
 
-                            {/* Button */}
+                            {/* Actions */}
                             <div className="flex flex-2 justify-end items-center gap-2">
                                 <TicketDetailsDialog />
+
                                 {!isAdmin && (
                                     <motion.button
                                         type="button"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
+                                        className="
+                                            bg-white border-2 p-2 rounded-lg
+                                            text-danger-2 border-danger-3
+                                            flex items-center justify-center
+                                            transition-colors duration-200
+                                        "
                                     >
                                         <Trash2 size={18} />
                                     </motion.button>
@@ -130,6 +216,7 @@ function TicketTable({ tickets }: Prop) {
                     );
                 })}
 
+                {/* Empty State */}
                 {(!tickets || tickets.length === 0) && (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-neutral-5 text-neutral-3">

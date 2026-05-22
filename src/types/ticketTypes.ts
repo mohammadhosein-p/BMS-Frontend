@@ -1,3 +1,4 @@
+// types/ticketTypes.ts
 
 export interface CreateTicketPayload {
     title: string;
@@ -7,17 +8,18 @@ export interface CreateTicketPayload {
     accessibility: "private" | "public";
 }
 
-// export interface Ticket {
-//     id: string;
+// =========================
+// Backend Ticket
+// =========================
 
-//     title: string;
-//     description: string;
-//     body: string;
-
-//     category: string;
-
-//     accessibility: "private" | "public";
-
-//     createdAt: string;
-//     updatedAt: string;
-// }
+export interface TicketResponse {
+    id: number;
+    title: string;
+    description: string;
+    body: string;
+    category: string;
+    accessibility: "private" | "public";
+    createdAt: string;
+    status: string;
+    unit?: string;
+}

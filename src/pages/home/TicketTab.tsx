@@ -147,7 +147,7 @@ function TicketsTab() {
             </div>
 
             {/* Table */}
-            <TicketTable tickets={tickets} />
+            <TicketTable />
         </div>
     );
 }

@@ -1,6 +1,6 @@
-import { createTicketService } from "@/services/ticketService";
+import { createTicketService, getTicketsService } from "@/services/ticketService";
 import type { CreateTicketPayload } from "@/types/ticketTypes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
 import { toast } from "sonner";
 import type { AxiosError } from "axios";
@@ -25,5 +25,14 @@ export const useCreateTicket = () => {
 
             toast.error(err.response?.data?.message || "خطا در ایجاد تیکت");
         },
+    });
+};
+
+export const useAllTickets = () => {
+    return useQuery({
+        queryKey: ["tickets"],
+
+        queryFn: getTicketsService,
+        
     });
 };
