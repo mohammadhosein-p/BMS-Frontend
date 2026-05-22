@@ -40,6 +40,9 @@ export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) 
                 onHomePage();
             }
         },
+        onError :() => {
+            onHomePage();
+        }
     });
 
     const {
