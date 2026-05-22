@@ -28,15 +28,57 @@ const ticketSchema = z.object({
     title: z.string().min(3, "عنوان باید حداقل ۳ کاراکتر باشد"),
     description: z.string().min(5, "توضیحات کوتاه باید حداقل ۵ کاراکتر باشد"),
     body: z.string().min(10, "متن تیکت باید حداقل ۱۰ کاراکتر باشد"),
-    category: z.string().min(2, "دسته بندی الزامی است"),
+    category: z.enum([
+        "maintenance",
+        "plumbing",
+        "electricity",
+        "security",
+        "cleaning",
+        "parking",
+        "other",
+    ]),
     accessibility: z.enum(["private", "public"]),
 });
 
 type TicketFormData = z.infer<typeof ticketSchema>;
 
-// =========================
-// Component
-// =========================
+const ticketCategoryOptions = [
+    {
+        value: "maintenance",
+        label: "تعمیرات",
+        color: "blue",
+    },
+    {
+        value: "plumbing",
+        label: "لوله کشی",
+        color: "cyan",
+    },
+    {
+        value: "electricity",
+        label: "برق",
+        color: "yellow",
+    },
+    {
+        value: "security",
+        label: "امنیت",
+        color: "red",
+    },
+    {
+        value: "cleaning",
+        label: "نظافت",
+        color: "green",
+    },
+    {
+        value: "parking",
+        label: "پارکینگ",
+        color: "purple",
+    },
+    {
+        value: "other",
+        label: "سایر",
+        color: "gray",
+    },
+];
 
 function RegisterTicketDialog() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -63,12 +105,13 @@ function RegisterTicketDialog() {
             title: "",
             description: "",
             body: "",
-            category: "",
+            category: "maintenance",
             accessibility: "private",
         },
     });
 
     const accessibility = watch("accessibility");
+    const category = watch("category");
 
     const { mutateAsync, isPending } = useCreateTicket();
 
@@ -144,6 +187,60 @@ function RegisterTicketDialog() {
                             </p>
                         )}
                     </div>
+                    {/* Category */}
+                    <div className="space-y-1">
+                        <SelectOptions
+                            value={category}
+                            onChange={(value) => {
+                                setValue(
+                                    "category",
+
+                                    value as
+                                        | "maintenance"
+                                        | "plumbing"
+                                        | "electricity"
+                                        | "security"
+                                        | "cleaning"
+                                        | "parking"
+                                        | "other",
+
+                                    {
+                                        shouldValidate: true,
+                                    },
+                                );
+                            }}
+                            options={ticketCategoryOptions as any}
+                        />
+
+                        {errors.category && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.category.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Accessibility */}
+                    <div className="space-y-1">
+                        <SelectOptions
+                            value={accessibility}
+                            onChange={(value) => {
+                                setValue(
+                                    "accessibility",
+                                    value as "private" | "public",
+                                    {
+                                        shouldValidate: true,
+                                    },
+                                );
+                            }}
+                            options={ticketTypeOptions as any}
+                        />
+
+                        {errors.accessibility && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.accessibility.message}
+                            </p>
+                        )}
+                    </div>
 
                     {/* Description */}
                     <div className="space-y-1">
@@ -176,46 +273,6 @@ function RegisterTicketDialog() {
                         {errors.body && (
                             <p className="text-xs text-danger-2 text-right">
                                 {errors.body.message}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Accessibility */}
-                    <div className="space-y-1">
-                        <SelectOptions
-                            value={accessibility}
-                            onChange={(value) => {
-                                setValue(
-                                    "accessibility",
-                                    value as "private" | "public",
-                                    {
-                                        shouldValidate: true,
-                                    },
-                                );
-                            }}
-                            options={ticketTypeOptions as any}
-                        />
-
-                        {errors.accessibility && (
-                            <p className="text-xs text-danger-2 text-right">
-                                {errors.accessibility.message}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Category */}
-                    <div className="space-y-1">
-                        <CustomField
-                            placeholder="دسته بندی"
-                            direction="rtl"
-                            variant="default"
-                            className="focus-visible:border-primary-2"
-                            {...register("category")}
-                        />
-
-                        {errors.category && (
-                            <p className="text-xs text-danger-2 text-right">
-                                {errors.category.message}
                             </p>
                         )}
                     </div>

@@ -65,6 +65,7 @@ export default function SelectOptions({ value, onChange, className, options, dis
           <ListboxOptions
             className="
               absolute z-50 mt-2 max-h-60 w-full overflow-auto bg-white 
+              custom-scrollbar
               border border-gray-100 rounded-2xl p-2 
               shadow-xl shadow-black/5
               list-none outline-none
