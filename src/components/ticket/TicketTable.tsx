@@ -4,15 +4,45 @@ import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
 import { translateDate } from "@/utils/translateDate";
 import { Spinner } from "../ui/spinner";
-import { useAllTickets } from "@/hooks/useTicket";
+import {
+    useAllTickets,
+    useDeleteTicket,
+    useUpdateTicketStatus,
+} from "@/hooks/useTicket";
+import SelectOptions from "../ui/SelectOptions/SelectOptions";
+
+const ticketStatusOptions = [
+    {
+        value: "open",
+        label: "باز",
+        color: "green",
+    },
+    {
+        value: "in_progress",
+        label: "در حال بررسی",
+        color: "yellow",
+    },
+    {
+        value: "waiting_parts",
+        label: "در انتظار قطعات",
+        color: "blue",
+    },
+    {
+        value: "closed",
+        label: "بسته شده",
+        color: "red",
+    },
+];
 
 interface UiTicket {
     id: number;
+    user_id: string;
     title: string;
     date: string;
     unit: string;
     category: string;
     status: string;
+    statusLabel: string;
     statusColor: string;
     icon: LucideIcon;
     iconBg: string;
@@ -22,28 +52,37 @@ interface UiTicket {
 
 function TicketTable() {
     const isAdmin = useAuthStore((store) => store.user?.role === "admin");
+    const user_id = useAuthStore((store) => store.user?.id);
 
     const { data, isLoading, isError } = useAllTickets();
+    const { mutate: updateTicketStatus } = useUpdateTicketStatus();
+    const { mutate: deleteTicket } = useDeleteTicket();
 
 
     const tickets: UiTicket[] | undefined = data?.map((ticket) => ({
         id: ticket.id,
+        user_id: ticket.user_id,
         title: ticket.title,
-        date: ticket.createdAt,
+        date: ticket.created_at,
         unit: ticket.unit || "نامشخص",
         category: ticket.category,
-        status:
+        status: ticket.status,
+        statusLabel:
             ticket.status === "open"
                 ? "باز"
                 : ticket.status === "in_progress"
                   ? "در حال بررسی"
-                  : "بسته شده",
+                  : ticket.status === "waiting_parts"
+                    ? "در انتظار قطعات"
+                    : "بسته شده",
         statusColor:
             ticket.status === "open"
                 ? "bg-green-100 text-green-700"
                 : ticket.status === "in_progress"
                   ? "bg-yellow-100 text-yellow-700"
-                  : "bg-red-100 text-red-700",
+                  : ticket.status === "waiting_parts"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-red-100 text-red-700",
         icon: ticket.accessibility === "public" ? ShieldUser : ShieldClose,
         iconBg:
             ticket.accessibility === "public" ? "bg-blue-100" : "bg-red-100",
@@ -163,7 +202,7 @@ function TicketTable() {
                                         ${ticket.statusColor}
                                     `}
                                 >
-                                    {ticket.status}
+                                    {ticket.statusLabel}
                                 </div>
                             </div>
 
@@ -183,7 +222,7 @@ function TicketTable() {
                                         ${ticket.statusColor}
                                     `}
                                 >
-                                    {ticket.status}
+                                    {ticket.statusLabel}
                                 </div>
                             </div>
 
@@ -196,20 +235,36 @@ function TicketTable() {
                             <div className="flex flex-2 justify-end items-center gap-2">
                                 <TicketDetailsDialog />
 
-                                {!isAdmin && (
+                                {ticket.user_id === user_id && (
                                     <motion.button
                                         type="button"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
+                                        onClick={() => deleteTicket(ticket.id)}
                                         className="
-                                            bg-white border-2 p-2 rounded-lg
-                                            text-danger-2 border-danger-3
                                             flex items-center justify-center
                                             transition-colors duration-200
                                         "
                                     >
                                         <Trash2 size={18} />
                                     </motion.button>
+                                )}
+
+                                {/* Admin Status Select */}
+                                {isAdmin && (
+                                    <div className="space-y-1">
+                                        <SelectOptions
+                                            value={ticket.status}
+                                            onChange={(value) => {
+                                                updateTicketStatus({
+                                                    ticketId: ticket.id,
+
+                                                    status: value,
+                                                });
+                                            }}
+                                            options={ticketStatusOptions as any}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>

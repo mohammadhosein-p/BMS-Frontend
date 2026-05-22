@@ -14,12 +14,20 @@ export interface CreateTicketPayload {
 
 export interface TicketResponse {
     id: number;
+    user_id: string;
     title: string;
     description: string;
     body: string;
     category: string;
     accessibility: "private" | "public";
-    createdAt: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
     status: string;
     unit?: string;
+}
+
+export interface UpdateTicketStatusPayload {
+    ticketId: number;
+    status: string;
 }

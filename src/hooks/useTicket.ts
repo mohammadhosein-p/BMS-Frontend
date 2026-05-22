@@ -1,4 +1,4 @@
-import { createTicketService, getTicketsService } from "@/services/ticketService";
+import { createTicketService, deleteTicketService, getTicketsService, updateTicketStatusService } from "@/services/ticketService";
 import type { CreateTicketPayload } from "@/types/ticketTypes";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
@@ -34,5 +34,60 @@ export const useAllTickets = () => {
 
         queryFn: getTicketsService,
         
+    });
+};
+
+export const useUpdateTicketStatus = () => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: updateTicketStatusService,
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ["tickets"],
+            });
+
+            toast.success("وضعیت تیکت بروزرسانی شد");
+        },
+
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            toast.error(
+                err.response?.data?.message ||
+                    "خطا در بروزرسانی وضعیت تیکت",
+            );
+        },
+    });
+};
+
+
+export const useDeleteTicket = () => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: deleteTicketService,
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ["tickets"],
+            });
+
+            toast.success("تیکت حذف شد");
+        },
+
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            toast.error(
+                err.response?.data?.message ||
+                    "خطا در حذف تیکت",
+            );
+        },
     });
 };
