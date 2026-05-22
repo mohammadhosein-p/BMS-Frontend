@@ -3,6 +3,7 @@ import { Camera, LogOut, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/types/authTypes";
+import LogoutConfirmDialog from './LogoutConfirmDialog';
 
 import MaleIcon from "@/assets/profile/icons8-man-60 (2).png";
 import FemaleIcon from "@/assets/profile/icons8-woman-50.png";
@@ -32,6 +33,13 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         }
     };
 
+   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+   const handleConfirmLogout = () => {
+     // TODO: منطق خروج از حساب (پاک کردن توکن، کش، استیت گلوبال و هدایت به صفحه لاگین)
+     console.log("کاربر خارج شد");
+     setIsLogoutDialogOpen(false);
+   };
+
     const isAdmin = user.role === 'admin';
     const roleFa = isAdmin ? 'مدیر' : 'ساکن';
     const genderIconSrc = user.gender === 'female' ? FemaleIcon : MaleIcon;
@@ -57,6 +65,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 <Button
                     variant="outline"
                     className="text-red-500 border-red-500 hover:bg-red-50 hover:text-red-600 flex gap-2 rounded-lg px-5 h-10"
+                    onClick={() => setIsLogoutDialogOpen(true)}
                 >
                     <LogOut size={18} className="rotate-180" />
                     <span className="font-semibold">خروج از حساب</span>
@@ -124,6 +133,11 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     />
                 </div>
             </div>
+                <LogoutConfirmDialog 
+                    isOpen={isLogoutDialogOpen} 
+                    onClose={() => setIsLogoutDialogOpen(false)} 
+                    onConfirm={handleConfirmLogout} 
+                    />
         </div>
     );
 }
