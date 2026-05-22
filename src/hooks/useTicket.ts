@@ -1,4 +1,10 @@
-import { createTicketService, deleteTicketService, getTicketsService, updateTicketStatusService } from "@/services/ticketService";
+import {
+    createTicketService,
+    deleteTicketService,
+    getFullyTicketDetails,
+    getTicketsService,
+    updateTicketStatusService,
+} from "@/services/ticketService";
 import type { CreateTicketPayload } from "@/types/ticketTypes";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
@@ -31,6 +37,9 @@ export const useCreateTicket = () => {
 export const useAllTickets = (params?: {
     status?: string;
     category?: string;
+    user_id?: string;
+    page?: number;
+    limit?: number;
 }) => {
     return useQuery({
         queryKey: ["tickets", params],
@@ -59,13 +68,11 @@ export const useUpdateTicketStatus = () => {
             }>;
 
             toast.error(
-                err.response?.data?.message ||
-                    "خطا در بروزرسانی وضعیت تیکت",
+                err.response?.data?.message || "خطا در بروزرسانی وضعیت تیکت",
             );
         },
     });
 };
-
 
 export const useDeleteTicket = () => {
     const queryClient = getQueryClient();
@@ -86,10 +93,15 @@ export const useDeleteTicket = () => {
                 message?: string;
             }>;
 
-            toast.error(
-                err.response?.data?.message ||
-                    "خطا در حذف تیکت",
-            );
+            toast.error(err.response?.data?.message || "خطا در حذف تیکت");
         },
+    });
+};
+
+export const useTicketDetails = (id?: string) => {
+    return useQuery({
+        queryKey: ["ticket-details", id],
+        queryFn: () => getFullyTicketDetails(id!),
+        enabled: !!id,
     });
 };

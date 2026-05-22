@@ -30,7 +30,7 @@ const ticketStatusOptions = [
 ];
 
 interface UiTicket {
-    id: number;
+    id: string;
     user_id: string;
     title: string;
     date: string;
@@ -57,6 +57,9 @@ function TicketTable({filterState, categoryFilter}: Prop) {
     const apiParams = {
         status: filterState === "all" ? undefined : filterState,
         category: categoryFilter === "all" ? undefined : categoryFilter,
+        user_id: user_id,
+        page: 1,
+        limit: 1000,
     };
 
     const { data, isLoading, isError } = useAllTickets(apiParams);
@@ -234,7 +237,7 @@ function TicketTable({filterState, categoryFilter}: Prop) {
 
                             {/* Actions */}
                             <div className="flex flex-2 justify-end items-center gap-2">
-                                <TicketDetailsDialog />
+                                <TicketDetailsDialog id={ticket.id} />
 
                                 {ticket.user_id === user_id && (
                                     <motion.button

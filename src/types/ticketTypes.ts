@@ -13,7 +13,7 @@ export interface CreateTicketPayload {
 // =========================
 
 export interface TicketResponse {
-    id: number;
+    id: string;
     user_id: string;
     title: string;
     description: string;
@@ -28,6 +28,27 @@ export interface TicketResponse {
 }
 
 export interface UpdateTicketStatusPayload {
-    ticketId: number;
+    ticketId: string;
     status: string;
+}
+
+export interface TicketComment {
+    id: number;
+    user: string;
+    text: string;
+    date: string;
+    isOwner: boolean;
+}
+
+export interface TicketFullyDetailsResponse {
+    id: number;
+    title: string;
+    description: string;
+    body: string;
+    category: string;
+    status: "open" | "in_progress" | "closed";
+    accessibility: "private" | "public";
+    created_at: string;
+
+    comments: TicketComment[];
 }

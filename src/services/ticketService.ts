@@ -1,5 +1,5 @@
 import { deleteData, getData, patchData, postData } from "./services";
-import type { CreateTicketPayload, TicketResponse, UpdateTicketStatusPayload } from "@/types/ticketTypes";
+import type { CreateTicketPayload, TicketFullyDetailsResponse, TicketResponse, UpdateTicketStatusPayload } from "@/types/ticketTypes";
 
 export const createTicketService = async (
     ticketData: CreateTicketPayload,
@@ -32,8 +32,14 @@ export const updateTicketStatusService = async ({
     });
 };
 
-export const deleteTicketService = async (ticketId: number) => {
+export const deleteTicketService = async (ticketId: string) => {
     return await deleteData({
         endPoint: `/tickets/${ticketId}`,
     });
+};
+
+export const getFullyTicketDetails = async (id: string) => {
+    return getData({
+        endPoint: `/tickets/${id}/fully`,
+    }) as Promise<TicketFullyDetailsResponse>;
 };
