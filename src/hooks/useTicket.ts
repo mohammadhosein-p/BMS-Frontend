@@ -28,12 +28,14 @@ export const useCreateTicket = () => {
     });
 };
 
-export const useAllTickets = () => {
+export const useAllTickets = (params?: {
+    status?: string;
+    category?: string;
+}) => {
     return useQuery({
-        queryKey: ["tickets"],
+        queryKey: ["tickets", params],
 
-        queryFn: getTicketsService,
-        
+        queryFn: () => getTicketsService(params),
     });
 };
 

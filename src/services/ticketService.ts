@@ -10,9 +10,13 @@ export const createTicketService = async (
     });
 };
 
-export const getTicketsService = async (): Promise<TicketResponse[]> => {
+export const getTicketsService = async (params?: {
+    status?: string;
+    category?: string;
+}): Promise<TicketResponse[]> => {
     return getData({
         endPoint: "/tickets",
+        params,
     });
 };
 

@@ -18,18 +18,19 @@ interface SelectOptionsProps {
   className?: string;
   options: Option[];
   disabled?: boolean;
+  limitedWidth?: boolean;
 }
 
-export default function SelectOptions({ value, onChange, className, options, disabled }: SelectOptionsProps) {
+export default function SelectOptions({ value, onChange, className, options, disabled, limitedWidth=false }: SelectOptionsProps) {
   const selected = options.find((opt) => opt.value === value) || options[0];
   const styles = colorStyles[selected?.color] || colorStyles.gray;
 
   return (
     <Listbox value={value} onChange={onChange} disabled={disabled}>
-      <div className="relative w-full" dir="rtl">
+      <div className={`${!limitedWidth && "relative"} w-full`} dir="rtl">
         <ListboxButton
           className={`
-            relative w-full flex items-center justify-between 
+            w-full flex items-center justify-between 
             bg-white border border-gray-200 rounded-xl 
             pl-3 pr-4 py-3 text-sm font-bold
             transition-all duration-200 outline-none
@@ -40,6 +41,7 @@ export default function SelectOptions({ value, onChange, className, options, dis
             
             ${styles.buttonText} ${styles.buttonBorder} ${styles.buttonBg}
             ${className}
+            ${!limitedWidth && "relative"}
           `}
         >
           {({ open }) => (
@@ -63,13 +65,14 @@ export default function SelectOptions({ value, onChange, className, options, dis
           leaveTo="opacity-0"
         >
           <ListboxOptions
-            className="
-              absolute z-50 mt-2 max-h-60 w-full overflow-auto bg-white 
+            className={`
+              absolute z-50 mt-2 max-h-60 overflow-auto bg-white 
               custom-scrollbar
               border border-gray-100 rounded-2xl p-2 
               shadow-xl shadow-black/5
               list-none outline-none
-            "
+              ${limitedWidth ? "w-[300px]" : "w-full"}
+              `}
           >
             {options.map((opt) => {
               const optStyles = colorStyles[opt.color] || colorStyles.gray;

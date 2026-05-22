@@ -23,11 +23,6 @@ const ticketStatusOptions = [
         color: "yellow",
     },
     {
-        value: "waiting_parts",
-        label: "در انتظار قطعات",
-        color: "blue",
-    },
-    {
         value: "closed",
         label: "بسته شده",
         color: "red",
@@ -50,11 +45,21 @@ interface UiTicket {
     isPublic: boolean;
 }
 
-function TicketTable() {
+interface Prop {
+    filterState: "all" | "closed" | "in-progress";
+    categoryFilter: "all" | "maintenance" | "plumbing" | "electricity" | "security" | "cleaning" | "parking" | "other";
+}
+
+function TicketTable({filterState, categoryFilter}: Prop) {
     const isAdmin = useAuthStore((store) => store.user?.role === "admin");
     const user_id = useAuthStore((store) => store.user?.id);
 
-    const { data, isLoading, isError } = useAllTickets();
+    const apiParams = {
+        status: filterState === "all" ? undefined : filterState,
+        category: categoryFilter === "all" ? undefined : categoryFilter,
+    };
+
+    const { data, isLoading, isError } = useAllTickets(apiParams);
     const { mutate: updateTicketStatus } = useUpdateTicketStatus();
     const { mutate: deleteTicket } = useDeleteTicket();
 
@@ -72,16 +77,12 @@ function TicketTable() {
                 ? "باز"
                 : ticket.status === "in_progress"
                   ? "در حال بررسی"
-                  : ticket.status === "waiting_parts"
-                    ? "در انتظار قطعات"
                     : "بسته شده",
         statusColor:
             ticket.status === "open"
                 ? "bg-green-100 text-green-700"
                 : ticket.status === "in_progress"
                   ? "bg-yellow-100 text-yellow-700"
-                  : ticket.status === "waiting_parts"
-                    ? "bg-blue-100 text-blue-700"
                     : "bg-red-100 text-red-700",
         icon: ticket.accessibility === "public" ? ShieldUser : ShieldClose,
         iconBg:

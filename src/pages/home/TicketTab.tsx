@@ -1,92 +1,19 @@
 import RegisterTicketDialog from "@/components/ticket/RegisterTicketDialog";
 import TicketTable from "@/components/ticket/TicketTable";
-import CustomField from "@/components/ui/CutsomeFiled";
 import { Separator } from "@/components/ui/separator";
-import { Search, Wrench, Sparkles, Wallet, House } from "lucide-react";
 import { useState } from "react";
+import SelectOptions from "@/components/ui/SelectOptions/SelectOptions";
 
-const tickets = [
-    {
-        id: 1,
-        title: "خرابی لامپ ها",
-        date: "1402/05/02",
-        unit: "واحد 5",
-        category: "خرابی",
-        status: "در حال بررسی",
-        statusColor: "bg-yellow-200 text-yellow-800",
-        icon: Wrench,
-        iconBg: "bg-yellow-100",
-        iconColor: "text-yellow-700",
-        isPublic: false,
-    },
-    {
-        id: 2,
-        title: "نظافت طبقه 6",
-        date: "1402/05/02",
-        unit: "واحد 10",
-        category: "نظافت",
-        status: "بسته شده",
-        statusColor: "bg-green-200 text-green-800",
-        icon: Sparkles,
-        iconBg: "bg-green-100",
-        iconColor: "text-green-700",
-        isPublic: false,
-    },
-    {
-        id: 3,
-        title: "پرداخت شارژ",
-        date: "1402/05/02",
-        unit: "واحد 12",
-        category: "پرداخت شارژ",
-        status: "باز",
-        statusColor: "bg-blue-200 text-blue-800",
-        icon: Wallet,
-        iconBg: "bg-blue-100",
-        iconColor: "text-blue-700",
-        isPublic: true,
-    },
-    {
-        id: 4,
-        title: "مشکل موتور خونه",
-        date: "1402/05/02",
-        unit: "واحد 12",
-        category: "تعمیرات",
-        status: "در انتظار قطعات",
-        statusColor: "bg-red-200 text-red-800",
-        icon: House,
-        iconBg: "bg-red-100",
-        iconColor: "text-red-700",
-        isPublic: false,
-    },
-    {
-        id: 5,
-        title: "خرابی لامپ ها",
-        date: "1402/05/02",
-        unit: "واحد 5",
-        category: "خرابی",
-        status: "در حال بررسی",
-        statusColor: "bg-yellow-200 text-yellow-800",
-        icon: Wrench,
-        iconBg: "bg-yellow-100",
-        iconColor: "text-yellow-700",
-        isPublic: true,
-    },
-    {
-        id: 6,
-        title: "خرابی لامپ ها",
-        date: "1402/05/02",
-        unit: "واحد 5",
-        category: "خرابی",
-        status: "در حال بررسی",
-        statusColor: "bg-yellow-200 text-yellow-800",
-        icon: Wrench,
-        iconBg: "bg-yellow-100",
-        iconColor: "text-yellow-700",
-        isPublic: false,
-    },
-];
-
-type FilterState = "all" | "closed" | "checking" | "pending";
+type FilterState = "all" | "closed" | "in-progress";
+type CategoryFilter =
+    | "all"
+    | "maintenance"
+    | "plumbing"
+    | "electricity"
+    | "security"
+    | "cleaning"
+    | "parking"
+    | "other";
 
 interface FilterOption {
     state: FilterState;
@@ -95,20 +22,30 @@ interface FilterOption {
 
 const filters: FilterOption[] = [
     { state: "all", label: "همه تیکت‌ها" },
-    { state: "pending", label: "در انتظار بررسی" },
-    { state: "checking", label: "در حال پیگیری" },
+    { state: "in-progress", label: "در انتظار بررسی" },
     { state: "closed", label: "بسته شده" },
 ];
 
+const categoryOptions = [
+    { value: "all", label: "همه دسته‌بندی‌ها", color: "gray" },
+    { value: "maintenance", label: "تعمیرات", color: "blue" },
+    { value: "plumbing", label: "لوله کشی", color: "cyan" },
+    { value: "electricity", label: "برق", color: "yellow" },
+    { value: "security", label: "امنیت", color: "red" },
+    { value: "cleaning", label: "نظافت", color: "green" },
+    { value: "parking", label: "پارکینگ", color: "purple" },
+    { value: "other", label: "سایر", color: "gray" },
+];
 
 function TicketsTab() {
     const [filterState, setFilterState] = useState<FilterState>("all");
+    const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
     return (
         <div className="flex h-full flex-col gap-3 overflow-hidden bg-neutral-5 p-3 sm:p-4 lg:p-6">
             {/* Header */}
-            <div className="flex gap-3 flex-row-reverse items-center justify-between">
-                <h1 className="text-right text-2xl font-extrabold md:font-black text-neutral-1 sm:text-3xl">
+            <div className="flex flex-row-reverse items-center justify-between gap-3">
+                <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl md:font-black">
                     تیکت های من
                 </h1>
 
@@ -120,16 +57,17 @@ function TicketsTab() {
             {/* Filters */}
             <div className="w-full overflow-x-auto">
                 <div className="flex flex-col gap-3 sm:flex-wrap sm:flex-row-reverse sm:items-center">
-                    {/* Search */}
+                    {/* Category Select */}
                     <div className="w-full sm:w-60 shrink-0">
-                        <CustomField
-                            icon={<Search className="h-4 w-4" />}
-                            placeholder="جستجو در تیکت ها"
-                            className="h-10 bg-white"
+                        <SelectOptions
+                            value={categoryFilter}
+                            onChange={(value) => setCategoryFilter(value)}
+                            options={categoryOptions as any}
+                            limitedWidth
                         />
                     </div>
 
-                    {/* Filters */}
+                    {/* Status Filters */}
                     <div className="sm:flex-1">
                         <div className="flex max-w-[89vw] flex-row-reverse gap-2 overflow-x-auto">
                             {filters.map((filter) => (
@@ -147,7 +85,10 @@ function TicketsTab() {
             </div>
 
             {/* Table */}
-            <TicketTable />
+            <TicketTable
+                categoryFilter={categoryFilter as CategoryFilter}
+                filterState={filterState}
+            />
         </div>
     );
 }
