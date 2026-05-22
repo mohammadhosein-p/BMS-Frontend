@@ -12,8 +12,7 @@ import {
     DialogClose,
 } from "../ui/CustomeDialog";
 import CustomField from "../ui/CutsomeFiled";
-import { useTicketDetails } from "@/hooks/useTicket";
-
+import { useCreateTicketComment, useTicketDetails } from "@/hooks/useTicket";
 
 interface Prop {
     id: string;
@@ -21,12 +20,23 @@ interface Prop {
 
 export default function TicketDetailsDialog({ id }: Prop) {
     const [isOpen, setIsOpen] = useState(false);
+    const [text, setText] = useState("");
 
     const { data } = useTicketDetails(id);
+    const { mutate: sendComment } = useCreateTicketComment();
 
     const ticket = data;
 
+    const handleSend = () => {
+        if (!text.trim()) return;
 
+        sendComment(
+            { id, text },
+            {
+                onSuccess: () => setText(""),
+            },
+        );
+    };
 
     return (
         <>
@@ -164,6 +174,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                 <div className="flex items-end gap-2 w-full">
                                     <button
                                         type="button"
+                                        onClick={handleSend}
                                         className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-2 text-white shadow-md transition-all hover:bg-primary-1 active:scale-95 mb-[1.5px] cursor-pointer"
                                     >
                                         <Send className="h-5 w-5 -rotate-45 translate-y-0.5" />
@@ -174,6 +185,10 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                         placeholder="پاسخ خود را بنویسید..."
                                         direction="rtl"
                                         variant="default"
+                                        value={text}
+                                        onChange={(e) =>
+                                            setText(e.target.value)
+                                        }
                                         containerClassName="flex-1"
                                     />
                                 </div>

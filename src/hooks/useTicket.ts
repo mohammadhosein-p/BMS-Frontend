@@ -1,4 +1,5 @@
 import {
+    createTicketComment,
     createTicketService,
     deleteTicketService,
     getFullyTicketDetails,
@@ -103,5 +104,21 @@ export const useTicketDetails = (id?: string) => {
         queryKey: ["ticket-details", id],
         queryFn: () => getFullyTicketDetails(id!),
         enabled: !!id,
+    });
+};
+
+export const useCreateTicketComment = () => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, text }: { id: string; text: string }) =>
+            createTicketComment(id, text),
+
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["ticket-details", variables.id],
+            });
+            toast.success("کامنت با موفقیت ارسال شد.");
+        },
     });
 };
