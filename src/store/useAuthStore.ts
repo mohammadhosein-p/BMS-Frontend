@@ -3,13 +3,12 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { type AuthState, type User, type LoginResponse } from "../types/authTypes";
 
 interface ExtendedAuthState extends AuthState {
-  loading: boolean;
+  isAuthenticated: boolean;
 }
 
 interface AuthActions {
   setAuth: (payload: LoginResponse) => void;
   updateUser: (payload: Partial<User>) => void;
-  setLoading: (loading: boolean) => void; 
   logout: () => void;
 }
 
@@ -17,35 +16,30 @@ const useAuthStore = create<ExtendedAuthState & AuthActions>()(
   persist(
     (set) => ({
       user: null,
-      access: null,
-      refresh: null,
+      access_token: null,
+      refresh_token: null,
       isAuthenticated: false,
-      loading: false,
 
       setAuth: (payload) =>
         set({
           user: payload.user,
-          access: payload.access,
-          refresh: payload.refresh,
+          access_token: payload.access_token,
+          refresh_token: payload.refresh_token,
           isAuthenticated: true,
-          loading: false, 
         }),
 
       updateUser: (payload) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...payload } : (payload as User),
-          isAuthenticated: true,
+          isAuthenticated: true, 
         })),
-
-      setLoading: (loading) => set({ loading }),
 
       logout: () => {
         set({
           user: null,
-          access: null,
-          refresh: null,
+          access_token: null,
+          refresh_token: null,
           isAuthenticated: false,
-          loading: false,
         });
         useAuthStore.persist.clearStorage();
       },
@@ -55,8 +49,8 @@ const useAuthStore = create<ExtendedAuthState & AuthActions>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        access: state.access,
-        refresh: state.refresh,
+        access_token: state.access_token,
+        refresh_token: state.refresh_token,
         isAuthenticated: state.isAuthenticated,
       }),
     }

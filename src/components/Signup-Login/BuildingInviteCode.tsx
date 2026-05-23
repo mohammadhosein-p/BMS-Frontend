@@ -1,4 +1,4 @@
-import { Home, ArrowLeft } from "lucide-react";
+import { Home, ArrowLeft, CheckCircle2 } from "lucide-react";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 import { translateNumber } from "@/utils/translateNumber";
@@ -6,6 +6,9 @@ import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import { useMutation } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
+import { validateInviteCode } from "@/services/authService";
+import { toast } from "sonner";
+import CustomToast from "../Custom/CustomToast";
 
 interface BuildingInviteCodeProps {
     onSuccess: () => void;
@@ -14,32 +17,52 @@ interface BuildingInviteCodeProps {
 
 export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProps) => {
     const [inviteCode, setInviteCode] = useState("");
-
     const updateUser = useAuthStore((state) => state.updateUser);
 
     const verifyCodeMutation = useMutation({
-        mutationFn: async (code: string) => {
-            return new Promise((resolve) => setTimeout(() => resolve({ apartment_id: code }), 1500));
-        },
-        onSuccess: (data: any) => {
-            updateUser({ apartment_id: data?.apartment_id || inviteCode });
+        mutationFn: validateInviteCode,
+        onSuccess: async (data: any) => {
+            updateUser({ ApartmentID: data?.ApartmentID, UnitID: data?.UnitID });
+
+            toast.custom((t) => (
+                <CustomToast
+                    title="موفقیت‌آمیز"
+                    message="ورود به ساختمان و تخصیص واحد با موفقیت انجام شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                    />
+            ));
+
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+
             onSuccess();
         },
-        onError: () => {
-            updateUser({ apartment_id: inviteCode });
-            onSuccess();
-        }
+        onError: () => { }
     });
+
+    const getErrorMessage = () => {
+        if (verifyCodeMutation.isError) {
+            const serverMessage = (verifyCodeMutation.error as any)?.response?.data?.message;
+
+            if (serverMessage === "this unit has already been occupied by another resident") {
+                return "این واحد قبلاً توسط ساکن دیگری اشغال شده است";
+            }
+
+            return serverMessage || "کد دعوت وارد شده معتبر نیست یا منقضی شده است";
+        }
+        return null;
+    };
+
+    const activeError = getErrorMessage();
 
     const validation = useMemo(() => {
         const englishCode = translateNumber(inviteCode, true).trim();
         if (englishCode.length === 0) return { variant: "default", isValid: false };
 
-        const isValid = englishCode.length >= 4;
+        if (verifyCodeMutation.isError) return { variant: "error", isValid: false };
+        return { variant: "success", isValid: true };
 
-        if (isValid) return { variant: "success", isValid: true };
-        return { variant: "default", isValid: false };
-    }, [inviteCode]);
+    }, [inviteCode, verifyCodeMutation.isError]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value;
@@ -47,6 +70,9 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
         if (englishValue.length <= 10) {
             setInviteCode(rawValue);
+            if (verifyCodeMutation.isError) {
+                verifyCodeMutation.reset();
+            }
         }
     };
 
@@ -70,7 +96,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
             <div className="space-y-2">
                 <CustomField
-                    placeholder="مثلاً ۱۲۳۴۵"
+                    placeholder="مثلاً CODE_FLAN"
                     icon={<Home size={18} />}
                     value={translateNumber(inviteCode)}
                     onChange={handleChange}
@@ -80,8 +106,8 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                     disabled={isLoading}
                 />
 
-                {verifyCodeMutation.isError && (
-                    <ErrorMessage message="کد دعوت وارد شده معتبر نیست یا منقضی شده است" />
+                {activeError && (
+                    <ErrorMessage message={activeError} />
                 )}
 
                 <div className="flex flex-col gap-2 mt-4">
@@ -89,14 +115,13 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                         type="submit"
                         variant="primary"
                         className="w-full h-11"
-                        disabled={!validation.isValid} 
-                        isLoading={isLoading} 
-                        loadingText="در حال بررسی" 
-                        
+                        disabled={!validation.isValid}
+                        isLoading={isLoading}
+                        loadingText="در حال بررسی"
                     >
                         تایید و ادامه
                     </CustomButton>
-                    
+
                     <CustomButton
                         type="button"
                         variant="secondary"

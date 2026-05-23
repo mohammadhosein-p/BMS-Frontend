@@ -1,22 +1,20 @@
-import type { LoginPayload, LoginResponse, RegisterPayload, User } from "../types/authTypes";
+import type { ApiResponse, LoginPayload, LoginResponse, RegisterPayload, User, VlidateInviteCodeResponse } from "../types/authTypes";
 import { postData, getData } from "./services"; 
 
-export const loginService = async (
-    credentials: LoginPayload
-): Promise<LoginResponse> => {
-    return postData({
+export const loginService = async (credentials: LoginPayload): Promise<LoginResponse> => {
+    const res: ApiResponse<LoginResponse> = await postData({
         endPoint: `/login`, 
         data: credentials,
     });
+    return res.data;
 };
 
-export const registerService = async (
-    userData: RegisterPayload
-): Promise<LoginResponse> => {
-    return postData({
-        endPoint: `/users`, 
+export const registerService = async (userData: RegisterPayload): Promise<LoginResponse> => {
+    const res: ApiResponse<LoginResponse> = await postData({
+        endPoint: `/register`, 
         data: userData,
     });
+    return res.data;
 };
 
 export const getCurrentUserService = async (userId: string): Promise<User> => {
@@ -25,30 +23,31 @@ export const getCurrentUserService = async (userId: string): Promise<User> => {
     });
 };
 
-export const refreshTokenRequest = async (refresh: string): Promise<{ access: string , refresh: string }> => {
+export const refreshTokenRequest = async (refresh: string): Promise<ApiResponse<{ access_token: string, refresh_token: string }>> => {
     return postData({
         endPoint: `/refresh`, 
         data: { refresh },
     });
 };
 
-export const sendOtpService = async (phone: string): Promise<{ success: boolean }> => {
+export const verifyOtpService = async (payload: { phone: string; code: string; }): Promise<ApiResponse<LoginResponse | null>> => {
+    return postData({
+        endPoint: `/verify-otp`,
+        data: payload,
+    });
+};
+
+export const sendOtpService = async (phone: string): Promise<ApiResponse<{otp: string}>> => {
     return postData({
         endPoint: `/send-otp`,
         data: { phone },
     });
 };
 
-export interface OtpNotRegisteredResponse {
-    isUser: false;
-}
 
-export const verifyOtpService = async (payload: { 
-    phone: string; 
-    code: string; 
-}): Promise<LoginResponse | OtpNotRegisteredResponse> => {
+export const validateInviteCode = async (code: string): Promise<ApiResponse<VlidateInviteCodeResponse>> => {
     return postData({
-        endPoint: `/verify-otp`,
-        data: payload,
+        endPoint: `/invite-code/validate`,
+        data: { code },
     });
 };
