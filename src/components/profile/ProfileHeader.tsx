@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { Camera, LogOut, Clock } from "lucide-react";
+import { Camera, LogOut, Clock, KeyRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+// دکمه قدیمی حذف و کامپوننت اختصاصی شما ایمپورت شد
+import CustomButton from "../ui/CustomeButton";
 import type { User } from "@/types/authTypes";
 import LogoutConfirmDialog from './LogoutConfirmDialog';
 
@@ -10,6 +11,7 @@ import FemaleIcon from "@/assets/profile/icons8-woman-50.png";
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 import { translateDate } from "@/utils/translateDate";
 import { motion } from "framer-motion";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 interface ProfileHeaderProps {
     user: User;
@@ -18,6 +20,7 @@ interface ProfileHeaderProps {
 export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [isChangePassOpen, setIsChangePassOpen] = useState(false);
 
     // Trigger hidden file input
     const handleCameraClick = () => {
@@ -33,12 +36,12 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         }
     };
 
-   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-   const handleConfirmLogout = () => {
-     // TODO: منطق خروج از حساب (پاک کردن توکن، کش، استیت گلوبال و هدایت به صفحه لاگین)
-     console.log("کاربر خارج شد");
-     setIsLogoutDialogOpen(false);
-   };
+    const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+    const handleConfirmLogout = () => {
+        // TODO: منطق خروج از حساب (پاک کردن توکن، کش، استیت گلوبال و هدایت به صفحه لاگین)
+        console.log("کاربر خارج شد");
+        setIsLogoutDialogOpen(false);
+    };
 
     const isAdmin = user.Role === 'admin';
     const roleFa = isAdmin ? 'مدیر' : 'ساکن';
@@ -49,27 +52,43 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         : "border-success-op2-3 text-success-op2-3 bg-success-op2-5/50";
 
     return (
-        <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full 
-        ">
+        <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full">
 
-            {/* Left Section: Join Date & Logout */}
             <div className="flex flex-col justify-between items-start h-28">
                 <div className="flex items-center gap-4 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-md px-3 py-1.5 text-xs font-medium" dir="rtl">
                     <div className="flex items-center gap-1">
                         <Clock size={16} />
                         <span>تاریخ ورود به ساختمان</span>
                     </div>
-                    <span className="pt-0.5">{translateDate("1405/02/05")}</span>
+                    <span className="pt-0.5">{translateDate("1404/12/02")}</span>
                 </div>
 
-                <Button
-                    variant="outline"
-                    className="text-red-500 border-red-500 hover:bg-red-50 hover:text-red-600 flex gap-2 rounded-lg px-5 h-10"
-                    onClick={() => setIsLogoutDialogOpen(true)}
-                >
-                    <LogOut size={18} className="rotate-180" />
-                    <span className="font-semibold">خروج از حساب</span>
-                </Button>
+                <div className="flex flex-row gap-2">
+                    <CustomButton
+                        variant="danger"
+                        styleType="outline"
+                        icon={LogOut}
+                        className="h-10 px-3 text-xs rounded-lg"
+                        onClick={() => setIsLogoutDialogOpen(true)}
+                    >
+                        خروج از حساب
+                    </CustomButton>
+
+                    <CustomButton
+                        variant="success2"
+                        styleType="outline"
+                        icon={KeyRound}
+                        className="h-10 px-3 text-xs rounded-lg"
+                        onClick={() => setIsChangePassOpen(true)}
+                    >
+                        تغییر رمز عبور
+                    </CustomButton>
+
+                    <ChangePasswordDialog
+                        isOpen={isChangePassOpen}
+                        onClose={() => setIsChangePassOpen(false)}
+                    />
+                </div>
             </div>
 
             {/* Right Section: User Info & Avatar */}
@@ -77,9 +96,8 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 
                 {/* User Details */}
                 <div className="flex flex-col gap-3 items-end">
-
                     <div className="flex items-center gap-1 text-2xl font-bold text-neutral-800">
-                        <span>{user.FirstName} {user.LastName}</span>
+                        <span>{user.FirstName || "علی"} {user.LastName || "نقی‌نژاد"}</span>
                         <img
                             src={genderIconSrc}
                             alt="gender"
@@ -91,7 +109,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         <span className={`inline-flex items-center justify-center px-4 h-6 rounded-md border text-xs font-semibold pt-0.5 ${roleBadgeStyles}`}>
                             {roleFa}
                         </span>
-                        <span className="text-neutral-500 font-medium">@{user.Username}</span>
+                        <span className="text-neutral-500 font-medium">@{user.Username || "AliNaghiNjad"}</span>
                     </div>
                 </div>
 
@@ -133,11 +151,12 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     />
                 </div>
             </div>
-                <LogoutConfirmDialog 
-                    isOpen={isLogoutDialogOpen} 
-                    onClose={() => setIsLogoutDialogOpen(false)} 
-                    onConfirm={handleConfirmLogout} 
-                    />
+
+            <LogoutConfirmDialog
+                isOpen={isLogoutDialogOpen}
+                onClose={() => setIsLogoutDialogOpen(false)}
+                onConfirm={handleConfirmLogout}
+            />
         </div>
     );
 }

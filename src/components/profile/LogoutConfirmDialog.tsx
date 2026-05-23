@@ -5,6 +5,7 @@ import {
   DialogTitle, 
   DialogDescription 
 } from '@/components/ui/CustomeDialog';
+import CustomButton from '../ui/CustomeButton'; 
 
 interface LogoutConfirmDialogProps {
   isOpen: boolean;
@@ -31,19 +32,24 @@ const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClo
           </DialogDescription>
         </div>
 
-        <div className="flex gap-3 mt-8">
-          <button
+        <div className="flex gap-3 mt-8 w-full">
+          <CustomButton
+            variant="dark-gradient"
+            styleType="outline"
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors"
+            className="flex-1 py-2.5 h-auto"
           >
             انصراف
-          </button>
-          <button
+          </CustomButton>
+          
+          <CustomButton
+            variant="danger"
+            styleType="solid"
             onClick={onConfirm}
-            className="flex-1 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition-colors shadow-sm shadow-red-200"
+            className="flex-1 py-2.5 h-auto"
           >
             بله
-          </button>
+          </CustomButton>
         </div>
       </DialogContent>
     </Dialog>
