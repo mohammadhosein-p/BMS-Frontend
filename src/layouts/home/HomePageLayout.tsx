@@ -16,7 +16,7 @@ function HomePageLayout() {
                     <HomeHeader />
 
                     {/* Outlet Container */}
-                    <section className="flex-1 min-h-0 bg-white rounded-2xl p-6 shadow-sm border border-neutral-4/80 overflow-auto">
+                    <section className="flex-1 min-h-0 bg-white rounded-2xl shadow-sm border border-neutral-4/80 overflow-auto">
                         <Outlet />
                     </section>
                 </main>

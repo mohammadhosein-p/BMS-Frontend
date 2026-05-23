@@ -1,15 +1,17 @@
 import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CustomButton from "../ui/CustomeButton"; 
-import CustomField from "../ui/CutsomeFiled";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock, User, CheckCircle2 } from "lucide-react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 import useAuthStore from "@/store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { registerService } from "@/services/authService";
 import { motion, AnimatePresence } from "framer-motion";
+import {toast} from "sonner"; // اضافه شدن کتابخانه مدیریت توست
+import CustomToast from "../Custom/CustomToast";
+import CustomField from "../ui/CutsomeFiled";
+import CustomButton from "../ui/CustomeButton";
 
 const registerSchema = z.object({
     username: z.string().trim().min(3, "نام کاربری باید حداقل ۳ کاراکتر باشد"),
@@ -26,7 +28,7 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-const gender = [
+const genderOptions = [
     { value: "male", label: "مرد", color: "blue" },
     { value: "female", label: "زن", color: "pink" },
 ];
@@ -36,13 +38,21 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
 
     const registerMutation = useMutation({
         mutationFn: registerService,
-        onSuccess: (data) => {
-            setAuth({ user: data.user, access: data.access, refresh: data.refresh });
+        onSuccess: async (data) => {
+            setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
+            
+            toast.custom((t) => (
+                <CustomToast 
+                    title="موفقیت‌آمیز"
+                    message="ثبت‌نام شما با موفقیت انجام شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             onInviteCode();
         },
-        onError: () => {
-            onInviteCode();
-        }
     });
 
     const {
@@ -64,6 +74,8 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
     });
 
     const onSubmit = (data: RegisterFormData) => {
+        if (registerMutation.isPending) return;
+
         const finalData = {
             first_name: data.firstName,
             last_name: data.lastName,
@@ -78,9 +90,32 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
         registerMutation.mutate(finalData);
     };
 
-    const firstError = Object.values(errors)[0]?.message as string;
+    const getServerErrorMessage = () => {
+        if (!registerMutation.isError) return null;
+        return (registerMutation.error as any)?.response?.data?.message || "";
+    };
+
+    const serverMessage = getServerErrorMessage();
+
+    const getErrorMessage = () => {
+        const firstClientError = Object.values(errors)[0]?.message;
+        if (firstClientError) return firstClientError;
+
+        if (registerMutation.isError) {
+            if (serverMessage.trim() === "this username is taken") return "این نام کاربری قبلاً انتخاب شده است";
+            if (serverMessage === "this email is already registered") return "این ایمیل قبلاً ثبت شده است";
+            return serverMessage || "خطایی در ثبت‌نام رخ داد";
+        }
+
+        return null;
+    };
+
+    const activeError = getErrorMessage();
     const isLoading = registerMutation.isPending;
     const isSuccess = registerMutation.isSuccess;
+
+    const hasUsernameError = registerMutation.isError && serverMessage.trim() === "this username is taken";
+    const hasEmailError = registerMutation.isError && serverMessage === "this email is already registered";
 
     return (
         <div className="flex flex-col justify-center text-right animate-in fade-in">
@@ -88,7 +123,6 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
             <p className="text-sm text-neutral-2 mb-6">لطفا اطلاعات خود را وارد کنید</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-
                 <Controller
                     name="username"
                     control={control}
@@ -97,8 +131,12 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                             {...field}
                             placeholder="نام کاربری"
                             icon={<User size={18} />}
-                            variant={errors.username ? "error" : isSuccess ? "success" : "default"}
+                            variant={errors.username || hasUsernameError ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (registerMutation.isError) registerMutation.reset();
+                            }}
                         />
                     )}
                 />
@@ -113,6 +151,10 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                                 placeholder="نام"
                                 variant={errors.firstName ? "error" : isSuccess ? "success" : "default"}
                                 disabled={isLoading}
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    if (registerMutation.isError) registerMutation.reset();
+                                }}
                             />
                         )}
                     />
@@ -125,6 +167,10 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                                 placeholder="نام خانوادگی"
                                 variant={errors.lastName ? "error" : isSuccess ? "success" : "default"}
                                 disabled={isLoading}
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    if (registerMutation.isError) registerMutation.reset();
+                                }}
                             />
                         )}
                     />
@@ -135,9 +181,12 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                     control={control}
                     render={({ field }) => (
                         <SelectOptions
-                            options={gender}
+                            options={genderOptions}
                             value={field.value}
-                            onChange={field.onChange}
+                            onChange={(val) => {
+                                field.onChange(val);
+                                if (registerMutation.isError) registerMutation.reset();
+                            }}
                             disabled={isLoading}
                         />
                     )}
@@ -152,8 +201,12 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                             type="email"
                             placeholder="ایمیل"
                             icon={<Mail size={18} />}
-                            variant={errors.email ? "error" : isSuccess ? "success" : "default"}
+                            variant={errors.email || hasEmailError ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (registerMutation.isError) registerMutation.reset();
+                            }}
                         />
                     )}
                 />
@@ -169,6 +222,10 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                             icon={<Lock size={18} />}
                             variant={errors.password ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (registerMutation.isError) registerMutation.reset();
+                            }}
                         />
                     )}
                 />
@@ -184,33 +241,26 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                             icon={<Lock size={18} />}
                             variant={errors.confirmPassword ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            // تغییر: ریست کردن خطای سرور به محض ویرایش تکرار رمز عبور
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (registerMutation.isError) registerMutation.reset();
+                            }}
                         />
                     )}
                 />
 
                 <div className="overflow-hidden">
                     <AnimatePresence mode="wait">
-                        {firstError && (
+                        {activeError && (
                             <motion.div
-                                key="client-error"
+                                key="error-message"
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2, ease: "easeInOut" }}
                             >
-                                <ErrorMessage message={firstError} />
-                            </motion.div>
-                        )}
-
-                        {registerMutation.isError && !firstError && (
-                            <motion.div
-                                key="server-error"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.2, ease: "easeInOut" }}
-                            >
-                                <ErrorMessage message="خطایی در برقراری ارتباط با سرور رخ داده است" />
+                                <ErrorMessage message={activeError} />
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -220,9 +270,9 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                     type="submit"
                     variant="primary"
                     className="w-full h-11"
-                    disabled={!isValid}
+                    disabled={!isValid || isLoading}
                     isLoading={isLoading}
-                    loadingText="در حال ثبت نام" 
+                    loadingText="در حال ثبت نام"
                 >
                     ثبت نام
                 </CustomButton>

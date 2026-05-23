@@ -1,14 +1,17 @@
 export interface User {
-    id: string;
-    apartment_id: string | null;
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-    phone: string;
-    role: "admin" | "user" | string; 
-    gender: "male" | "female" | string;
-    profile_image_url: string | null;
+    ID: string;
+    CreatedAt: string;
+    ApartmentID: string | null;
+    UnitID : string | null;
+    FirstName: string;
+    LastName: string;
+    Username: string;
+    Email: string;
+    Phone: string;
+    Password: string;
+    Role: "admin" | "resident" | string;
+    Gender: "male" | "female" | string;
+    ProfileImageURL: string | null;
 }
 
 export interface LoginPayload {
@@ -16,17 +19,23 @@ export interface LoginPayload {
     password: string;
 }
 
-export interface LoginResponse {
-    user: User;
-    access: string;
-    refresh: string;
+export interface AuthState {
+    user: User | null ;
+    access_token: string | null;
+    refresh_token: string | null;
 }
 
-export interface AuthState {
-    user: User | null;
-    access: string | null;
-    refresh: string | null;
-    isAuthenticated: boolean;
+export interface LoginResponse {
+    user: User;
+    access_token: string;
+    refresh_token: string;
+}
+
+export interface ApiResponse<T> {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: T ;
 }
 
 export interface RegisterPayload {
@@ -36,6 +45,13 @@ export interface RegisterPayload {
     email: string;
     phone: string;
     password: string;
-    role : "admin" | "user" | string;
     gender: "male" | "female";
+}
+
+export interface InviteCode{
+    code : string
+}
+export interface VlidateInviteCodeResponse {
+    ApartmentID: string ;
+    UnitID : string ;
 }

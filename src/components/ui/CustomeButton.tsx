@@ -1,22 +1,9 @@
 import React, { type ReactNode, type ElementType } from 'react';
 import { type LucideProps } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import SendingDots from './SignUp-Login/SendingDots';
 
-const SendingDots = ({ text = "در حال ارسال", dotColor = "bg-current" }) => {
-  return (
-    <span className="flex items-center gap-1">
-      {text}
-      <span className="flex gap-0.5 mt-1">
-        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce [animation-delay:-0.3s]`} />
-        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce [animation-delay:-0.15s]`} />
-        <span className={`w-1 h-1 ${dotColor} rounded-full animate-bounce`} />
-      </span>
-    </span>
-  );
-};
-
-type ButtonVariant = 'primary' | 'secondary' | 'disabled';
+type ButtonVariant = 'primary' | 'secondary' | 'green' | 'success1' | 'success2' | 'danger' | 'disabled' | 'dark-gradient';
 type StyleType = 'solid' | 'outline' | 'soft';
 
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -30,18 +17,18 @@ interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
 }
 
 const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
-  ({ 
-    variant = 'primary', 
-    styleType = 'solid', 
-    children, 
-    icon: Icon, 
-    className, 
+  ({
+    variant = 'primary',
+    styleType = 'solid',
+    children,
+    icon: Icon,
+    className,
     disabled,
     isLoading = false,
     loadingText,
-    ...props 
+    ...props
   }, ref) => {
-    
+
     const isButtonDisabled = disabled || isLoading || variant === 'disabled';
     const activeVariant = isButtonDisabled ? 'disabled' : variant;
 
@@ -56,38 +43,55 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
         outline: "ring-2 ring-inset ring-secondary-blue-2 text-secondary-blue-2 bg-transparent hover:bg-secondary-blue-5/60 border-none",
         soft: "bg-secondary-blue-5 text-neutral-1 hover:bg-secondary-blue-4 border-none",
       },
+      green: {
+        solid: "bg-[var(--secondary-green-1)] text-white hover:bg-[var(--secondary-green-2)] border-none",
+        outline: "ring-2 ring-inset ring-[var(--secondary-green-1)] text-[var(--secondary-green-1)] bg-transparent hover:bg-[var(--secondary-green-5)] border-none",
+        soft: "bg-[var(--secondary-green-5)] text-[var(--secondary-green-1)] hover:bg-[var(--secondary-green-4)] border-none",
+      },
+      success1: {
+        solid: "bg-[var(--success-op1-1)] text-white hover:bg-[var(--success-op1-2)] border-none",
+        outline: "ring-2 ring-inset ring-[var(--success-op1-1)] text-[var(--success-op1-1)] bg-transparent hover:bg-[var(--success-op1-5)] border-none",
+        soft: "bg-[var(--success-op1-5)] text-[var(--success-op1-1)] hover:bg-[var(--success-op1-4)] border-none",
+      },
+      success2: {
+        solid: "bg-[var(--success-op2-3)] text-white hover:bg-[var(--success-op2-2)] border-none",
+        outline: "ring-2 ring-inset ring-[var(--success-op2-3)] text-[var(--success-op2-3)] bg-transparent hover:bg-[var(--success-op2-5)]/50 border-none",
+        soft: "bg-[var(--success-op2-5)] text-[var(--success-op2-2)] hover:bg-[var(--success-op2-4)]/70 border-none",
+      },
+      danger: {
+        solid: "bg-[var(--danger-2)] text-white hover:bg-[var(--danger-1)] border-none",
+        outline: "ring-2 ring-inset ring-[var(--danger-3)] text-[var(--danger-3)] bg-transparent hover:bg-[var(--danger-5)] border-none",
+        soft: "bg-[var(--danger-5)] text-[var(--danger-2)] hover:bg-[var(--danger-4)]/50 border-none",
+      },
       disabled: {
-        solid: "bg-neutral-4 text-neutral-3 border-none",
-        outline: "ring-2 ring-inset ring-neutral-4 text-neutral-3 bg-transparent border-none",
-        soft: "bg-neutral-5 text-neutral-3 border-none",
+        solid: "bg-neutral-4 text-neutral-3 border-none opacity-60 cursor-not-allowed",
+        outline: "ring-2 ring-inset ring-neutral-4 text-neutral-3 bg-transparent border-none opacity-60 cursor-not-allowed",
+        soft: "bg-neutral-5 text-neutral-3 border-none opacity-60 cursor-not-allowed",
       },
-    };
-
-    const iconColors: Record<ButtonVariant, Record<StyleType, string>> = {
-      primary: {
-        solid: "text-neutral-6 bg-black/12",
-        outline: "text-primary-1",
-        soft: "text-primary-2 bg-white/50",
-      },
-      secondary: {
-        solid: "text-neutral-6 bg-black/12",
-        outline: "text-secondary-blue-2",
-        soft: "text-secondary-blue-3 bg-white/50", 
-      },
-      disabled: {
-        solid: "text-neutral-3",
-        outline: "text-neutral-3",
-        soft: "text-neutral-3",
+      'dark-gradient': {
+        solid: "bg-gradient-to-r from-neutral-800 to-neutral-700 text-neutral-200 border border-neutral-600 shadow-sm hover:from-neutral-700 hover:to-neutral-600 transition-all",
+        outline: "ring-2 ring-inset ring-neutral-600 text-neutral-600 bg-transparent hover:bg-neutral-800/10 border-none transition-all",
+        soft: "bg-gradient-to-r from-neutral-800 to-neutral-700 text-neutral-200 border border-neutral-600 shadow-sm hover:from-neutral-700 hover:to-neutral-600 transition-all",
       }
     };
 
+    const iconColors: Record<ButtonVariant, Record<StyleType, string>> = {
+      primary: { solid: "text-neutral-6 bg-black/12", outline: "text-primary-1", soft: "text-primary-2 bg-white/50" },
+      secondary: { solid: "text-neutral-6 bg-black/12", outline: "text-secondary-blue-2", soft: "text-secondary-blue-3 bg-white/50" },
+      green: { solid: "text-white bg-black/10", outline: "text-[var(--secondary-green-1)]", soft: "text-[var(--secondary-green-1)]" },
+      success1: { solid: "text-white bg-black/10", outline: "text-[var(--success-op1-1)]", soft: "text-[var(--success-op1-1)]" },
+      success2: { solid: "text-white bg-black/10", outline: "text-[var(--success-op2-3)]", soft: "text-[var(--success-op2-2)]" },
+      danger: { solid: "text-white bg-black/10", outline: "text-[var(--danger-3)]", soft: "text-[var(--danger-2)]" },
+      disabled: { solid: "text-neutral-3", outline: "text-neutral-3", soft: "text-neutral-3" },
+      'dark-gradient': { solid: "text-neutral-300", outline: "text-neutral-600", soft: "text-neutral-300" }
+    };
+
     return (
-      <Button
+      <button
         ref={ref}
-        disabled={isButtonDisabled} 
-        dir="rtl"
+        disabled={isButtonDisabled}
         className={cn(
-          "flex items-center justify-center gap-3 rounded-xl font-iranyekan font-extrabold transition-all duration-200 active:scale-[0.97] shrink-0 transform-gpu backface-hidden h-auto py-2 px-4",
+          "inline-flex items-center text-sm justify-center gap-2 rounded-xl font-iranyekan font-extrabold transition-all duration-200 active:scale-[0.98] shrink-0 transform-gpu backface-hidden min-h-10 py-2 px-4 w-max select-none whitespace-nowrap",
           variants[activeVariant][styleType],
           className
         )}
@@ -97,18 +101,19 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
           <SendingDots text={loadingText} />
         ) : (
           <>
-            <span className="leading-none">{children}</span>
             {Icon && (
               <span className={cn(
-                "flex items-center justify-center rounded-lg p-1.5",
+                "flex items-center justify-center rounded-sm order-first transition-all",
+                (styleType === 'outline' || activeVariant === 'dark-gradient') ? "p-0" : "p-1",
                 iconColors[activeVariant][styleType]
               )}>
-                <Icon size={18} />
+                <Icon size={(styleType === 'outline' || activeVariant === 'dark-gradient') ? 20 : 16} className="shrink-0" />
               </span>
             )}
+            <span className="leading-none">{children}</span>
           </>
         )}
-      </Button>
+      </button>
     );
   }
 );
