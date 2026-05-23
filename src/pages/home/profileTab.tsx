@@ -20,11 +20,11 @@ export default function ProfileTab() {
     };
 
     return (
-        <div className="flex flex-col h-full max-h-[calc(100vh-100px)] overflow-hidden">
+        <div className="flex flex-col h-full max-h-[calc(100vh-100px)] overflow-hidden p-4">
             
             <ProfileHeader user={mockUser} />
             
-            <div className="mt-8 flex-1 overflow-hidden">
+            <div className="mt-6 flex-1 overflow-hidden">
                 <ProfileDetails user={mockUser} />
             </div> 
         </div>
