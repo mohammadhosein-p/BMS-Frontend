@@ -1,4 +1,10 @@
 import React from 'react';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogTitle, 
+  DialogDescription 
+} from '@/components/ui/CustomeDialog';
 
 interface LogoutConfirmDialogProps {
   isOpen: boolean;
@@ -7,14 +13,9 @@ interface LogoutConfirmDialogProps {
 }
 
 const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClose, onConfirm }) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-      <div 
-        className="bg-white w-[90%] max-w-sm rounded-2xl p-6 shadow-xl transform transition-all"
-        dir="rtl"
-      >
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent isOpen={isOpen} className="w-[90%] max-w-sm">
         <div className="flex flex-col items-center text-center gap-3">
           <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -22,12 +23,13 @@ const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClo
             </svg>
           </div>
           
-          <h3 className="text-lg font-bold text-slate-800">خروج از حساب کاربری</h3>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <DialogTitle className="text-lg font-bold text-slate-800 m-0">
+            خروج از حساب کاربری
+          </DialogTitle>
+          <DialogDescription className="text-sm text-slate-500 leading-relaxed m-0">
             آیا از حساب کاربری خود خارج می شوید؟
-          </p>
+          </DialogDescription>
         </div>
-
 
         <div className="flex gap-3 mt-8">
           <button
@@ -43,8 +45,8 @@ const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClo
             بله
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

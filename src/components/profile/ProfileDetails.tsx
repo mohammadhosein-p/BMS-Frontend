@@ -27,10 +27,10 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     
     const [formData, setFormData] = useState({
-        username: user.username || "AliNaghiNjad",
-        email: user.email || "ali@example.com",
-        firstName: user.first_name || "علی",
-        lastName: user.last_name || "نقی نژاد",
+        username: user.Username || "AliNaghiNjad",
+        email: user.Email || "ali@example.com",
+        firstName: user.FirstName || "علی",
+        lastName: user.LastName || "نقی نژاد",
         password: "234",
         phone: "09000000000",
         buildingNumber: "AS123",
@@ -197,7 +197,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             inputMode="numeric"
                             value={translateNumber(formData.unitNumber)}
                             onChange={handleInputChange}
-                            disabled={!isEditing}
+                            disabled={true}
                         />
                         {errors.unitNumber && <span className="text-red-500 text-xs mt-1 px-1">{errors.unitNumber}</span>}
                     </div>

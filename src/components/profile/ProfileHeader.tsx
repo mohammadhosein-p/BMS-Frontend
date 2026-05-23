@@ -40,9 +40,9 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
      setIsLogoutDialogOpen(false);
    };
 
-    const isAdmin = user.role === 'admin';
+    const isAdmin = user.Role === 'admin';
     const roleFa = isAdmin ? 'مدیر' : 'ساکن';
-    const genderIconSrc = user.gender === 'female' ? FemaleIcon : MaleIcon;
+    const genderIconSrc = user.Gender === 'female' ? FemaleIcon : MaleIcon;
 
     const roleBadgeStyles = isAdmin
         ? "border-danger-2 text-danger-2 bg-danger-5"
@@ -79,7 +79,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 <div className="flex flex-col gap-3 items-end">
 
                     <div className="flex items-center gap-1 text-2xl font-bold text-neutral-800">
-                        <span>{user.first_name} {user.last_name}</span>
+                        <span>{user.FirstName} {user.LastName}</span>
                         <img
                             src={genderIconSrc}
                             alt="gender"
@@ -91,7 +91,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         <span className={`inline-flex items-center justify-center px-4 h-6 rounded-md border text-xs font-semibold pt-0.5 ${roleBadgeStyles}`}>
                             {roleFa}
                         </span>
-                        <span className="text-neutral-500 font-medium">@{user.username}</span>
+                        <span className="text-neutral-500 font-medium">@{user.Username}</span>
                     </div>
                 </div>
 
@@ -100,11 +100,11 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-neutral-100">
                         <Avatar className="w-24 h-24 rounded-xl overflow-hidden">
                             <AvatarImage
-                                src={previewImage || user.profile_image_url || DefaultProfileImg}
+                                src={previewImage || user.ProfileImageURL || DefaultProfileImg}
                                 className="object-cover"
                             />
                             <AvatarFallback className="rounded-xl bg-[#7c8aff] text-white text-3xl font-bold">
-                                {user.first_name?.charAt(0)}‌{user.last_name?.charAt(0)}
+                                {user.FirstName?.charAt(0)}‌{user.LastName?.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </div>
