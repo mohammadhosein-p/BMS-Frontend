@@ -27,7 +27,7 @@ interface FailedRequest {
 }
 
 // ================= API INSTANCE =================
-export const baseURL = "https://6a077dccfa9b27c848fa1fe9.mockapi.io/api/v1";
+export const baseURL = "http://localhost:8080";
 
 const apiClient: AxiosInstance = axios.create({
     baseURL,
@@ -52,11 +52,12 @@ const processQueue = (error: any, token: string | null = null) => {
 // ================= REQUEST INTERCEPTOR =================
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const access = useAuthStore.getState().access;
+        const access_token = useAuthStore.getState().access_token;
+        const publicEndpoints = ['/login', '/register', '/send-otp', '/verify-otp'];
 
-        if (access) {
+        if (access_token && !publicEndpoints.some(path => config.url?.includes(path))) {
             config.headers = config.headers || {};
-            config.headers.Authorization = `Bearer ${access}`;
+            config.headers.Authorization = `Bearer ${access_token}`;
         }
 
         return config;
@@ -80,10 +81,9 @@ apiClient.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const { refresh, user, setAuth, logout } =
-                useAuthStore.getState();
+            const { refresh_token, user, setAuth, logout } = useAuthStore.getState();
 
-            if (!refresh) {
+            if (!refresh_token) {
                 logout();
                 return Promise.reject(error);
             }
@@ -104,13 +104,15 @@ apiClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const data = await refreshTokenRequest(refresh);
-                const newAccess = data.access;
+                const response = await refreshTokenRequest(refresh_token);
+                
+                const newAccess = response.data.access_token;
+                const newRefresh = response.data.refresh_token;
 
                 setAuth({
-                    access: newAccess,
-                    refresh: data.refresh,
                     user: user!,
+                    access_token: newAccess,
+                    refresh_token: newRefresh,
                 });
 
                 processQueue(null, newAccess);
@@ -121,7 +123,7 @@ apiClient.interceptors.response.use(
                 return apiClient(originalRequest);
             } catch (err) {
                 processQueue(err, null);
-                logout();
+                logout(); 
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
@@ -131,6 +133,7 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 
 
 export const getData = async ({ endPoint, headers, params }: GetParams) => {

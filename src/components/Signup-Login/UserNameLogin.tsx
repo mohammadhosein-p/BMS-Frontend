@@ -3,13 +3,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, Lock } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
-import SendingDots from "../ui/SignUp-Login/SendingDots";
 import useAuthStore from "@/store/useAuthStore";
 import { loginService } from "@/services/authService";
 import CustomeField from "../ui/CutsomeFiled";
 import CustomeButton from "../ui/CustomeButton";
+
 
 const loginSchema = z.object({
     username: z.string()
@@ -25,20 +24,27 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 interface UsernameLoginProps {
     onHomePage: () => void;
+    onInviteCode: () => void;
 }
 
-export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
+export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) => {
     const setAuth = useAuthStore((state) => state.setAuth);
 
     const loginMutation = useMutation({
         mutationFn: loginService,
-        onSuccess: (data) => {
-            setAuth({ user: data.user, access: data.access, refresh: data.refresh });
-            onHomePage();
+        onSuccess: async (data) => {
+
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+
+            setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
+
+            if (!data.user?.ApartmentID || data.user?.ApartmentID === null) {
+                onInviteCode();
+            } else {
+                onHomePage();
+            }
         },
-        onError :() => {
-            onHomePage();
-        }
+        onError: () => { }
     });
 
     const {
@@ -65,7 +71,12 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
 
         if (loginMutation.isError) {
             const serverMessage = (loginMutation.error as any)?.response?.data?.message;
-            return serverMessage || "نام کاربری یا رمز عبور اشتباه است";
+
+            if (serverMessage === "invalid username or password") {
+                return "نام کاربری یا رمز عبور اشتباه است";
+            }
+
+            return serverMessage || "خطایی در برقراری ارتباط رخ داد";
         }
 
         return null;
@@ -74,6 +85,7 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
     const activeError = getErrorMessage();
     const isLoading = loginMutation.isPending;
     const isSuccess = loginMutation.isSuccess;
+    const hasServerError = loginMutation.isError;
 
     return (
         <div className="relative bottom-8 flex flex-col justify-center text-right animate-in fade-in">
@@ -91,8 +103,12 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
                             {...field}
                             placeholder="نام کاربری"
                             icon={<User size={18} />}
-                            variant={errors.username ? "error" : isSuccess ? "success" : "default"}
+                            variant={errors.username || hasServerError ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (loginMutation.isError) loginMutation.reset();
+                            }}
                         />
                     )}
                 />
@@ -106,8 +122,12 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
                             type="password"
                             placeholder="رمز عبور"
                             icon={<Lock size={18} />}
-                            variant={errors.password ? "error" : isSuccess ? "success" : "default"}
+                            variant={errors.password || hasServerError ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                if (loginMutation.isError) loginMutation.reset();
+                            }}
                         />
                     )}
                 />
@@ -119,13 +139,11 @@ export const UsernameLogin = ({ onHomePage }: UsernameLoginProps) => {
                         type="submit"
                         variant="primary"
                         className="w-full h-11 cursor-pointer"
-                        disabled={isLoading || !isValid}
+                        disabled={!isValid || isLoading}
+                        isLoading={isLoading}
+                        loadingText="در حال بررسی"
                     >
-                        {isLoading ? (
-                            <SendingDots text="در حال بررسی" />
-                        ) : (
-                            "ورود"
-                        )}
+                        ورود
                     </CustomeButton>
                 </div>
             </form>

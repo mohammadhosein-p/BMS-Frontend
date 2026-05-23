@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { PlusCircle, Send, X } from "lucide-react";
 
@@ -14,6 +15,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogClose,
+    DialogTrigger,
 } from "../ui/CustomeDialog";
 
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
