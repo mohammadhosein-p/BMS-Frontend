@@ -114,13 +114,13 @@ export default function TicketDetailsDialog({ id }: Prop) {
 
                                 <div className="flex flex-wrap items-center gap-1.5 justify-center md:justify-start">
                                     <div
-                                        className={`flex items-center gap-1 rounded-sm border font-medium border-yellow-400 bg-yellow-50 px-3 py-1 text-xs text-yellow-800 ${ticketStatusItem?.bgClass} ${ticketStatusItem?.textClass}`}
+                                        className={`flex items-center gap-1 rounded-sm border font-medium border-neutral-4 px-3 py-1 text-xs ${ticketStatusItem?.bgClass} ${ticketStatusItem?.textClass}`}
                                     >
                                         {ticketStatusItem?.label || "بسته شده"}
                                     </div>
 
                                     <div
-                                        className={`flex items-center gap-1 rounded-sm border font-medium border-blue-400 bg-blue-50 px-4 py-1 text-xs text-blue-700 ${ticketCategoryItem?.bgClass} ${ticketCategoryItem?.textClass}`}
+                                        className={`flex items-center gap-1 rounded-sm border font-medium border-neutral-4 px-4 py-1 text-xs ${ticketCategoryItem?.bgClass} ${ticketCategoryItem?.textClass}`}
                                     >
                                         {ticketCategoryItem?.label || "سایر"}
                                     </div>
@@ -213,6 +213,18 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                             </div>
                                         );
                                     })}
+
+                                    {ticket?.Comments.length == 0 && (
+                                        <>
+                                            <h3 className="font-extrabold text-xl text-primary-1 text-center">
+                                                کامنتی وجود ندارد
+                                            </h3>
+                                            <p className="text-neutral-3 font-light text-center">
+                                                اولین نفری باشید که کامنت می
+                                                گذارد
+                                            </p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
