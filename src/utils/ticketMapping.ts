@@ -53,7 +53,7 @@ export const ticketStatusOptions: StatusOption[] = [
         value: "open",
         label: "باز",
         color: "green",
-        bgClass: "bg-green-300",
+        bgClass: "bg-green-100",
         textClass: "text-green-700",
     },
     {
