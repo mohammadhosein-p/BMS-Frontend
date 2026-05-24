@@ -1,7 +1,6 @@
 import { Home, ArrowLeft, CheckCircle2 } from "lucide-react";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
-import { translateNumber } from "@/utils/translateNumber";
 import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import { useMutation } from "@tanstack/react-query";
@@ -22,7 +21,20 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
     const verifyCodeMutation = useMutation({
         mutationFn: validateInviteCode,
         onSuccess: async (data: any) => {
-            updateUser({ ApartmentID: data?.ApartmentID, UnitID: data?.UnitID });
+            if (data?.apartment_id && data?.unit_id) {
+
+                updateUser({
+                    apartment_id: data.apartment_id,
+                    unit_id: data.unit_id
+                });
+
+                console.log("استور با موفقیت آپدیت شد:", {
+                    apartment_id: data.apartment_id,
+                    unit_id: data.unit_id
+                });
+            } else {
+                console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند:", data);
+            }
 
             toast.custom((t) => (
                 <CustomToast
@@ -43,15 +55,23 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
     const getErrorMessage = () => {
         if (verifyCodeMutation.isError) {
             const serverMessage = (verifyCodeMutation.error as any)?.response?.data?.message;
+            const normalized = typeof serverMessage === "string" ? serverMessage.trim().toLowerCase() : "";
 
-            if (serverMessage === "this unit has already been occupied by another resident") {
-                return "این واحد قبلاً توسط ساکن دیگری اشغال شده است";
+            const messageMap: Record<string, string> = {
+                "this unit has already been occupied by another resident": "این واحد قبلاً توسط ساکن دیگری اشغال شده است",
+                "this invite code has expired": "کد دعوت منقضی شده است",
+                "invalid or non-existent invite code": "کد دعوت وارد شده نامعتبر است یا وجود ندارد",
+            };
+
+            if (normalized && messageMap[normalized]) {
+                return messageMap[normalized];
             }
 
             return serverMessage || "کد دعوت وارد شده معتبر نیست یا منقضی شده است";
         }
         return null;
     };
+
 
     const activeError = getErrorMessage();
 

@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Camera, LogOut, Clock, KeyRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// دکمه قدیمی حذف و کامپوننت اختصاصی شما ایمپورت شد
 import CustomButton from "../ui/CustomeButton";
 import type { User } from "@/types/authTypes";
 import LogoutConfirmDialog from './LogoutConfirmDialog';
@@ -21,46 +20,64 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [isChangePassOpen, setIsChangePassOpen] = useState(false);
+    const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-    // Trigger hidden file input
+    useEffect(() => {
+        return () => {
+            if (previewImage) {
+                URL.revokeObjectURL(previewImage);
+            }
+        };
+    }, [previewImage]);
+
     const handleCameraClick = () => {
         fileInputRef.current?.click();
     };
 
-    // Handle profile image preview
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            if (previewImage) URL.revokeObjectURL(previewImage);
             const imageUrl = URL.createObjectURL(file);
             setPreviewImage(imageUrl);
+            
+            // TODO: ارسال مستقیم فایل به سرور یا ذخیره در فرم اصلی
+            console.log("تصویر انتخاب شده برای آپلود:", file);
         }
     };
 
-    const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
     const handleConfirmLogout = () => {
         // TODO: منطق خروج از حساب (پاک کردن توکن، کش، استیت گلوبال و هدایت به صفحه لاگین)
         console.log("کاربر خارج شد");
         setIsLogoutDialogOpen(false);
     };
 
-    const isAdmin = user.Role === 'admin';
-    const roleFa = isAdmin ? 'مدیر' : 'ساکن';
-    const genderIconSrc = user.Gender === 'female' ? FemaleIcon : MaleIcon;
+    const getRoleDetails = (role: string) => {
+        switch (role) {
+            case 'admin':
+                return { label: 'مدیر کل', styles: "border-primary-2 text-primary-2 bg-primary-5" };
+            case 'manager':
+                return { label: 'مدیر ساختمان', styles: "border-danger-2 text-danger-2 bg-danger-5" };
+            case 'resident':
+            default:
+                return { label: 'ساکن', styles: "border-success-op2-3 text-success-op2-3 bg-success-op2-5/50" };
+        }
+    };
 
-    const roleBadgeStyles = isAdmin
-        ? "border-danger-2 text-danger-2 bg-danger-5"
-        : "border-success-op2-3 text-success-op2-3 bg-success-op2-5/50";
+    const roleInfo = getRoleDetails(user.role);
+    const genderIconSrc = user.gender === 'female' ? FemaleIcon : MaleIcon;
 
     return (
         <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full">
 
+            {/* Left Section: Meta Data & Actions */}
             <div className="flex flex-col justify-between items-start h-28">
                 <div className="flex items-center gap-4 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-md px-3 py-1.5 text-xs font-medium" dir="rtl">
                     <div className="flex items-center gap-1">
                         <Clock size={16} />
                         <span>تاریخ ورود به ساختمان</span>
                     </div>
-                    <span className="pt-0.5">{translateDate("1404/12/02")}</span>
+                    <span className="pt-0.5">{translateDate(user.created_at)}</span>
                 </div>
 
                 <div className="flex flex-row gap-2">
@@ -97,7 +114,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 {/* User Details */}
                 <div className="flex flex-col gap-3 items-end">
                     <div className="flex items-center gap-1 text-2xl font-bold text-neutral-800">
-                        <span>{user.FirstName || "علی"} {user.LastName || "نقی‌نژاد"}</span>
+                        <span>{user.first_name} {user.last_name}</span>
                         <img
                             src={genderIconSrc}
                             alt="gender"
@@ -106,10 +123,10 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     </div>
 
                     <div className="flex items-center gap-3 text-sm">
-                        <span className={`inline-flex items-center justify-center px-4 h-6 rounded-md border text-xs font-semibold pt-0.5 ${roleBadgeStyles}`}>
-                            {roleFa}
+                        <span className={`inline-flex items-center justify-center px-4 h-6 rounded-md border text-xs font-semibold pt-0.5 ${roleInfo.styles}`}>
+                            {roleInfo.label}
                         </span>
-                        <span className="text-neutral-500 font-medium">@{user.Username || "AliNaghiNjad"}</span>
+                        <span className="text-neutral-500 font-medium">@{user.username}</span>
                     </div>
                 </div>
 
@@ -118,11 +135,11 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-neutral-100">
                         <Avatar className="w-24 h-24 rounded-xl overflow-hidden">
                             <AvatarImage
-                                src={previewImage || user.ProfileImageURL || DefaultProfileImg}
+                                src={previewImage || user.profile_image_url || DefaultProfileImg}
                                 className="object-cover"
                             />
                             <AvatarFallback className="rounded-xl bg-[#7c8aff] text-white text-3xl font-bold">
-                                {user.FirstName?.charAt(0)}‌{user.LastName?.charAt(0)}
+                                {user.first_name?.charAt(0)}‌{user.last_name?.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </div>

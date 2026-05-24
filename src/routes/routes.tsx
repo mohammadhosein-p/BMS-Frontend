@@ -46,11 +46,7 @@ export const router = createBrowserRouter([
                             })),
                             {
                                 path: "profile",
-                                element: (
-                                    <RoleGuard roles={["user", "admin"]}>
-                                        <ProfileTab />
-                                    </RoleGuard>
-                                )
+                                element: ( <ProfileTab />)
                             }
                         ],
                     },

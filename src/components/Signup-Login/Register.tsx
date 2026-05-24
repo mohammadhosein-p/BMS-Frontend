@@ -52,27 +52,28 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
         mode: "onTouched",
         defaultValues: {
             username: "",
-            firstName: "",
-            lastName: "",
+            first_name: "", 
+            last_name: "", 
             email: "",
             password: "",
             confirmPassword: "",
             gender: "male",
         },
     });
+    console.log(isValid)
 
     const onSubmit = (data: RegisterFormData) => {
         if (registerMutation.isPending) return;
 
         const finalData = {
-            first_name: data.firstName,
-            last_name: data.lastName,
+            first_name: data.first_name,
+            last_name: data.last_name,
             username: data.username,
             email: data.email,
             password: data.password,
             gender: data.gender,
             phone: phoneNumber,
-            role: "user",
+            role: "resident",
         };
 
         registerMutation.mutate(finalData);
@@ -131,13 +132,13 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
 
                 <div className="flex gap-3">
                     <Controller
-                        name="firstName"
+                        name="first_name"
                         control={control}
                         render={({ field }) => (
                             <CustomField
                                 {...field}
                                 placeholder="نام"
-                                variant={errors.firstName ? "error" : isSuccess ? "success" : "default"}
+                                variant={errors.first_name ? "error" : isSuccess ? "success" : "default"}
                                 disabled={isLoading}
                                 onChange={(e) => {
                                     field.onChange(e);
@@ -147,13 +148,13 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                         )}
                     />
                     <Controller
-                        name="lastName"
+                        name="last_name"
                         control={control}
                         render={({ field }) => (
                             <CustomField
                                 {...field}
                                 placeholder="نام خانوادگی"
-                                variant={errors.lastName ? "error" : isSuccess ? "success" : "default"}
+                                variant={errors.last_name ? "error" : isSuccess ? "success" : "default"}
                                 disabled={isLoading}
                                 onChange={(e) => {
                                     field.onChange(e);
@@ -229,7 +230,6 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                             icon={<Lock size={18} />}
                             variant={errors.confirmPassword ? "error" : isSuccess ? "success" : "default"}
                             disabled={isLoading}
-                            // تغییر: ریست کردن خطای سرور به محض ویرایش تکرار رمز عبور
                             onChange={(e) => {
                                 field.onChange(e);
                                 if (registerMutation.isError) registerMutation.reset();

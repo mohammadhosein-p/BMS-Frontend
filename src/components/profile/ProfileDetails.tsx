@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { User as UserIcon, Mail, Lock, Edit, Save } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User as UserIcon, Mail, Edit, Save } from "lucide-react";
 import CustomField from "@/components/ui/CutsomeFiled";
 import type { User } from "@/types/authTypes";
 import CustomButton from "../ui/CustomeButton";
 import { translateNumber } from "@/utils/translateNumber";
 import { profileSchema } from "@/utils/authSchema";
-
 
 interface ProfileDetailsProps {
     user: User;
@@ -16,14 +15,26 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     
     const [formData, setFormData] = useState({
-        username: user.Username || "AliNaghiNjad",
-        email: user.Email || "ali@example.com",
-        firstName: user.FirstName || "علی",
-        lastName: user.LastName || "نقی نژاد",
-        phone: "09000000000",
-        buildingNumber: "AS123",
-        unitNumber: "12"
+        username: user.username || "",
+        email: user.email || "",
+        first_name: user.first_name || "",
+        last_name: user.last_name || "",
+        phone: user.phone || "",
+        apartment_id: user.apartment_id || "",
+        unit_id: user.unit_id || ""
     });
+
+    useEffect(() => {
+        setFormData({
+            username: user.username || "",
+            email: user.email || "",
+            first_name: user.first_name || "",
+            last_name: user.last_name || "",
+            phone: user.phone || "",
+            apartment_id: user.apartment_id || "",
+            unit_id: user.unit_id || ""
+        });
+    }, [user]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -32,7 +43,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
             setErrors(prev => ({ ...prev, [name]: "" }));
         }
 
-        if (["phone", "unitNumber"].includes(name)) {
+        if (["phone"].includes(name)) {
             const englishValue = translateNumber(value, true);
             setFormData(prev => ({ ...prev, [name]: englishValue }));
         } else {
@@ -107,6 +118,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             label="ایمیل"
                             name="email"
                             value={formData.email}
+                            dir="ltr"
                             onChange={handleInputChange}
                             disabled={!isEditing}
                             icon={<Mail size={18} />}
@@ -118,31 +130,31 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                     <div className="flex flex-col">
                         <CustomField
                             label="نام"
-                            name="firstName"
-                            value={formData.firstName}
+                            name="first_name"
+                            value={formData.first_name}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            variant={errors.firstName ? "error" : "default"}
+                            variant={errors.first_name ? "error" : "default"}
                         />
-                        {errors.firstName && <span className="text-red-500 text-xs mt-1 px-1">{errors.firstName}</span>}
+                        {errors.first_name && <span className="text-red-500 text-xs mt-1 px-1">{errors.first_name}</span>}
                     </div>
 
                     <div className="flex flex-col">
                         <CustomField
                             label="نام خانوادگی"
-                            name="lastName"
-                            value={formData.lastName}
+                            name="last_name" 
+                            value={formData.last_name}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            variant={errors.lastName ? "error" : "default"}
+                            variant={errors.last_name ? "error" : "default"}
                         />
-                        {errors.lastName && <span className="text-red-500 text-xs mt-1 px-1">{errors.lastName}</span>}
+                        {errors.last_name && <span className="text-red-500 text-xs mt-1 px-1">{errors.last_name}</span>}
                     </div>
 
                     <div className="flex flex-col">
                         <CustomField
                             label="شماره تماس"
-                            name="phone"
+                            name="phone" 
                             type="tel"
                             inputMode="numeric"
                             value={translateNumber(formData.phone)}
@@ -155,27 +167,28 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
 
                     <div className="flex flex-col">
                         <CustomField
-                            label="شماره ساختمان"
-                            name="buildingNumber"
-                            value={formData.buildingNumber}
+                            label="شناسه آپارتمان"
+                            name="apartment_id" 
+                            value={formData.apartment_id}
                             onChange={handleInputChange}
                             disabled={true}
-                            variant={errors.buildingNumber ? "error" : "default"}
+                            dir="ltr"
+                            variant={errors.apartment_id ? "error" : "default"}
                         />
-                        {errors.buildingNumber && <span className="text-red-500 text-xs mt-1 px-1">{errors.buildingNumber}</span>}
+                        {errors.apartment_id && <span className="text-red-500 text-xs mt-1 px-1">{errors.apartment_id}</span>}
                     </div>
 
                     <div className="flex flex-col">
                         <CustomField
-                            label="شماره واحد"
-                            name="unitNumber"
-                            inputMode="numeric"
-                            value={translateNumber(formData.unitNumber)}
+                            label="شناسه واحد"
+                            name="unit_id"
+                            value={formData.unit_id}
                             onChange={handleInputChange}
                             disabled={true}
-                            variant={errors.unitNumber ? "error" : "default"}
+                            dir="ltr"
+                            variant={errors.unit_id ? "error" : "default"}
                         />
-                        {errors.unitNumber && <span className="text-red-500 text-xs mt-1 px-1">{errors.unitNumber}</span>}
+                        {errors.unit_id && <span className="text-red-500 text-xs mt-1 px-1">{errors.unit_id}</span>}
                     </div>
 
                 </div>
