@@ -12,6 +12,9 @@ export interface Comment {
     User: {
         Username: string;
         ProfileImageURL: string;
+        ID: string;
+        FirstName: string;
+        LastName: string;
     };
 }
 

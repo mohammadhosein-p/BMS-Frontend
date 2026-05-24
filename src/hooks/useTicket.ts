@@ -99,11 +99,11 @@ export const useDeleteTicket = () => {
     });
 };
 
-export const useTicketDetails = (id?: string) => {
+export const useTicketDetails = (id?: string, enabled: boolean = true) => {
     return useQuery({
         queryKey: ["ticket-details", id],
         queryFn: () => getFullyTicketDetails(id!),
-        enabled: !!id,
+        enabled,
     });
 };
 

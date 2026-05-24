@@ -3,7 +3,6 @@ import {
     ShieldUser,
     Trash2,
     Wrench,
-    type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import TicketDetailsDialog from "./TicketDetailsDialog";
@@ -30,9 +29,6 @@ interface UiTicket {
     status: string;
     statusLabel: string;
     statusColor: string;
-    // icon: LucideIcon;
-    // iconBg: string;
-    // iconColor: string;
     isPublic: boolean;
 }
 

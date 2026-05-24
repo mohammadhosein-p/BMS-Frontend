@@ -9,7 +9,7 @@ import {
     Shapes,
 } from "lucide-react";
 
-export type TicketStatus = "open" | "in_progress" | "closed";
+export type TicketStatus = "open" | "in-progress" | "closed";
 
 export type TicketCategory =
     | "maintenance"
@@ -53,11 +53,11 @@ export const ticketStatusOptions: StatusOption[] = [
         value: "open",
         label: "باز",
         color: "green",
-        bgClass: "bg-green-100",
+        bgClass: "bg-green-300",
         textClass: "text-green-700",
     },
     {
-        value: "in_progress",
+        value: "in-progress",
         label: "در حال بررسی",
         color: "yellow",
         bgClass: "bg-yellow-100",

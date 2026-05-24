@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Send, ShieldCheck, ShieldClose, X } from "lucide-react";
-import { Avatar } from "../ui/avatar";
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Send, ShieldCheck, ShieldClose, ShieldUser, X } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import CustomButton from "../ui/CustomeButton";
 import {
     Dialog,
@@ -15,6 +14,10 @@ import CustomField from "../ui/CutsomeFiled";
 import { useCreateTicketComment, useTicketDetails } from "@/hooks/useTicket";
 import useAuthStore from "@/store/useAuthStore";
 import { translateDate } from "@/utils/translateDate";
+import {
+    ticketCategoryOptions,
+    ticketStatusOptions,
+} from "@/utils/ticketMapping";
 
 interface Prop {
     id: string;
@@ -25,10 +28,17 @@ export default function TicketDetailsDialog({ id }: Prop) {
     const [text, setText] = useState("");
     const currentUser = useAuthStore((store) => store.user?.id);
 
-    const { data } = useTicketDetails(id);
+    const { data } = useTicketDetails(id, isOpen);
     const { mutate: sendComment } = useCreateTicketComment();
 
     const ticket = data?.data;
+    const ticketStatusItem = ticketStatusOptions.find(
+        (item) => item.value == ticket?.Status,
+    );
+    const ticketCategoryItem = ticketCategoryOptions.find(
+        (item) => item.value == ticket?.Category,
+    );
+    const TicketIcon = ticketCategoryItem?.icon || ShieldCheck;
 
     const handleSend = () => {
         if (!text.trim()) return;
@@ -40,6 +50,8 @@ export default function TicketDetailsDialog({ id }: Prop) {
             },
         );
     };
+
+    console.log(ticket?.Comments);
 
     return (
         <>
@@ -69,8 +81,12 @@ export default function TicketDetailsDialog({ id }: Prop) {
                     <div>
                         {/* HEADER */}
                         <div className="mb-3 sm:mt-6 flex flex-col items-center gap-4 text-center md:flex-row md:items-start md:gap-4 md:text-right">
-                            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#f3ddb0] md:h-24 md:w-24">
-                                <ShieldCheck className="h-10 w-10 text-[#9a6b00] md:h-14 md:w-14" />
+                            <div
+                                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl  md:h-24 md:w-24 ${ticketCategoryItem?.bgClass}`}
+                            >
+                                <TicketIcon
+                                    className={`h-10 w-10 text-[#9a6b00] md:h-14 md:w-14 ${ticketCategoryItem?.textClass}`}
+                                />
                             </div>
 
                             <div className="flex-1 w-full flex flex-col items-center md:items-start gap-2">
@@ -81,9 +97,13 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                         </DialogTitle>
 
                                         {ticket?.Accessability === "public" ? (
-                                            <ShieldCheck className="h-4 w-4 text-danger-3" />
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
+                                                <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
+                                            </div>
                                         ) : (
-                                            <ShieldClose className="h-4 w-4 text-danger-3" />
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-danger-3">
+                                                <ShieldClose className="h-4 w-4 text-danger-3" />
+                                            </div>
                                         )}
                                     </div>
 
@@ -93,12 +113,16 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                 </DialogHeader>
 
                                 <div className="flex flex-wrap items-center gap-1.5 justify-center md:justify-start">
-                                    <div className="flex items-center gap-1 rounded-sm border font-medium border-yellow-400 bg-yellow-50 px-3 py-1 text-xs text-yellow-800">
-                                        {ticket?.Status}
+                                    <div
+                                        className={`flex items-center gap-1 rounded-sm border font-medium border-yellow-400 bg-yellow-50 px-3 py-1 text-xs text-yellow-800 ${ticketStatusItem?.bgClass} ${ticketStatusItem?.textClass}`}
+                                    >
+                                        {ticketStatusItem?.label || "بسته شده"}
                                     </div>
 
-                                    <div className="flex items-center gap-1 rounded-sm border font-medium border-blue-400 bg-blue-50 px-4 py-1 text-xs text-blue-700">
-                                        {ticket?.Category}
+                                    <div
+                                        className={`flex items-center gap-1 rounded-sm border font-medium border-blue-400 bg-blue-50 px-4 py-1 text-xs text-blue-700 ${ticketCategoryItem?.bgClass} ${ticketCategoryItem?.textClass}`}
+                                    >
+                                        {ticketCategoryItem?.label || "سایر"}
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +138,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
                         </div>
 
-                        {/* COMMENTS */}
+                        {/* ticket?.CommentsS */}
                         <div className="overflow-hidden rounded-3xl border bg-[#f6f6f8]">
                             <div className="border-b border-zinc-200 bg-white px-6 py-4 text-right">
                                 <h3 className="text-lg font-bold text-zinc-900 md:text-xl flex items-center gap-2">
@@ -132,29 +156,35 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                 >
                                     {ticket?.Comments?.map((comment) => {
                                         const isCommentOwner =
-                                            currentUser === comment.UserID;
+                                            currentUser === comment.User.ID;
                                         return (
                                             <div
                                                 key={comment.ID}
                                                 className={`flex items-end w-full gap-3 ${
                                                     isCommentOwner
-                                                        ? "flex-row-reverse"
-                                                        : "flex-row"
+                                                        ? "flex-row"
+                                                        : "flex-row-reverse"
                                                 }`}
                                             >
-                                                <div className="bg-neutral-4 rounded-full shrink-0">
-                                                    <Avatar>
+                                                <div>
+                                                    <Avatar className="h-10 w-10 shrink-0">
                                                         <AvatarImage
                                                             src={
                                                                 comment.User
                                                                     .ProfileImageURL
                                                             }
+                                                            className="h-full w-full object-cover"
                                                         />
-                                                        <AvatarFallback>
-                                                            {
-                                                                comment.User
-                                                                    .Username
-                                                            }
+
+                                                        <AvatarFallback
+                                                            className={`
+                                                                flex h-full w-full items-center justify-center
+                                                                rounded-full text-xs font-bold text-white
+                                                                ${isCommentOwner ? "bg-secondary-blue-3" : "bg-neutral-3/80"}
+                                                            `}
+                                                        >
+                                                            {comment.User.FirstName?.[0]?.toUpperCase()}
+                                                            {comment.User.LastName?.[0]?.toUpperCase()}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                 </div>
@@ -162,8 +192,8 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                 <div
                                                     className={`w-fit max-w-[85%] rounded-2xl border px-3 py-2 shadow-sm ${
                                                         isCommentOwner
-                                                            ? "bg-white border-zinc-300 rounded-bl-none"
-                                                            : "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"
+                                                            ? "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"
+                                                            : "bg-white border-zinc-300 rounded-bl-none"
                                                     }`}
                                                 >
                                                     <div className="mb-1 text-xs text-neutral-1 text-right">
