@@ -82,7 +82,7 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, isUser
 
     const handleSubmit = () => {
         const cleanOtp = translateNumber(value, true);
-        if (cleanOtp.length !== 6 || verifyOtpMutation.isPending) return;
+        if (cleanOtp.length !== 5 || verifyOtpMutation.isPending) return;
         
         verifyOtpMutation.mutate({ phone: phoneNumber, code: cleanOtp });
     };
@@ -128,29 +128,29 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, isUser
 
             <div className="flex justify-center mb-4" dir="ltr">
                 <InputOTP
-                    maxLength={6}
+                    maxLength={5}
                     value={value}
                     onChange={(val) => {
                         setValue(translateNumber(val));
-                        if (verifyOtpMutation.isError) verifyOtpMutation.reset(); // اصلاح: با شروع تایپ مجدد کاربر، پیام خطای قرمز رنگ ناپدید می‌شود
+                        if (verifyOtpMutation.isError) verifyOtpMutation.reset(); 
                     }}
                     onComplete={(finalValue) => {
                         const cleanOtp = translateNumber(finalValue, true);
-                        if (cleanOtp.length === 6) {
-                            verifyOtpMutation.mutate({ phone: phoneNumber, code: cleanOtp }); // اصلاح: استفاده مستقیم از مقادیر آماده برای جلوگیری از باگ عدم همزمانی استیت
+                        if (cleanOtp.length === 5) {
+                            verifyOtpMutation.mutate({ phone: phoneNumber, code: cleanOtp }); 
                         }
                     }}
                     disabled={isGlobalLoading}
                     aria-invalid={verifyOtpMutation.isError ? "true" : "false"}
                 >
                     <InputOTPGroup className="gap-3">
-                        {[...Array(6)].map((_, index) => (
+                        {[...Array(5)].map((_, index) => (
                             <InputOTPSlot
                                 key={index}
                                 index={index}
                                 className={`w-14 h-16 text-xl font-semibold text-center border rounded-[12px] transition-all ${
                                     verifyOtpMutation.isError ? "border-danger-2 bg-danger-5/10 text-danger-1" : ""
-                                }`} // اصلاح: در صورت بروز خطا، باکس‌های ورود کد هم استایل قرمز رنگ به خود می‌گیرند
+                                }`} 
                             />
                         ))}
                     </InputOTPGroup>

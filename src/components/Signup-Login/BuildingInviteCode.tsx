@@ -30,7 +30,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                     message="ورود به ساختمان و تخصیص واحد با موفقیت انجام شد"
                     variant="success"
                     icon={<CheckCircle2 size={20} />}
-                    />
+                />
             ));
 
             await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -56,8 +56,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
     const activeError = getErrorMessage();
 
     const validation = useMemo(() => {
-        const englishCode = translateNumber(inviteCode, true).trim();
-        if (englishCode.length === 0) return { variant: "default", isValid: false };
+        if (inviteCode.length === 0) return { variant: "default", isValid: false };
 
         if (verifyCodeMutation.isError) return { variant: "error", isValid: false };
         return { variant: "success", isValid: true };
@@ -66,22 +65,18 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value;
-        const englishValue = translateNumber(rawValue, true);
 
-        if (englishValue.length <= 10) {
-            setInviteCode(rawValue);
-            if (verifyCodeMutation.isError) {
-                verifyCodeMutation.reset();
-            }
+        setInviteCode(rawValue);
+        if (verifyCodeMutation.isError) {
+            verifyCodeMutation.reset();
         }
+
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!validation.isValid || verifyCodeMutation.isPending) return;
-
-        const englishCode = translateNumber(inviteCode, true);
-        verifyCodeMutation.mutate(englishCode);
+        verifyCodeMutation.mutate(inviteCode);
     };
 
     const isLoading = verifyCodeMutation.isPending;
@@ -98,7 +93,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                 <CustomField
                     placeholder="مثلاً CODE_FLAN"
                     icon={<Home size={18} />}
-                    value={translateNumber(inviteCode)}
+                    value={inviteCode}
                     onChange={handleChange}
                     variant={validation.variant}
                     type="text"

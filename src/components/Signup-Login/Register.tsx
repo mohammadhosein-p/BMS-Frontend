@@ -8,23 +8,11 @@ import useAuthStore from "@/store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { registerService } from "@/services/authService";
 import { motion, AnimatePresence } from "framer-motion";
-import {toast} from "sonner"; // اضافه شدن کتابخانه مدیریت توست
+import { toast } from "sonner";
 import CustomToast from "../Custom/CustomToast";
 import CustomField from "../ui/CutsomeFiled";
 import CustomButton from "../ui/CustomeButton";
-
-const registerSchema = z.object({
-    username: z.string().trim().min(3, "نام کاربری باید حداقل ۳ کاراکتر باشد"),
-    firstName: z.string().trim().min(1, "نام الزامی است"),
-    lastName: z.string().trim().min(1, "نام خانوادگی الزامی است"),
-    email: z.string().trim().email("ایمیل معتبر نیست"),
-    password: z.string().min(6, "رمز عبور باید حداقل ۶ کاراکتر باشد"),
-    gender: z.enum(["male", "female"], "لطفا جنسیت را انتخاب کنید"),
-    confirmPassword: z.string().min(1, "تکرار رمز عبور الزامی است"),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "رمز عبور و تکرار آن مطابقت ندارند",
-    path: ["confirmPassword"],
-});
+import { registerSchema } from "@/utils/authSchema";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -40,9 +28,9 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
         mutationFn: registerService,
         onSuccess: async (data) => {
             setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
-            
+
             toast.custom((t) => (
-                <CustomToast 
+                <CustomToast
                     title="موفقیت‌آمیز"
                     message="ثبت‌نام شما با موفقیت انجام شد"
                     variant="success"
