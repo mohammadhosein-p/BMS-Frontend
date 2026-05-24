@@ -15,7 +15,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogClose,
-    DialogTrigger,
 } from "../ui/CustomeDialog";
 
 import SelectOptions from "../ui/SelectOptions/SelectOptions";

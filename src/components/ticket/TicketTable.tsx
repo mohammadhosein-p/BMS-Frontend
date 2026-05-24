@@ -46,11 +46,19 @@ interface UiTicket {
 
 interface Prop {
     filterState: "all" | "closed" | "in-progress";
-    categoryFilter: "all" | "maintenance" | "plumbing" | "electricity" | "security" | "cleaning" | "parking" | "other";
+    categoryFilter:
+        | "all"
+        | "maintenance"
+        | "plumbing"
+        | "electricity"
+        | "security"
+        | "cleaning"
+        | "parking"
+        | "other";
 }
 
-function TicketTable({filterState, categoryFilter}: Prop) {
-    const isAdmin = useAuthStore((store) => store.user?.role === "admin");
+function TicketTable({ filterState, categoryFilter }: Prop) {
+    const isManager = useAuthStore((store) => store.user?.role === "manager");
     const user_id = useAuthStore((store) => store.user?.id);
 
     const apiParams = {
@@ -65,7 +73,6 @@ function TicketTable({filterState, categoryFilter}: Prop) {
     const { mutate: updateTicketStatus } = useUpdateTicketStatus();
     const { mutate: deleteTicket } = useDeleteTicket();
 
-
     const tickets: UiTicket[] | undefined = data?.data?.map((ticket) => ({
         id: ticket.ID,
         user_id: ticket.UserID,
@@ -79,13 +86,13 @@ function TicketTable({filterState, categoryFilter}: Prop) {
                 ? "باز"
                 : ticket.Status === "in-progress"
                   ? "در حال بررسی"
-                    : "بسته شده",
+                  : "بسته شده",
         statusColor:
             ticket.Status === "open"
                 ? "bg-green-100 text-green-700"
                 : ticket.Status === "in-progress"
                   ? "bg-yellow-100 text-yellow-700"
-                    : "bg-red-100 text-red-700",
+                  : "bg-red-100 text-red-700",
         icon: ticket.Accessibility === "public" ? ShieldUser : ShieldClose,
         iconBg:
             ticket.Accessibility === "public" ? "bg-blue-100" : "bg-red-100",
@@ -125,12 +132,13 @@ function TicketTable({filterState, categoryFilter}: Prop) {
                 </div>
 
                 <h3 className="text-lg font-extrabold text-danger-2">
-                   خطا در دریافت لیست تیکت ها
+                    خطا در دریافت لیست تیکت ها
                 </h3>
                 <p>لطفا بعدا دوباره تلاش کنید</p>
             </div>
         );
     }
+    console.log(data);
 
     return (
         <div className="flex-1 overflow-hidden rounded-lg border border-neutral-4 bg-white">
@@ -188,7 +196,7 @@ function TicketTable({filterState, categoryFilter}: Prop) {
 
                             {/* Mobile Info */}
                             <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
-                                {/* {isAdmin && (
+                                {/* {isManager && (
                                     <div className="text-sm font-medium text-neutral-2">
                                         {ticket.unit}
                                     </div>
@@ -198,36 +206,71 @@ function TicketTable({filterState, categoryFilter}: Prop) {
                                     {ticket.category}
                                 </div>
 
-                                <div
-                                    className={`
+                                {/* Admin Status Select */}
+                                {isManager ? (
+                                    <div className="space-y-1 w-36">
+                                        <SelectOptions
+                                            value={ticket.status}
+                                            onChange={(value) => {
+                                                updateTicketStatus({
+                                                    ticketId: ticket.id,
+
+                                                    status: value,
+                                                });
+                                            }}
+                                            options={ticketStatusOptions as any}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div
+                                        className={`
                                         rounded-full px-3 py-1
                                         text-xs font-bold
                                         ${ticket.statusColor}
                                     `}
-                                >
-                                    {ticket.statusLabel}
-                                </div>
+                                    >
+                                        {ticket.statusLabel}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Desktop Unit */}
-                            {/* {isAdmin && (
+                            {/* {isManager && (
                                 <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
                                     {ticket.unit}
                                 </div>
                             )} */}
 
                             {/* Desktop Status */}
-                            <div className="hidden flex-2 justify-center sm:flex">
-                                <div
-                                    className={`
+
+                            {/* Admin Status Select */}
+                            {isManager ? (
+                                <div className="space-y-1 w-32">
+                                    <SelectOptions
+                                        value={ticket.status}
+                                        onChange={(value) => {
+                                            updateTicketStatus({
+                                                ticketId: ticket.id,
+
+                                                status: value,
+                                            });
+                                        }}
+                                        options={ticketStatusOptions as any}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="hidden flex-2 justify-center sm:flex">
+                                    <div
+                                        className={`
                                         w-32 rounded-lg py-1.5
                                         text-center text-sm font-bold
                                         ${ticket.statusColor}
                                     `}
-                                >
-                                    {ticket.statusLabel}
+                                    >
+                                        {ticket.statusLabel}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {/* Desktop Category */}
                             <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
@@ -251,23 +294,6 @@ function TicketTable({filterState, categoryFilter}: Prop) {
                                     >
                                         <Trash2 size={18} />
                                     </motion.button>
-                                )}
-
-                                {/* Admin Status Select */}
-                                {isAdmin && (
-                                    <div className="space-y-1">
-                                        <SelectOptions
-                                            value={ticket.status}
-                                            onChange={(value) => {
-                                                updateTicketStatus({
-                                                    ticketId: ticket.id,
-
-                                                    status: value,
-                                                });
-                                            }}
-                                            options={ticketStatusOptions as any}
-                                        />
-                                    </div>
                                 )}
                             </div>
                         </div>
