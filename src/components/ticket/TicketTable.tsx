@@ -56,7 +56,7 @@ function TicketTable({filterState, categoryFilter}: Prop) {
     const apiParams = {
         status: filterState === "all" ? undefined : filterState,
         category: categoryFilter === "all" ? undefined : categoryFilter,
-        user_id: user_id,
+        // user_id: user_id,
         page: 1,
         limit: 1000,
     };

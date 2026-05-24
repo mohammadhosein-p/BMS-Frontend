@@ -52,6 +52,6 @@ export const getFullyTicketDetails = async (id: string) => {
 export const createTicketComment = async (id: string, text: string) => {
     return postData({
         endPoint: `/tickets/${id}/comments`,
-        data: { text },
+        data: { body: text },
     });
 };

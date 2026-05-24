@@ -37,7 +37,7 @@ function ProtectedLayout() {
                 setIsVerifying(false);
             }
         }
-        verifyUser();
+        // verifyUser();
         // if (access && !user) {
         //     verifyUser();
         // }
