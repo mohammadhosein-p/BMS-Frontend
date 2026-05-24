@@ -8,7 +8,7 @@ export interface User {
     username: string;
     email: string;
     phone: string;
-    role: "admin" | "resident" | string;
+    role: "admin" | "resident" | "manager" | string;
     gender: "male" | "female" | string;
     profile_image_url: string | null;
 }

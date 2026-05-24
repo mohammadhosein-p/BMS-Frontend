@@ -21,7 +21,20 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
     const verifyCodeMutation = useMutation({
         mutationFn: validateInviteCode,
         onSuccess: async (data: any) => {
-            updateUser({ apartment_id: data?.apartment_id, unit_id: data?.apartment_id });
+            if (data?.apartment_id && data?.unit_id) {
+
+                updateUser({
+                    apartment_id: data.apartment_id,
+                    unit_id: data.unit_id
+                });
+
+                console.log("استور با موفقیت آپدیت شد:", {
+                    apartment_id: data.apartment_id,
+                    unit_id: data.unit_id
+                });
+            } else {
+                console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند:", data);
+            }
 
             toast.custom((t) => (
                 <CustomToast
