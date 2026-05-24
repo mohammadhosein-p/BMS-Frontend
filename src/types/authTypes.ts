@@ -1,17 +1,16 @@
 export interface User {
-    ID: string;
-    CreatedAt: string;
-    ApartmentID: string | null;
-    UnitID : string | null;
-    FirstName: string;
-    LastName: string;
-    Username: string;
-    Email: string;
-    Phone: string;
-    Password: string;
-    Role: "admin" | "resident" | string;
-    Gender: "male" | "female" | string;
-    ProfileImageURL: string | null;
+    id: string;
+    created_at: string;
+    apartment_id: string | null;
+    unit_id : string | null;
+    first_name: string;
+    last_name: string;
+    username: string;
+    email: string;
+    phone: string;
+    role: "admin" | "resident" | string;
+    gender: "male" | "female" | string;
+    profile_image_url: string | null;
 }
 
 export interface LoginPayload {
@@ -52,6 +51,6 @@ export interface InviteCode{
     code : string
 }
 export interface VlidateInviteCodeResponse {
-    ApartmentID: string ;
-    UnitID : string ;
+    apartment_id: string ;
+    unit_id : string ;
 }

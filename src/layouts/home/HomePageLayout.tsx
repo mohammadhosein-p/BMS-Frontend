@@ -5,6 +5,7 @@ import HomeHeader from "@/components/home/HomeHeader";
 function HomePageLayout() {
     return (
         <div className="h-screen bg-white p-2 md:p-4">
+            
             <div className="flex flex-row-reverse gap-4 h-full">
                 
                 <aside className="w-[260px] shrink-0 border border-neutral-4/80 bg-white rounded-2xl pt-2 px-2 shadow-sm hidden lg:block">
