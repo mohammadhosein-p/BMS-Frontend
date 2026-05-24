@@ -34,7 +34,7 @@ export interface CreateTicketPayload {
     description: string;
     body: string;
     category: string;
-    accessibility: "private" | "public";
+    accessability: "private" | "public";
 }
 
 export interface AllTicketResponse {

@@ -126,7 +126,7 @@ function RegisterTicketDialog() {
             description: data.description,
             body: data.body,
             category: data.category,
-            accessibility: data.accessibility,
+            accessability: data.accessibility,
         });
 
         reset();

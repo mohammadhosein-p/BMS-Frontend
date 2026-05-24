@@ -245,7 +245,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
 
                             {/* Admin Status Select */}
                             {isManager ? (
-                                <div className="space-y-1 w-32">
+                                <div className="hidden sm:block space-y-1 w-36">
                                     <SelectOptions
                                         value={ticket.status}
                                         onChange={(value) => {
@@ -279,22 +279,22 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
 
                             {/* Actions */}
                             <div className="flex flex-2 justify-end items-center gap-2">
-                                <TicketDetailsDialog id={ticket.id} />
-
                                 {ticket.user_id === user_id && (
                                     <motion.button
                                         type="button"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => deleteTicket(ticket.id)}
-                                        className="
-                                            flex items-center justify-center
-                                            transition-colors duration-200
-                                        "
+                                        className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2
+                                            size={18}
+                                            className="text-danger-2"
+                                        />
                                     </motion.button>
                                 )}
+
+                                <TicketDetailsDialog id={ticket.id} />
                             </div>
                         </div>
                     );
