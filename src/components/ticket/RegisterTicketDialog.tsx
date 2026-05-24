@@ -20,6 +20,7 @@ import {
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 import { Spinner } from "../ui/spinner";
 import { useCreateTicket } from "@/hooks/useTicket";
+import { ticketCategoryOptions } from "@/utils/ticketMapping";
 
 // =========================
 // Validation Schema
@@ -43,43 +44,6 @@ const ticketSchema = z.object({
 
 type TicketFormData = z.infer<typeof ticketSchema>;
 
-const ticketCategoryOptions = [
-    {
-        value: "maintenance",
-        label: "تعمیرات",
-        color: "blue",
-    },
-    {
-        value: "plumbing",
-        label: "لوله کشی",
-        color: "cyan",
-    },
-    {
-        value: "electricity",
-        label: "برق",
-        color: "yellow",
-    },
-    {
-        value: "security",
-        label: "امنیت",
-        color: "red",
-    },
-    {
-        value: "cleaning",
-        label: "نظافت",
-        color: "green",
-    },
-    {
-        value: "parking",
-        label: "پارکینگ",
-        color: "purple",
-    },
-    {
-        value: "other",
-        label: "سایر",
-        color: "gray",
-    },
-];
 
 function RegisterTicketDialog() {
     const [isOpen, setIsOpen] = useState<boolean>(false);

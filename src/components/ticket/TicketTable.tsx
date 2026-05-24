@@ -1,4 +1,10 @@
-import { ShieldClose, ShieldUser, Trash2, type LucideIcon } from "lucide-react";
+import {
+    ShieldClose,
+    ShieldUser,
+    Trash2,
+    Wrench,
+    type LucideIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
@@ -10,24 +16,10 @@ import {
     useUpdateTicketStatus,
 } from "@/hooks/useTicket";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
-
-const ticketStatusOptions = [
-    {
-        value: "open",
-        label: "باز",
-        color: "green",
-    },
-    {
-        value: "in_progress",
-        label: "در حال بررسی",
-        color: "yellow",
-    },
-    {
-        value: "closed",
-        label: "بسته شده",
-        color: "red",
-    },
-];
+import {
+    ticketCategoryOptions,
+    ticketStatusOptions,
+} from "@/utils/ticketMapping";
 
 interface UiTicket {
     id: string;
@@ -38,9 +30,9 @@ interface UiTicket {
     status: string;
     statusLabel: string;
     statusColor: string;
-    icon: LucideIcon;
-    iconBg: string;
-    iconColor: string;
+    // icon: LucideIcon;
+    // iconBg: string;
+    // iconColor: string;
     isPublic: boolean;
 }
 
@@ -93,14 +85,8 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                 : ticket.Status === "in-progress"
                   ? "bg-yellow-100 text-yellow-700"
                   : "bg-red-100 text-red-700",
-        icon: ticket.Accessibility === "public" ? ShieldUser : ShieldClose,
-        iconBg:
-            ticket.Accessibility === "public" ? "bg-blue-100" : "bg-red-100",
-        iconColor:
-            ticket.Accessibility === "public"
-                ? "text-blue-600"
-                : "text-red-600",
-        isPublic: ticket.Accessibility === "public",
+
+        isPublic: ticket.Accessability === "public",
     }));
 
     if (isLoading) {
@@ -144,7 +130,10 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
         <div className="flex-1 overflow-hidden rounded-lg border border-neutral-4 bg-white">
             <div className="custom-scrollbar h-full overflow-y-auto divide-y divide-neutral-4">
                 {tickets?.map((ticket) => {
-                    const Icon = ticket.icon;
+                    const ticketCategoryItem = ticketCategoryOptions.find(
+                        (item) => item.value == ticket.category,
+                    );
+                    const TicketIcon = ticketCategoryItem?.icon;
 
                     return (
                         <div
@@ -159,15 +148,24 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                         flex h-14 w-14 sm:h-16 sm:w-16
                                         shrink-0 items-center justify-center
                                         rounded-2xl
-                                        ${ticket.iconBg}
+                                        ${ticketCategoryItem?.bgClass}
                                     `}
                                 >
-                                    <Icon
-                                        className={`
+                                    {TicketIcon ? (
+                                        <TicketIcon
+                                            className={`
                                             h-7 w-7 sm:h-8 sm:w-8
-                                            ${ticket.iconColor}
+                                            ${ticketCategoryItem.textClass}
                                         `}
-                                    />
+                                        />
+                                    ) : (
+                                        <Wrench
+                                            className="
+                                            h-7 w-7 sm:h-8 sm:w-8
+                                            text-secondary-blue-3
+                                        "
+                                        />
+                                    )}
                                 </div>
 
                                 {/* Title */}
@@ -203,7 +201,8 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                 )} */}
 
                                 <div className="text-sm font-medium text-neutral-2">
-                                    {ticket.category}
+                                    {ticketCategoryItem?.label ||
+                                        ticket.category}
                                 </div>
 
                                 {/* Admin Status Select */}
@@ -274,7 +273,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
 
                             {/* Desktop Category */}
                             <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
-                                {ticket.category}
+                                {ticketCategoryItem?.label || ticket.category}
                             </div>
 
                             {/* Actions */}
@@ -294,7 +293,9 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                     </motion.button>
                                 )}
 
-                                <TicketDetailsDialog id={ticket.id} />
+                                <div className="flex-1 md:flex-none">
+                                    <TicketDetailsDialog id={ticket.id} />
+                                </div>
                             </div>
                         </div>
                     );

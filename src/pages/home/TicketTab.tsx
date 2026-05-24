@@ -3,6 +3,7 @@ import TicketTable from "@/components/ticket/TicketTable";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import SelectOptions from "@/components/ui/SelectOptions/SelectOptions";
+import { categoryOptions } from "@/utils/ticketMapping";
 
 type FilterState = "all" | "closed" | "in-progress";
 type CategoryFilter =
@@ -26,16 +27,6 @@ const filters: FilterOption[] = [
     { state: "closed", label: "بسته شده" },
 ];
 
-const categoryOptions = [
-    { value: "all", label: "همه دسته‌بندی‌ها", color: "gray" },
-    { value: "maintenance", label: "تعمیرات", color: "blue" },
-    { value: "plumbing", label: "لوله کشی", color: "cyan" },
-    { value: "electricity", label: "برق", color: "yellow" },
-    { value: "security", label: "امنیت", color: "red" },
-    { value: "cleaning", label: "نظافت", color: "green" },
-    { value: "parking", label: "پارکینگ", color: "purple" },
-    { value: "other", label: "سایر", color: "gray" },
-];
 
 function TicketsTab() {
     const [filterState, setFilterState] = useState<FilterState>("all");

@@ -22,7 +22,7 @@ export interface Ticket {
     Description: string;
     Body: string;
     Category: string;
-    Accessibility: "private" | "public";
+    Accessability: "private" | "public";
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: string | null;

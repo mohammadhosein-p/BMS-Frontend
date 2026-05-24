@@ -80,7 +80,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                             {ticket?.Title}
                                         </DialogTitle>
 
-                                        {ticket?.Accessibility === "public" ? (
+                                        {ticket?.Accessability === "public" ? (
                                             <ShieldCheck className="h-4 w-4 text-danger-3" />
                                         ) : (
                                             <ShieldClose className="h-4 w-4 text-danger-3" />
