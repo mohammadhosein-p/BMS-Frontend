@@ -1,7 +1,10 @@
+import useAuthStore from "@/store/useAuthStore";
 import FeatureCard from "./FeatureCard";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function HeroSection() {
+    const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
     return (
         <>
             {/* Background Shapes */}
@@ -43,17 +46,17 @@ function HeroSection() {
                     {/* Center Navigation */}
 
                     <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-20 text-white font-medium text-lg">
-                        <a href="#" className="transition hover:scale-115">
+                        <Link to="/" className="transition hover:scale-115">
                             خانه
-                        </a>
+                        </Link>
 
-                        <a href="#" className="transition hover:scale-115 ">
+                        <Link to="/contact-us" className="transition hover:scale-115 ">
                             تماس با ما
-                        </a>
+                        </Link>
 
-                        <a href="#" className="transition hover:scale-115">
+                        <Link to="/login" className="transition hover:scale-115">
                             ورود
-                        </a>
+                        </Link>
                     </nav>
                 </div>
             </header>
@@ -98,13 +101,27 @@ function HeroSection() {
                         variants={itemVarients as any}
                         className="mt-12 flex items-center justify-center gap-6 lg:gap-28"
                     >
-                        <button className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg transition hover:scale-105">
-                            ورود با نام کاربری
-                        </button>
+                        {!isAuthenticated ? (
+                            <Link
+                                to={"/home"}
+                                className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg transition hover:scale-105"
+                            >
+                                ورود به پنل کاربری
+                            </Link>
+                        ) : (
+                            <>
+                                <Link
+                                    to={"/login"}
+                                    className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg transition hover:scale-105"
+                                >
+                                    ورود با نام کاربری
+                                </Link>
 
-                        <button className="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg transition hover:bg-white hover:text-[#717cff]">
-                            ثبت نام
-                        </button>
+                                {/* <Link to="/signup" className="border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg transition hover:bg-white hover:text-[#717cff]">
+                                    ثبت نام
+                                </Link> */}
+                            </>
+                        )}
                     </motion.div>
                 </motion.div>
 
@@ -113,8 +130,12 @@ function HeroSection() {
                 <motion.img
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut", delay: 0.5 }}
-                    viewport={{once: true}}
+                    transition={{
+                        duration: 0.8,
+                        ease: "easeInOut",
+                        delay: 0.5,
+                    }}
+                    viewport={{ once: true }}
                     src="./src/assets/landing/person.svg"
                     alt="person"
                     className="absolute top-[10px] right-[2%] w-[30vw] min-w-[320px] max-w-[540px] z-20"

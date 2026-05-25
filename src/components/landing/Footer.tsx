@@ -1,5 +1,6 @@
 import { Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function Footer() {
     return (
@@ -16,14 +17,15 @@ function Footer() {
                         className="flex flex-col items-center gap-5 text-white text-lg"
                     >
                         {tabsDict.map((item) => (
-                            <motion.a
+                            <motion.button
                                 variants={itemVariants as any}
                                 key={item.label}
-                                href={item.href}
                                 className="transition hover:opacity-70 font-light"
                             >
+                                <Link to={item.href}>
                                 {item.label}
-                            </motion.a>
+                                </Link>
+                            </motion.button>
                         ))}
                     </motion.div>
 
@@ -62,14 +64,15 @@ function Footer() {
                             className="flex items-center gap-5 text-white"
                         >
                             {socialMedia.map((item, index) => (
-                                <motion.a
+                                <motion.button
                                     variants={itemVariants as any}
                                     key={index}
-                                    href={item.href}
                                     className="transition hover:scale-110 hover:opacity-80"
                                 >
+                                    <Link to={item.href}>
                                     {item.icon}
-                                </motion.a>
+                                    </Link>
+                                </motion.button>
                             ))}
                         </motion.div>
                     </div>
@@ -82,15 +85,15 @@ function Footer() {
 const tabsDict = [
     {
         label: "درباره آپارمو",
-        href: "#",
+        href: "/about-us",
     },
     {
         label: "فرصت های همکاری",
-        href: "#",
+        href: "/jobs",
     },
     {
         label: "تماس با ما",
-        href: "#",
+        href: "/contact-us",
     },
 ];
 
