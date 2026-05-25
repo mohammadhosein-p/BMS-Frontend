@@ -21,7 +21,7 @@ function HeroSection() {
             </svg>
 
             <svg
-                className="absolute top-[-80px] right-0 w-[40vw] min-w-[500px] max-w-[600px] h-auto z-10"
+                className="absolute top-[-80px] right-0 w-[40vw] min-w-[450px] max-w-[600px] h-auto z-10"
                 viewBox="0 0 993 1059"
                 fill="none"
             >
@@ -40,21 +40,27 @@ function HeroSection() {
                     <img
                         src="./src/assets/landing/header-logo.svg"
                         alt="logo"
-                        className="w-20"
+                        className="w-0 sm:w-20"
                     />
 
                     {/* Center Navigation */}
 
-                    <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-20 text-white font-medium text-lg">
+                    <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-4 md:gap-20 text-white font-medium text-lg">
                         <Link to="/" className="transition hover:scale-115">
                             خانه
                         </Link>
 
-                        <Link to="/contact-us" className="transition hover:scale-115 ">
+                        <Link
+                            to="/contact-us"
+                            className="transition hover:scale-115 w-24 text-center "
+                        >
                             تماس با ما
                         </Link>
 
-                        <Link to="/login" className="transition hover:scale-115">
+                        <Link
+                            to="/login"
+                            className="transition hover:scale-115"
+                        >
                             ورود
                         </Link>
                     </nav>
@@ -71,13 +77,13 @@ function HeroSection() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="absolute top-2/5 left-[10vw] -translate-y-1/2 w-[42vw] max-w-[600px] min-w-[320px] text-white text-center"
+                    className="absolute top-[50%] md:top-2/5 left-[3vw] md:left-[10vw] -translate-y-1/2 w-[42vw] max-w-[600px] min-w-[320px] text-white text-center"
                 >
                     <motion.img
                         variants={itemVarients as any}
                         src="./src/assets/landing/section-logo.svg"
                         alt="section-logo"
-                        className="w-[23vw]  mx-auto"
+                        className="w-[60vw] md:w-[23vw]  mx-auto"
                     />
 
                     <motion.h2
@@ -101,7 +107,7 @@ function HeroSection() {
                         variants={itemVarients as any}
                         className="mt-12 flex items-center justify-center gap-6 lg:gap-28"
                     >
-                        {!isAuthenticated ? (
+                        {isAuthenticated ? (
                             <Link
                                 to={"/home"}
                                 className="bg-white text-[#717cff] px-8 py-4 rounded-2xl font-bold text-lg transition hover:scale-105"
