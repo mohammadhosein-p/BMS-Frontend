@@ -25,8 +25,8 @@ export const getCurrentUserService = async (userId: string): Promise<User> => {
 
 export const refreshTokenRequest = async (refresh: string): Promise<ApiResponse<{ access_token: string, refresh_token: string }>> => {
     return postData({
-        endPoint: `/refresh`, 
-        data: { refresh },
+        endPoint: `/refresh`,
+        data: { refresh_token:refresh },
     });
 };
 

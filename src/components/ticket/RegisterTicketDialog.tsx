@@ -1,7 +1,11 @@
-"use client";
 
 import { useState } from "react";
 import { PlusCircle, Send, X } from "lucide-react";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 
@@ -11,40 +15,107 @@ import {
     DialogHeader,
     DialogTitle,
     DialogClose,
-    DialogTrigger,
 } from "../ui/CustomeDialog";
+
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
+import { Spinner } from "../ui/spinner";
+import { useCreateTicket } from "@/hooks/useTicket";
+import { ticketCategoryOptions } from "@/utils/ticketMapping";
+
+// =========================
+// Validation Schema
+// =========================
+
+const ticketSchema = z.object({
+    title: z.string().min(3, "عنوان باید حداقل ۳ کاراکتر باشد"),
+    description: z.string().min(5, "توضیحات کوتاه باید حداقل ۵ کاراکتر باشد"),
+    body: z.string().min(10, "متن تیکت باید حداقل ۱۰ کاراکتر باشد"),
+    category: z.enum([
+        "maintenance",
+        "plumbing",
+        "electricity",
+        "security",
+        "cleaning",
+        "parking",
+        "other",
+    ]),
+    accessibility: z.enum(["private", "public"]),
+});
+
+type TicketFormData = z.infer<typeof ticketSchema>;
 
 
 function RegisterTicketDialog() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+
     const ticketTypeOptions = [
         { value: "private", label: "خصوصی", color: "red" },
-        { value: "public", label: "عمومی", color: "blue" }
+        { value: "public", label: "عمومی", color: "blue" },
     ];
 
-    const [ticketType, setTicketType] = useState("private");
+    // =========================
+    // React Hook Form
+    // =========================
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        formState: { errors },
+        reset,
+    } = useForm<TicketFormData>({
+        resolver: zodResolver(ticketSchema),
+        defaultValues: {
+            title: "",
+            description: "",
+            body: "",
+            category: "maintenance",
+            accessibility: "private",
+        },
+    });
+
+    const accessibility = watch("accessibility");
+    const category = watch("category");
+
+    const { mutateAsync, isPending } = useCreateTicket();
+
+    // =========================
+    // Submit Handler
+    // =========================
+
+    const onSubmit = async (data: TicketFormData) => {
+        await mutateAsync({
+            title: data.title,
+            description: data.description,
+            body: data.body,
+            category: data.category,
+            accessability: data.accessibility,
+        });
+
+        reset();
+
+        setIsOpen(false);
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <CustomButton
-                    icon={PlusCircle}
-                    variant="primary"
-                    className="w-auto h-12 px-3 text-xs sm:text-sm cursor-pointer"
-                    onClick={() => setIsOpen(true)}
-                    dir="rtl"
-                >
-                    ثبت تیکت جدید
-                </CustomButton>
-            </DialogTrigger>
+            {/* Trigger */}
+            <CustomButton
+                icon={PlusCircle}
+                className="ltr h-13 cursor-pointer"
+                onClick={() => setIsOpen(true)}
+            >
+                ثبت تیکت جدید
+            </CustomButton>
 
+            {/* Dialog */}
             <DialogContent
                 isOpen={isOpen}
                 className="max-w-md rounded-3xl p-0 overflow-hidden bg-white"
             >
+                {/* Header */}
                 <DialogHeader className="relative bg-indigo-500 text-white px-14 py-5 m-0 flex flex-col items-center justify-center">
-
                     <DialogClose asChild>
                         <button
                             type="button"
@@ -58,68 +129,136 @@ function RegisterTicketDialog() {
                     <DialogTitle className="text-center text-xl font-bold md:text-2xl md:font-extrabold text-white w-full">
                         ساخت تیکت جدید
                     </DialogTitle>
-
                 </DialogHeader>
 
-                {/* فرم داخلی ثبت تیکت */}
-                <div className="space-y-2 p-6 bg-white">
-                    {/* تیتر */}
-                    <CustomField
-                        placeholder="تیتر تیکت"
-                        direction="rtl"
-                        variant="default"
-                        className="focus-visible:border-indigo-400"
-                    />
+                {/* Form */}
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-2 p-6 bg-white"
+                >
+                    {/* Title */}
+                    <div className="space-y-1">
+                        <CustomField
+                            placeholder="تیتر تیکت"
+                            direction="rtl"
+                            variant="default"
+                            className="focus-visible:border-primary-2"
+                            {...register("title")}
+                        />
 
-                    {/* توضیحات کوتاه */}
-                    <CustomField
-                        placeholder="توضیحات کوتاه"
-                        direction="rtl"
-                        variant="default"
-                        className="focus-visible:border-indigo-400"
-                    />
-
-                    {/* بدنه اصلی متن */}
-                    <CustomField
-                        as="textarea"
-                        placeholder="متن تیکت خود را اینجا بنویسید..."
-                        direction="rtl"
-                        variant="default"
-                        className="text-sm placeholder:text-sm focus-visible:border-indigo-400"
-                    />
-
-                    {/* نوع دسترسی یا اولویت تیکت با کامپوننت جدید و اختصاصی شما */}
-                    <SelectOptions
-                        value={ticketType}
-                        onChange={setTicketType}
-                        options={ticketTypeOptions}
-                    />
-                    {/* دسته بندی */}
-                    <CustomField
-                        placeholder="دسته بندی"
-                        direction="rtl"
-                        variant="default"
-                        className="focus-visible:border-indigo-400"
-                    />
-
-
-                    {/* تگ ها */}
-                    <CustomField
-                        placeholder="تگ‌ها (با کاما جدا کنید)"
-                        direction="rtl"
-                        variant="default"
-                        className="focus-visible:border-indigo-400"
-                    />
-
-
-
-                    {/* دکمه ارسال نهایی فرم */}
-                    <div className="flex justify-center pt-2">
-                        <CustomButton icon={Send} className="ltr h-11 cursor-pointer">
-                            ارسال تیکت
-                        </CustomButton>
+                        {errors.title && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.title.message}
+                            </p>
+                        )}
                     </div>
-                </div>
+                    {/* Category */}
+                    <div className="space-y-1">
+                        <SelectOptions
+                            value={category}
+                            onChange={(value) => {
+                                setValue(
+                                    "category",
+
+                                    value as
+                                        | "maintenance"
+                                        | "plumbing"
+                                        | "electricity"
+                                        | "security"
+                                        | "cleaning"
+                                        | "parking"
+                                        | "other",
+
+                                    {
+                                        shouldValidate: true,
+                                    },
+                                );
+                            }}
+                            options={ticketCategoryOptions as any}
+                        />
+
+                        {errors.category && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.category.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Accessibility */}
+                    <div className="space-y-1">
+                        <SelectOptions
+                            value={accessibility}
+                            onChange={(value) => {
+                                setValue(
+                                    "accessibility",
+                                    value as "private" | "public",
+                                    {
+                                        shouldValidate: true,
+                                    },
+                                );
+                            }}
+                            options={ticketTypeOptions as any}
+                        />
+
+                        {errors.accessibility && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.accessibility.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Description */}
+                    <div className="space-y-1">
+                        <CustomField
+                            placeholder="توضیحات کوتاه"
+                            direction="rtl"
+                            variant="default"
+                            className="focus-visible:border-primary-2"
+                            {...register("description")}
+                        />
+
+                        {errors.description && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.description.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Body */}
+                    <div className="space-y-1">
+                        <CustomField
+                            as="textarea"
+                            placeholder="متن تیکت خود را اینجا بنویسید..."
+                            direction="rtl"
+                            variant="default"
+                            className="text-sm placeholder:text-sm focus-visible:border-primary-2"
+                            {...register("body")}
+                        />
+
+                        {errors.body && (
+                            <p className="text-xs text-danger-2 text-right">
+                                {errors.body.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-center pt-2">
+                        {isPending ? (
+                            <div className="text-white p-3 px-4 rounded-xl bg-primary-2">
+                                <Spinner className="w-5 h-5" />
+                            </div>
+                        ) : (
+                            <CustomButton
+                                icon={Send}
+                                className="ltr h-11 cursor-pointer"
+                                disabled={isPending}
+                            >
+                                ارسال تیکت
+                            </CustomButton>
+                        )}
+                    </div>
+                </form>
             </DialogContent>
         </Dialog>
     );
