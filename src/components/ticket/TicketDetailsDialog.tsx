@@ -27,6 +27,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
     const [isOpen, setIsOpen] = useState(false);
     const [text, setText] = useState("");
     const currentUser = useAuthStore((store) => store.user?.id);
+    const isManager = useAuthStore((store) => store.user?.role === "manager");
 
     const { data } = useTicketDetails(id, isOpen);
     const { mutate: sendComment } = useCreateTicketComment();
@@ -51,7 +52,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
         );
     };
 
-    console.log(ticket?.Comments);
+    console.log(ticket);
 
     return (
         <>
@@ -229,29 +230,31 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
 
                             {/* INPUT */}
-                            <div className="p-4 bg-white border-t border-zinc-100">
-                                <div className="flex items-end gap-2 w-full">
-                                    <button
-                                        type="button"
-                                        onClick={handleSend}
-                                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-2 text-white shadow-md transition-all hover:bg-primary-1 active:scale-95 mb-[1.5px] cursor-pointer"
-                                    >
-                                        <Send className="h-5 w-5 -rotate-45 translate-y-0.5" />
-                                    </button>
+                            {(isManager || currentUser == ticket?.UserID) && (
+                                <div className="p-4 bg-white border-t border-zinc-100">
+                                    <div className="flex items-end gap-2 w-full">
+                                        <button
+                                            type="button"
+                                            onClick={handleSend}
+                                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-2 text-white shadow-md transition-all hover:bg-primary-1 active:scale-95 mb-[1.5px] cursor-pointer"
+                                        >
+                                            <Send className="h-5 w-5 -rotate-45 translate-y-0.5" />
+                                        </button>
 
-                                    <CustomField
-                                        type="text"
-                                        placeholder="پاسخ خود را بنویسید..."
-                                        direction="rtl"
-                                        variant="default"
-                                        value={text}
-                                        onChange={(e) =>
-                                            setText(e.target.value)
-                                        }
-                                        containerClassName="flex-1"
-                                    />
+                                        <CustomField
+                                            type="text"
+                                            placeholder="پاسخ خود را بنویسید..."
+                                            direction="rtl"
+                                            variant="default"
+                                            value={text}
+                                            onChange={(e) =>
+                                                setText(e.target.value)
+                                            }
+                                            containerClassName="flex-1"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </DialogContent>

@@ -163,7 +163,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                         return (
                             <motion.div
                                 key={ticket.id}
-                                variants={itemVariants}
+                                variants={itemVariants as any}
                                 className="flex flex-col gap-4 p-4 transition hover:bg-neutral-5/60 sm:flex-row-reverse sm:items-center sm:gap-4 sm:px-6 sm:py-4 bg-white"
                             >
                                 {/* Right Section */}
