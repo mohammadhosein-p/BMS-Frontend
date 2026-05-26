@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import PublicLayout from "@/layouts/PublicLayout/PublicLayout";
 import Landing from "@/pages/Landing";
-import Temp from "@/pages/Temp";
+// import Temp from "@/pages/Temp";
 import Login from "@/pages/Login";
 import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
@@ -21,10 +21,10 @@ export const router = createBrowserRouter([
                 index: true,
                 element: <Landing />,
             },
-            {
-                path: "/temp",
-                element: <Temp />,
-            },
+            // {
+            //     path: "/temp",
+            //     element: <Temp />,
+            // },
             {
                 path: "/login",
                 element: <Login />,
