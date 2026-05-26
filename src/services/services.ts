@@ -79,6 +79,11 @@ apiClient.interceptors.response.use(
         }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
+            
+            if (originalRequest.url?.includes("/logout")) {
+                return Promise.reject(error);
+            }
+
             originalRequest._retry = true;
 
             const { refresh_token, user, setAuth, logout } = useAuthStore.getState();
@@ -94,9 +99,11 @@ apiClient.interceptors.response.use(
                         resolve: (token: string) => {
                             originalRequest.headers = originalRequest.headers || {};
                             originalRequest.headers.Authorization = `Bearer ${token}`;
-                            resolve(apiClient(originalRequest) as any);
+                            resolve(apiClient(originalRequest));
                         },
-                        reject,
+                        reject: (err: any) => {
+                            reject(err);
+                        },
                     });
                 });
             }
@@ -134,8 +141,7 @@ apiClient.interceptors.response.use(
     }
 );
 
-
-
+// ================= METHODS =================
 export const getData = async ({ endPoint, headers, params }: GetParams) => {
     try {
         const response: AxiosResponse = await apiClient.get(endPoint, {
@@ -149,7 +155,6 @@ export const getData = async ({ endPoint, headers, params }: GetParams) => {
     }
 };
 
-// ✅ POST
 export const postData = async ({ endPoint, data, headers }: PostParams) => {
     try {
         const response: AxiosResponse = await apiClient.post(endPoint, data, {
@@ -162,11 +167,12 @@ export const postData = async ({ endPoint, data, headers }: PostParams) => {
     }
 };
 
-// ✅ POST image/form-data
 export const postImageData = async ({ endPoint, data }: PostParams) => {
     try {
         const response: AxiosResponse = await apiClient.post(endPoint, data, {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { 
+                "Content-Type": "multipart/form-data" 
+            },
         });
         return response.data;
     } catch (error) {
@@ -175,7 +181,6 @@ export const postImageData = async ({ endPoint, data }: PostParams) => {
     }
 };
 
-// ✅ PATCH
 export const patchData = async ({ endPoint, data, headers }: PatchParams) => {
     try {
         const response: AxiosResponse = await apiClient.patch(endPoint, data, {
@@ -188,7 +193,6 @@ export const patchData = async ({ endPoint, data, headers }: PatchParams) => {
     }
 };
 
-// ✅ PUT
 export const putData = async ({ endPoint, data, headers }: PutParams) => {
     try {
         const response: AxiosResponse = await apiClient.put(endPoint, data, {
@@ -201,7 +205,6 @@ export const putData = async ({ endPoint, data, headers }: PutParams) => {
     }
 };
 
-// ✅ DELETE
 export const deleteData = async ({ endPoint, data, headers }: DeleteParams) => {
     try {
         const response: AxiosResponse = await apiClient.delete(endPoint, {
