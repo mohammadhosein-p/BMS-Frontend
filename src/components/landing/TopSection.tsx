@@ -1,4 +1,5 @@
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import Ok from "@/assets/landing/ok.svg";
 
 
 function TopSection() {
@@ -141,7 +142,7 @@ function TopSection() {
 
                       {/* Main Illustration */}
                       <img
-                          src="./src/assets/landing/ok.svg"
+                          src={Ok}
                           alt="illustration"
                           className="absolute inset-0 z-10 w-[72%] h-[72%] object-contain m-auto"
                       />

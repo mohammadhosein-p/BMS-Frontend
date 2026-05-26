@@ -3,6 +3,14 @@ import FeatureCard from "./FeatureCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
+import Logo from "@/assets/landing/header-logo.svg";
+import TextContent from "@/assets/landing/section-logo.svg";
+import Person from "@/assets/landing/person.svg";
+
+import CardClock from "@/assets/landing/card-clock.svg";
+import CardBuilding from "@/assets/landing/card-building.svg";
+import CardBell from "@/assets/landing/card-bell.svg";
+
 function HeroSection() {
     const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
     return (
@@ -37,11 +45,7 @@ function HeroSection() {
                 <div className="relative max-w-[1280px] mx-auto px-8 pt-8 flex items-center">
                     {/* Logo */}
 
-                    <img
-                        src="./src/assets/landing/header-logo.svg"
-                        alt="logo"
-                        className="w-0 sm:w-20"
-                    />
+                    <img src={Logo} alt="logo" className="w-0 sm:w-20" />
 
                     {/* Center Navigation */}
 
@@ -81,7 +85,7 @@ function HeroSection() {
                 >
                     <motion.img
                         variants={itemVarients as any}
-                        src="./src/assets/landing/section-logo.svg"
+                        src={TextContent}
                         alt="section-logo"
                         className="w-[60vw] md:w-[23vw]  mx-auto"
                     />
@@ -142,7 +146,7 @@ function HeroSection() {
                         delay: 0.5,
                     }}
                     viewport={{ once: true }}
-                    src="./src/assets/landing/person.svg"
+                    src={Person}
                     alt="person"
                     className="absolute top-[10px] right-[2%] w-[30vw] min-w-[320px] max-w-[540px] z-20"
                 />
@@ -201,21 +205,21 @@ const cardItem: {
     description: string;
 }[] = [
     {
-        image: "./src/assets/landing/card-clock.svg",
+        image: CardClock,
         alt: "clock",
         title: "ثبت و پیگیری سریع خرابی‌ها",
         description:
             "ساکنان می‌توانند خرابی‌ها را در چند ثانیه ثبت کنند و مدیران نیز روند رسیدگی تا رفع کامل مشکل را شفاف و مرحله‌به‌مرحله مشاهده می‌کنند",
     },
     {
-        image: "./src/assets/landing/card-building.svg",
+        image: CardBuilding,
         alt: "building",
         title: "مدیریت ساده ساکنین و واحدها",
         description:
             "پروفایل هر واحد و ساکن به‌صورت منظم ثبت می‌شود تا مدیر ساختمان بدون پیچیدگی بتواند اطلاعات را مدیریت و به‌روزرسانی کند",
     },
     {
-        image: "./src/assets/landing/card-bell.svg",
+        image: CardBell,
         alt: "bell",
         title: "اطلاع‌رسانی فوری و بدون خطا",
         description:

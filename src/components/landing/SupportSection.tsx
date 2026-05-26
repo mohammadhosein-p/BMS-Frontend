@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import MainImage from "@/assets/landing/support-section-main.svg";
 
 function SupportSection() {
     return (
@@ -169,7 +170,7 @@ function SupportSection() {
 
                                 {/* Clipped Image */}
                                 <image
-                                    href="./src/assets/landing/support-section-main.svg"
+                                    href={MainImage}
                                     width="120%"
                                     height="85%"
                                     preserveAspectRatio="xMidYMid meet"
