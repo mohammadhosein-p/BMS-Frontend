@@ -1,13 +1,19 @@
 ARG VERSION=20
+
 FROM node:${VERSION} AS build
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+
+RUN npm config set registry https://registry.npmjs.org/
+
 RUN npm install
 
 COPY . .
+
 RUN npm run build
 
-FROM nginx
+FROM nginx:alpine
+
 COPY --from=build /app/dist /usr/share/nginx/html
