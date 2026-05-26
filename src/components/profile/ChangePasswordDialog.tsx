@@ -30,7 +30,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOpen, onC
       setFieldError("");
       onClose();
 
-      toast.custom((t) => (
+      toast.custom(() => (
         <CustomToast
           title="موفقیت‌آمیز"
           message="رمز عبور شما با موفقیت تغییر یافت"
@@ -40,7 +40,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOpen, onC
       ));
     },
     onError: (error: any) => {
-      toast.custom((t) => (
+      toast.custom(() => (
         <CustomToast
           title="خطا در عملیات"
           message={error?.response?.data?.message || "مشکلی در تغییر رمز عبور رخ داده است"}
