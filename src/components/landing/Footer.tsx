@@ -1,6 +1,7 @@
 import { Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import Logo from "@/assets/landing/header-logo.svg";
 
 function Footer() {
     return (
@@ -37,7 +38,7 @@ function Footer() {
                             whileInView={{ opacity: 1, y: 0, scale: 1 }}
                             transition={{ duration: 1, ease: "easeInOut" }}
                             viewport={{ once: true }}
-                            src="./src/assets/landing/header-logo.svg"
+                            src={Logo}
                             alt="logo"
                             className="w-28"
                         />
