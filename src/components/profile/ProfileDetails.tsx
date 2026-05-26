@@ -80,7 +80,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
 
             setIsEditing(false);
 
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="موفقیت‌آمیز"
                     message="اطلاعات کاربری شما با موفقیت بروزرسانی شد"
@@ -92,7 +92,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
         onError: (error: any) => {
             const friendlyMessage = parseBackendError(error);
 
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="خطا در عملیات"
                     message={friendlyMessage}

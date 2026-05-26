@@ -38,17 +38,17 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         onSuccess: (response) => {
             console.log(response);
 
-            const serverImageUrl = response?.data?.url || response?.url;
+            // const serverImageUrl = response?.data?.url || response?.url;
 
-            if (serverImageUrl) {
-                updateUser({ profile_image_url: serverImageUrl });
-            } else if (previewImage) {
+            // if (serverImageUrl) {
+            //     updateUser({ profile_image_url: serverImageUrl });
+            // } else if (previewImage) {
                 updateUser({ profile_image_url: previewImage });
-            }
+            // }
 
             setPreviewImage(null);
 
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="موفقیت‌آمیز"
                     message="تصویر پروفایل شما با موفقیت بروزرسانی شد"
@@ -64,7 +64,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 setPreviewImage(null);
             }
 
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="خطا در آپلود"
                     message={error?.response?.data?.message || "مشکلی در آپلود تصویر رخ داده است"}
@@ -95,7 +95,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         handleLogout(() => {
             setIsLogoutDialogOpen(false);
             console.log(1212121212)
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="خروج موفق"
                     message="شما با موفقیت از حساب کاربری خود خارج شدید"

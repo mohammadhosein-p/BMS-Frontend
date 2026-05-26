@@ -29,7 +29,7 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
             onSuccess: async (data) => {
                 setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
 
-                toast.custom((t) => (
+                toast.custom(() => (
                     <CustomToast
                         title="موفقیت‌آمیز"
                         message="ثبت‌نام شما با موفقیت انجام شد"
@@ -170,7 +170,7 @@ export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; o
                     control={control}
                     render={({ field }) => (
                         <SelectOptions
-                            options={genderOptions}
+                            options={genderOptions as any}
                             value={field.value}
                             onChange={(val) => {
                                 field.onChange(val);

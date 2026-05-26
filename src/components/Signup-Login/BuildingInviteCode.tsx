@@ -36,7 +36,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                 console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند:", data);
             }
 
-            toast.custom((t) => (
+            toast.custom(() => (
                 <CustomToast
                     title="موفقیت‌آمیز"
                     message="ورود به ساختمان و تخصیص واحد با موفقیت انجام شد"
@@ -115,7 +115,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                     icon={<Home size={18} />}
                     value={inviteCode}
                     onChange={handleChange}
-                    variant={validation.variant}
+                    variant={validation.variant as any}
                     type="text"
                     direction="rtl"
                     disabled={isLoading}

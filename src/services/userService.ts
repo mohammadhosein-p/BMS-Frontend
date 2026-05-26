@@ -1,5 +1,5 @@
 import type { ApiResponse, User } from "../types/authTypes";
-import { getData, putData, patchData, deleteData, postData,postImageData } from "./services"; 
+import { getData, putData, patchData, deleteData, postImageData } from "./services"; 
 
 /**
  * GET {{base_url}}/user/me

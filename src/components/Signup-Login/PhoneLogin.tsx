@@ -73,7 +73,7 @@ export const PhoneLogin = ({ onOTPlogin, onPhoneSubmit }: {
                     icon={<Phone size={18} />}
                     value={translateNumber(phoneNumber)}
                     onChange={handleChange}
-                    variant={validation.variant}
+                    variant={validation.variant as any}
                     type="tel"
                     direction="rtl"
                     inputMode="numeric"

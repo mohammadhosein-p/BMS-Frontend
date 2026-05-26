@@ -123,7 +123,7 @@ const Login = () => {
                                 initial="initial"
                                 animate="animate"
                                 exit="exit"
-                                transition={pageTransition}
+                                transition={pageTransition as any}
                                 className="w-full"
                             >
                                 {(() => {
