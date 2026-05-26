@@ -1,16 +1,24 @@
-import { useRef, useState, useEffect } from "react";
-import { Camera, LogOut, Clock, KeyRound } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, LogOut, Clock, KeyRound, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CustomButton from "../ui/CustomeButton";
-import type { User } from "@/types/authTypes";
 import LogoutConfirmDialog from './LogoutConfirmDialog';
+import ChangePasswordDialog from "./ChangePasswordDialog";
+import CustomToast from "../Custom/CustomToast";
+
+import type { User } from "@/types/authTypes";
+import { translateDate } from "@/utils/translateDate";
+import { uploadProfileImageService } from "@/services/userService";
+import useAuthStore from "@/store/useAuthStore";
 
 import MaleIcon from "@/assets/profile/icons8-man-60 (2).png";
 import FemaleIcon from "@/assets/profile/icons8-woman-50.png";
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
-import { translateDate } from "@/utils/translateDate";
-import { motion } from "framer-motion";
-import ChangePasswordDialog from "./ChangePasswordDialog";
+import { useLogout } from "@/hooks/useLogout";
 
 interface ProfileHeaderProps {
     user: User;
@@ -21,16 +29,54 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [isChangePassOpen, setIsChangePassOpen] = useState(false);
     const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+    const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
-    useEffect(() => {
-        return () => {
+    const { updateUser } = useAuthStore();
+
+    const uploadImageMutation = useMutation({
+        mutationFn: uploadProfileImageService,
+        onSuccess: (response) => {
+            console.log(response);
+
+            const serverImageUrl = response?.data?.url || response?.url;
+
+            if (serverImageUrl) {
+                updateUser({ profile_image_url: serverImageUrl });
+            } else if (previewImage) {
+                updateUser({ profile_image_url: previewImage });
+            }
+
+            setPreviewImage(null);
+
+            toast.custom((t) => (
+                <CustomToast
+                    title="موفقیت‌آمیز"
+                    message="تصویر پروفایل شما با موفقیت بروزرسانی شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        },
+        onError: (error: any) => {
+            console.log(error)
             if (previewImage) {
                 URL.revokeObjectURL(previewImage);
+                setPreviewImage(null);
             }
-        };
-    }, [previewImage]);
+
+            toast.custom((t) => (
+                <CustomToast
+                    title="خطا در آپلود"
+                    message={error?.response?.data?.message || "مشکلی در آپلود تصویر رخ داده است"}
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+        }
+    });
 
     const handleCameraClick = () => {
+        if (uploadImageMutation.isPending) return;
         fileInputRef.current?.click();
     };
 
@@ -40,16 +86,24 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
             if (previewImage) URL.revokeObjectURL(previewImage);
             const imageUrl = URL.createObjectURL(file);
             setPreviewImage(imageUrl);
-            
-            // TODO: ارسال مستقیم فایل به سرور یا ذخیره در فرم اصلی
-            console.log("تصویر انتخاب شده برای آپلود:", file);
+
+            uploadImageMutation.mutate(file);
         }
     };
 
     const handleConfirmLogout = () => {
-        // TODO: منطق خروج از حساب (پاک کردن توکن، کش، استیت گلوبال و هدایت به صفحه لاگین)
-        console.log("کاربر خارج شد");
-        setIsLogoutDialogOpen(false);
+        handleLogout(() => {
+            setIsLogoutDialogOpen(false);
+            console.log(1212121212)
+            toast.custom((t) => (
+                <CustomToast
+                    title="خروج موفق"
+                    message="شما با موفقیت از حساب کاربری خود خارج شدید"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        });
     };
 
     const getRoleDetails = (role: string) => {
@@ -70,7 +124,6 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     return (
         <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full">
 
-            {/* Left Section: Meta Data & Actions */}
             <div className="flex flex-col justify-between items-start h-28">
                 <div className="flex items-center gap-4 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-md px-3 py-1.5 text-xs font-medium" dir="rtl">
                     <div className="flex items-center gap-1">
@@ -133,10 +186,16 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 {/* User Avatar & Upload */}
                 <div className="relative inline-block">
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-neutral-100">
-                        <Avatar className="w-24 h-24 rounded-xl overflow-hidden">
+                        <Avatar className="w-24 h-24 rounded-xl overflow-hidden relative">
+                            {uploadImageMutation.isPending && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+                                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                                </div>
+                            )}
                             <AvatarImage
+                                key={previewImage || user.profile_image_url || 'default'}
                                 src={previewImage || user.profile_image_url || DefaultProfileImg}
-                                className="object-cover"
+                                className="object-cover w-full h-full"
                             />
                             <AvatarFallback className="rounded-xl bg-[#7c8aff] text-white text-3xl font-bold">
                                 {user.first_name?.charAt(0)}‌{user.last_name?.charAt(0)}
@@ -146,15 +205,12 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 
                     <motion.button
                         onClick={handleCameraClick}
-                        className="absolute -bottom-1 -left-1 bg-white border border-neutral-200 text-neutral-700 rounded-[14px] p-2 shadow-md hover:text-neutral-900 hover:border-neutral-300 transition-colors z-10 flex items-center justify-center cursor-pointer"
+                        disabled={uploadImageMutation.isPending}
+                        className={`absolute -bottom-1 -left-1 bg-white border border-neutral-200 text-neutral-700 rounded-[14px] p-2 shadow-md hover:text-neutral-900 hover:border-neutral-300 transition-colors z-10 flex items-center justify-center cursor-pointer ${uploadImageMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                         title="ویرایش تصویر پروفایل"
-                        whileHover={{
-                            scale: 1.02,
-                            y: -1
-                        }}
-                        whileTap={{
-                            scale: 0.93
-                        }}
+                        whileHover={uploadImageMutation.isPending ? {} : { scale: 1.02, y: -1 }}
+                        whileTap={uploadImageMutation.isPending ? {} : { scale: 0.93 }}
                     >
                         <Camera size={18} strokeWidth={2.5} />
                     </motion.button>
@@ -165,6 +221,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         className="hidden"
                         accept="image/*"
                         onChange={handleFileChange}
+                        disabled={uploadImageMutation.isPending}
                     />
                 </div>
             </div>
@@ -173,6 +230,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 isOpen={isLogoutDialogOpen}
                 onClose={() => setIsLogoutDialogOpen(false)}
                 onConfirm={handleConfirmLogout}
+                isLoading={isLoggingOut}
             />
         </div>
     );

@@ -6,22 +6,28 @@ import {
   DialogDescription 
 } from '@/components/ui/CustomeDialog';
 import CustomButton from '../ui/CustomeButton'; 
+import { Loader2 } from 'lucide-react';
 
 interface LogoutConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
-const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClose, onConfirm }) => {
+const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClose, onConfirm, isLoading = false }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !isLoading) onClose(); }}>
       <DialogContent isOpen={isOpen} className="w-[90%] max-w-sm">
         <div className="flex flex-col items-center text-center gap-3">
           <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
+            {isLoading ? (
+              <Loader2 className="w-6 h-6 animate-spin" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+            )}
           </div>
           
           <DialogTitle className="text-lg font-bold text-slate-800 m-0">
@@ -37,6 +43,7 @@ const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClo
             variant="dark-gradient"
             styleType="outline"
             onClick={onClose}
+            disabled={isLoading}
             className="flex-1 py-2.5 h-auto"
           >
             انصراف
@@ -46,9 +53,10 @@ const LogoutConfirmDialog: React.FC<LogoutConfirmDialogProps> = ({ isOpen, onClo
             variant="danger"
             styleType="solid"
             onClick={onConfirm}
+            disabled={isLoading} 
             className="flex-1 py-2.5 h-auto"
           >
-            بله
+            {isLoading ? "در حال خروج..." : "بله"}
           </CustomButton>
         </div>
       </DialogContent>

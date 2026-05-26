@@ -24,24 +24,24 @@ const genderOptions = [
 export const Register = ({ phoneNumber, onInviteCode }: { phoneNumber: string; onInviteCode: () => void }) => {
     const setAuth = useAuthStore((state) => state.setAuth);
 
-    const registerMutation = useMutation({
-        mutationFn: registerService,
-        onSuccess: async (data) => {
-            setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
+        const registerMutation = useMutation({
+            mutationFn: registerService,
+            onSuccess: async (data) => {
+                setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
 
-            toast.custom((t) => (
-                <CustomToast
-                    title="موفقیت‌آمیز"
-                    message="ثبت‌نام شما با موفقیت انجام شد"
-                    variant="success"
-                    icon={<CheckCircle2 size={20} />}
-                />
-            ));
+                toast.custom((t) => (
+                    <CustomToast
+                        title="موفقیت‌آمیز"
+                        message="ثبت‌نام شما با موفقیت انجام شد"
+                        variant="success"
+                        icon={<CheckCircle2 size={20} />}
+                    />
+                ));
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            onInviteCode();
-        },
-    });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                onInviteCode();
+            },
+        });
 
     const {
         control,

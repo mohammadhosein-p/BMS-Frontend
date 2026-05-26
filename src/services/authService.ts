@@ -51,3 +51,10 @@ export const validateInviteCode = async (code: string): Promise<ApiResponse<Vlid
         data: { code },
     });
 };
+
+export const logoutService = async (): Promise<ApiResponse<void>> => {
+    return postData({
+        endPoint: `/logout`,
+        data: {},
+    });
+};
