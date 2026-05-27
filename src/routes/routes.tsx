@@ -8,6 +8,7 @@ import ProtectedLayout from "@/layouts/home/ProtectedLayout";
 import ProfileTab from "@/pages/home/profileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
+import ManagerUsers from "@/pages/home/ManagerUsers";
 
 export const router = createBrowserRouter([
     {
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
                             {
                                 path: "profile",
                                 element: ( <ProfileTab />)
-                            }
+                            },
                         ],
                     },
                 ],

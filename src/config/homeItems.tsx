@@ -1,3 +1,4 @@
+import ManagerUsers from "@/pages/home/ManagerUsers";
 import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
 
@@ -46,15 +47,15 @@ export const homeItems: {
             component: <TicketTab />,
         },
         {
-            path: "member",
+            path: "manage-users",
             title: "اعضا",
             subtitle: "مدیریت اعضا",
             icon: Users,
             color: "from-[var(--success-op2-3)] to-[var(--success-op2-2)]",
             border_color: "border-[var(--success-op2-2)]",
             text_color: "text-[var(--success-op2-2)]",
-            roles: ["admin" ,"manager"],
-            component: <p>member</p>,
+            roles: ["manager"],
+            component: <ManagerUsers />,
         },
         {
             path: "rules",

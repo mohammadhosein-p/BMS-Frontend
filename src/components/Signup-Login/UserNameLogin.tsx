@@ -35,7 +35,6 @@ export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) 
         onSuccess: async (data) => {
 
             await new Promise((resolve) => setTimeout(resolve, 1500));
-            console.log(data.user)
             setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
 
             if (!data.user?.apartment_id || data.user?.apartment_id === null) {
