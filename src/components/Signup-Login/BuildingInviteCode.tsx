@@ -8,10 +8,19 @@ import useAuthStore from "@/store/useAuthStore";
 import { validateInviteCode } from "@/services/authService";
 import { toast } from "sonner";
 import CustomToast from "../Custom/CustomToast";
+import type { ApiResponse } from "@/types/authTypes";
 
 interface BuildingInviteCodeProps {
     onSuccess: () => void;
     onBack: () => void;
+}
+
+interface AxiosErrorResponse {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
 }
 
 export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProps) => {
@@ -20,20 +29,18 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
     const verifyCodeMutation = useMutation({
         mutationFn: validateInviteCode,
-        onSuccess: async (data: any) => {
-            if (data?.apartment_id && data?.unit_id) {
+        onSuccess: async (response: ApiResponse<{ apartment_id: string; unit_id: string }>) => {
+            const innerData = response?.data;
 
+            if (innerData?.apartment_id && innerData?.unit_id) {
                 updateUser({
-                    apartment_id: data.apartment_id,
-                    unit_id: data.unit_id
+                    apartment_id: innerData.apartment_id,
+                    unit_id: innerData.unit_id
                 });
 
-                console.log("استور با موفقیت آپدیت شد:", {
-                    apartment_id: data.apartment_id,
-                    unit_id: data.unit_id
-                });
+                console.log("استور با موفقیت آپدیت شد");
             } else {
-                console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند:", data);
+                console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند. ساختار ساختار دریافتی:", response);
             }
 
             toast.custom(() => (
@@ -46,7 +53,6 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
             ));
 
             await new Promise((resolve) => setTimeout(resolve, 1500));
-
             onSuccess();
         },
         onError: () => { }
@@ -54,7 +60,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
     const getErrorMessage = () => {
         if (verifyCodeMutation.isError) {
-            const serverMessage = (verifyCodeMutation.error as any)?.response?.data?.message;
+            const serverMessage = (verifyCodeMutation.error as AxiosErrorResponse)?.response?.data?.message;
             const normalized = typeof serverMessage === "string" ? serverMessage.trim().toLowerCase() : "";
 
             const messageMap: Record<string, string> = {
@@ -115,7 +121,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                     icon={<Home size={18} />}
                     value={inviteCode}
                     onChange={handleChange}
-                    variant={validation.variant as any}
+                    variant={validation.variant}
                     type="text"
                     direction="rtl"
                     disabled={isLoading}
