@@ -9,6 +9,7 @@ import Error404 from "@/pages/Error404";
 import ProfileTab from "@/pages/home/profileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
+import ManagerUsers from "@/pages/home/ManagerUsers";
 
 export const router = createBrowserRouter([
     {
