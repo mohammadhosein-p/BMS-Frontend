@@ -31,6 +31,4 @@ export const profileSchema = z.object({
     last_name: baseAuthFields.last_name,
     email: baseAuthFields.email.or(z.literal("")), 
     phone: baseAuthFields.phone,
-    apartment_id: baseAuthFields.apartment_id,
-    unit_id: baseAuthFields.unit_id,
 });

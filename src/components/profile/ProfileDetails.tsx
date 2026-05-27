@@ -12,12 +12,13 @@ import { profileSchema } from "@/utils/authSchema";
 import { updateMyProfileService } from "@/services/userService"; 
 import useAuthStore from "@/store/useAuthStore";
 import CustomToast from "../Custom/CustomToast";
+import type { AxiosBackendError } from "@/types/apiTypes";
 
 interface ProfileDetailsProps {
     user: User;
 }
 
-const parseBackendError = (error: any): string => {
+const parseBackendError = (error: AxiosBackendError): string => {
     const serverMessage = error?.response?.data?.message || "";
     const serverErrors = error?.response?.data?.errors?.[0] || "";
 
@@ -69,7 +70,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
 
     const updateProfileMutation = useMutation({
         mutationFn: updateMyProfileService,
-        onSuccess: () => {
+        onSuccess: (res) => {
+            console.log(res)
             updateUser({
                 username: formData.username,
                 email: formData.email,
@@ -89,7 +91,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                 />
             ));
         },
-        onError: (error: any) => {
+        onError: (error: AxiosBackendError) => {
             const friendlyMessage = parseBackendError(error);
 
             toast.custom(() => (
@@ -164,10 +166,9 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     };
 
     return (
-        <div className="w-full flex flex-row items-start gap-8 flex-1 h-full overflow-hidden">
+        <div className="w-full flex flex-col md:flex-row items-start gap-6 md:gap-8 flex-1 md:h-full md:overflow-hidden">
             
-            {/* بخش دکمه‌ها: سایدبار کنترل عملیات */}
-            <div className="pl-1 flex flex-col gap-2 shrink-0 w-30 justify-start">
+            <div className="pl-0 md:pl-1 flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-30 justify-start z-10">
                 {isEditing ? (
                     <>
                         <CustomButton
@@ -175,8 +176,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             onClick={toggleEdit}
                             icon={Save}
                             disabled={updateProfileMutation.isPending} 
-                            className="w-full"
-                            
+                            className="flex-1 md:w-full rounded-lg"
                         >
                             {updateProfileMutation.isPending ? "حفظ..." : "ذخیره"}
                         </CustomButton>
@@ -186,7 +186,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             onClick={handleCancel}
                             icon={X}
                             disabled={updateProfileMutation.isPending} 
-                            className="w-full"
+                            className="flex-1 md:w-full rounded-lg"
                         >
                             انصراف
                         </CustomButton>
@@ -195,15 +195,15 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                     <CustomButton
                         onClick={toggleEdit}
                         icon={Edit}
-                        className="w-full"
+                        className="w-full rounded-lg"
                     >
                         ویرایش
                     </CustomButton>
                 )}
             </div>
 
-            <div className="flex-1 h-full overflow-y-auto pl-2 pr-1 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-600 scrollbar-track-transparent">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 w-full" dir="rtl">
+            <div className="flex-1 w-full md:h-full md:overflow-y-auto pl-2 pr-1 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-600 scrollbar-track-transparent pb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 md:gap-x-10 gap-y-4 md:gap-y-5 w-full" dir="rtl">
 
                     <div className="flex flex-col">
                         <CustomField

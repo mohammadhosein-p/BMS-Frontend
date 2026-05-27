@@ -19,6 +19,7 @@ import MaleIcon from "@/assets/profile/icons8-man-60 (2).png";
 import FemaleIcon from "@/assets/profile/icons8-woman-50.png";
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 import { useLogout } from "@/hooks/useLogout";
+import type { AxiosBackendError } from "@/types/apiTypes";
 
 interface ProfileHeaderProps {
     user: User;
@@ -57,7 +58,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 />
             ));
         },
-        onError: (error: any) => {
+        onError: (error: AxiosBackendError) => {
             console.log(error)
             if (previewImage) {
                 URL.revokeObjectURL(previewImage);
@@ -122,10 +123,10 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const genderIconSrc = user.gender === 'female' ? FemaleIcon : MaleIcon;
 
     return (
-        <div className="flex flex-row justify-between items-start border-b border-neutral-200 pb-8 w-full">
+        <div className="flex flex-col-reverse md:flex-row justify-between items-center md:items-start border-b border-neutral-200 pb-8 w-full gap-6 md:gap-0">
 
-            <div className="flex flex-col justify-between items-start h-28">
-                <div className="flex items-center gap-4 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-md px-3 py-1.5 text-xs font-medium" dir="rtl">
+            <div className="flex flex-col justify-between items-center md:items-start h-auto md:h-28 w-full md:w-auto gap-4 md:gap-0">
+                <div className="flex items-center gap-4 text-[#60a5fa] border border-[#bfdbfe] bg-[#eff6ff] rounded-md px-3 py-1.5 text-xs font-medium w-full md:w-auto justify-center md:justify-start" dir="rtl">
                     <div className="flex items-center gap-1">
                         <Clock size={16} />
                         <span>تاریخ ورود به ساختمان</span>
@@ -133,12 +134,12 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                     <span className="pt-0.5">{translateDate(user.created_at)}</span>
                 </div>
 
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap-2 w-full md:w-auto justify-center md:justify-start">
                     <CustomButton
                         variant="danger"
                         styleType="outline"
                         icon={LogOut}
-                        className="h-10 px-3 text-xs rounded-lg"
+                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none"
                         onClick={() => setIsLogoutDialogOpen(true)}
                     >
                         خروج از حساب
@@ -148,7 +149,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         variant="success2"
                         styleType="outline"
                         icon={KeyRound}
-                        className="h-10 px-3 text-xs rounded-lg"
+                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none"
                         onClick={() => setIsChangePassOpen(true)}
                     >
                         تغییر رمز عبور
@@ -161,17 +162,17 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 </div>
             </div>
 
-            {/* Right Section: User Info & Avatar */}
-            <div className="flex flex-row gap-6 items-center">
+            {/* Right/Top Section: User Info & Avatar */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center w-full md:w-auto justify-center sm:justify-end">
 
                 {/* User Details */}
-                <div className="flex flex-col gap-3 items-end">
-                    <div className="flex items-center gap-1 text-2xl font-bold text-neutral-800">
+                <div className="flex flex-col gap-2 sm:gap-3 items-center sm:items-end text-center sm:text-right order-2 sm:order-1">
+                    <div className="flex items-center gap-1 text-xl sm:text-2xl font-bold text-neutral-800">
                         <span>{user.first_name} {user.last_name}</span>
                         <img
                             src={genderIconSrc}
                             alt="gender"
-                            className="w-10 h-10 object-contain ml-1"
+                            className="w-8 sm:w-10 h-10 object-contain ml-1"
                         />
                     </div>
 
@@ -184,9 +185,9 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                 </div>
 
                 {/* User Avatar & Upload */}
-                <div className="relative inline-block">
+                <div className="relative inline-block order-1 sm:order-2">
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-neutral-100">
-                        <Avatar className="w-24 h-24 rounded-xl overflow-hidden relative">
+                        <Avatar className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden relative">
                             {uploadImageMutation.isPending && (
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
                                     <Loader2 className="w-6 h-6 text-white animate-spin" />
@@ -197,7 +198,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                                 src={previewImage || user.profile_image_url || DefaultProfileImg}
                                 className="object-cover w-full h-full"
                             />
-                            <AvatarFallback className="rounded-xl bg-[#7c8aff] text-white text-3xl font-bold">
+                            <AvatarFallback className="rounded-xl bg-[#7c8aff] text-white text-2xl sm:text-3xl font-bold">
                                 {user.first_name?.charAt(0)}‌{user.last_name?.charAt(0)}
                             </AvatarFallback>
                         </Avatar>

@@ -9,18 +9,11 @@ import { validateInviteCode } from "@/services/authService";
 import { toast } from "sonner";
 import CustomToast from "../Custom/CustomToast";
 import type { ApiResponse } from "@/types/authTypes";
+import type { AxiosBackendError } from "@/types/apiTypes";
 
 interface BuildingInviteCodeProps {
     onSuccess: () => void;
     onBack: () => void;
-}
-
-interface AxiosErrorResponse {
-    response?: {
-        data?: {
-            message?: string;
-        };
-    };
 }
 
 export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProps) => {
@@ -60,7 +53,7 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
 
     const getErrorMessage = () => {
         if (verifyCodeMutation.isError) {
-            const serverMessage = (verifyCodeMutation.error as AxiosErrorResponse)?.response?.data?.message;
+            const serverMessage = (verifyCodeMutation.error as AxiosBackendError)?.response?.data?.message;
             const normalized = typeof serverMessage === "string" ? serverMessage.trim().toLowerCase() : "";
 
             const messageMap: Record<string, string> = {
