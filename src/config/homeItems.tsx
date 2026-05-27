@@ -1,5 +1,6 @@
 import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
+import AnnouncementTab from "@/pages/home/announcementTab.tsx";
 
 export const homeItems: {
     path: string;
@@ -13,7 +14,7 @@ export const homeItems: {
     component: React.ReactNode;
 }[] = [
         {
-            path: "",
+            path: "announcement",
             title: "اطلاعیه‌ها",
             subtitle: "مدیریت اطلاعیه‌ها",
             icon: Megaphone,
@@ -21,7 +22,7 @@ export const homeItems: {
             border_color: "border-[var(--secondary-blue-2)]",
             text_color: "text-[var(--secondary-blue-2)]",
             roles: ["admin" ,"manager", "resident"],
-            component: <p>announcement</p>,
+            component: <AnnouncementTab/>,
         },
         {
             path: "voting",
