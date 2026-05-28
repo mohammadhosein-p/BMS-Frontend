@@ -19,7 +19,8 @@ export default function PollCard({
         getPollTimeLeftParts(expires_at),
     );
     const queryClient = getQueryClient();
-    const apartment_id = useAuthStore(store => store.user?.apartment_id) || ""
+    const apartment_id =
+        useAuthStore((store) => store.user?.apartment_id) || "";
 
     useEffect(() => {
         if (!isActive) return;
@@ -47,7 +48,6 @@ export default function PollCard({
 
         return () => clearInterval(intervalId);
     }, [expires_at, isActive, id, queryClient]);
-
 
     const totalVotes = options.reduce(
         (sum, option) => sum + option.votes_count,
@@ -179,31 +179,7 @@ export default function PollCard({
                     </div>
 
                     <div className="mt-10 flex justify-center">
-                        <PollDetailsDialog
-                            title={title}
-                            isActive={isActive}
-                            isPublic
-                            description="سلاره"
-                            options={[
-                                {
-                                    id: 4,
-                                    title: "گزینه 4",
-                                    percent: 30,
-                                },
-                            ]}
-                            trigger={
-                                <button
-                                    className={cn(
-                                        "rounded-2xl border-[3px] px-4 py-1.25 text-md cursor-pointer hover:scale-105 transition-all",
-                                        isActive
-                                            ? "border-[#2F86FF] text-[#2F86FF]"
-                                            : "border-zinc-500 text-zinc-700",
-                                    )}
-                                >
-                                    مشاهده نتایج و جزئیات
-                                </button>
-                            }
-                        />
+                        <PollDetailsDialog id={id} isActive={isActive} />
                     </div>
                 </div>
             </div>

@@ -1,4 +1,8 @@
-import type { CreatePollBody, GetAllPollsResponse } from "@/types/PollTypes";
+import type {
+    CreatePollBody,
+    GetAllPollsResponse,
+    GetSinglePollResponse,
+} from "@/types/PollTypes";
 import { getData, postData } from "./services";
 
 export const createPollService = async (
@@ -11,8 +15,20 @@ export const createPollService = async (
     });
 };
 
-export const getAllPollService = async (apartment_id: string): Promise<GetAllPollsResponse> => {
+export const getAllPollService = async (
+    apartment_id: string,
+): Promise<GetAllPollsResponse> => {
     return getData({
-        endPoint: `/apartments/${apartment_id}/polls`
+        endPoint: `/apartments/${apartment_id}/polls`,
     });
 };
+
+export const getPollByIdService = async (
+    apartment_id: string,
+    poll_id: string,
+): Promise<GetSinglePollResponse> => {
+    return getData({
+        endPoint: `/apartments/${apartment_id}/polls/${poll_id}`,
+    });
+};
+

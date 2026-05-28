@@ -5,15 +5,6 @@ export interface CreatePollOption {
     isVoted?: boolean;
 }
 
-export interface PollDetailsDialogProps {
-    trigger: React.ReactNode;
-    title: string;
-    description?: string;
-    isActive?: boolean;
-    isPublic?: boolean;
-    options: CreatePollOption[];
-}
-
 export interface CreatePollBody {
     title: string;
     description: string;
@@ -38,7 +29,7 @@ export interface PollOption {
 }
 export interface PollCardProp {
     id: string;
-    isActive: boolean
+    isActive: boolean;
     title: string;
     options: PollOption[];
     expires_at: string;
@@ -46,4 +37,8 @@ export interface PollCardProp {
 
 export interface GetAllPollsResponse {
     data: AllPolls[];
+}
+
+export interface GetSinglePollResponse {
+    data: AllPolls;
 }

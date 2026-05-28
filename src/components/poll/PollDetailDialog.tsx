@@ -12,24 +12,68 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/store/useAuthStore";
 import CustomButton from "../ui/CustomeButton";
-import type { PollDetailsDialogProps } from "@/types/PollTypes";
+import { useGetPollByID } from "@/hooks/usePoll";
+import { Spinner } from "../ui/spinner";
 
 function PollDetailsDialog({
-    trigger,
-    title,
-    description,
-    isActive = true,
+    id,
+    isActive,
     isPublic = true,
-    options,
-}: PollDetailsDialogProps) {
+}: {
+    id: string;
+    isActive: boolean;
+    isPublic?: boolean;
+}) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const apartment_id =
+        useAuthStore((store) => store.user?.apartment_id) || "";
+
+    const { data, isPending } = useGetPollByID(apartment_id, id);
 
     const isManager = useAuthStore((store) => store.user?.role == "manager");
+
+    if (isPending) return <Spinner />;
+
+    if (!data)
+        return (
+            <Dialog open={isOpen}>
+                <DialogContent isOpen={isOpen}>
+                    <div>جزئیات نظرسنجی دریافت نشد. دوباره تلاش کنید</div>
+                </DialogContent>
+            </Dialog>
+        );
+
+    const totalVotes = data.data.options.reduce(
+        (sum, option) => sum + option.votes_count,
+        0,
+    );
+
+    const normalizedOptions = data.data.options.map((option) => {
+        const percent =
+            totalVotes > 0
+                ? Math.round((option.votes_count / totalVotes) * 100)
+                : 0;
+
+        return {
+            ...option,
+            percent,
+        };
+    });
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             {/* Trigger */}
-            <div onClick={() => setIsOpen(true)}>{trigger}</div>
+            <button
+                onClick={() => setIsOpen(true)}
+                className={cn(
+                    "rounded-2xl border-[3px] px-4 py-1.25 text-md cursor-pointer hover:scale-105 transition-all",
+                    isActive
+                        ? "border-secondary-blue-2 text-seconborder-secondary-blue-2"
+                        : "border-zinc-500 text-zinc-700",
+                )}
+            >
+                مشاهده نتایج و جزئیات
+            </button>
 
             {/* Dialog */}
             <DialogContent
@@ -64,7 +108,7 @@ function PollDetailsDialog({
                             {/* title */}
                             <div className="flex-1 text-right">
                                 <h2 className="text-xl font-bold text-neutral-1">
-                                    {title}
+                                    {data?.data.title}
                                 </h2>
                             </div>
 
@@ -96,26 +140,26 @@ function PollDetailsDialog({
 
                         {/* description */}
                         <p className="text-center text-sm leading-7 text-neutral-2">
-                            {description}
+                            {data.data.description}
                         </p>
                     </div>
 
                     {/* Options */}
                     <div className="space-y-3 rounded-3xl border border-neutral-4 bg-neutral-5 p-4">
-                        {options.map((option) => (
+                        {normalizedOptions.map((option) => (
                             <div
                                 key={option.id}
                                 className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-105 cursor-pointer"
                             >
                                 {/* voted */}
                                 <div className="h-5 w-5 fill-secondary-blue-2 text-white">
-                                    {option.isVoted && (
+                                    {true && (
                                         <BadgeCheck className="h-5 w-5 fill-secondary-blue-2 text-white" />
                                     )}
                                 </div>
                                 {/* title */}
-                                <span className="min-w-17.5 text-right text-base text-neutral-1">
-                                    {option.title}
+                                <span className="w-48 text-right text-base text-neutral-1">
+                                    {option.text}
                                 </span>
 
                                 {/* progress */}
