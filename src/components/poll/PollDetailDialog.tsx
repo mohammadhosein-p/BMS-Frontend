@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { BadgeCheck, CircleHelp, X } from "lucide-react";
+import { BadgeCheck, CircleHelp, Trash, X } from "lucide-react";
 
 import {
     Dialog,
@@ -14,6 +14,8 @@ import {
 
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import useAuthStore from "@/store/useAuthStore";
+import CustomButton from "../ui/CustomeButton";
 
 interface PollOption {
     id: number;
@@ -39,7 +41,9 @@ function PollDetailsDialog({
     isPublic = true,
     options,
 }: PollDetailsDialogProps) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    const isManager = useAuthStore((store) => store.user?.role == "manager");
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -88,23 +92,23 @@ function PollDetailsDialog({
                                 <div
                                     className={cn(
                                         "rounded-lg px-5 py-1.25 text-sm font-bold",
-                                        isPublic
-                                            ? "bg-success-op1-3/90 text-neutral-5"
-                                            : "bg-danger-3/90 text-neutral-5",
-                                    )}
-                                >
-                                    {isPublic ? "عمومی" : "خصوصی"}
-                                </div>
-
-                                <div
-                                    className={cn(
-                                        "rounded-lg px-5 py-1.25 text-sm font-bold",
                                         isActive
                                             ? "bg-secondary-blue-3/90 text-neutral-5"
                                             : "bg-neutral-3 text-neutral-5",
                                     )}
                                 >
                                     {isActive ? "فعال" : "غیرفعال"}
+                                </div>
+
+                                <div
+                                    className={cn(
+                                        "rounded-lg px-5 py-1.25 text-sm font-bold",
+                                        isPublic
+                                            ? "bg-success-op1-3/90 text-neutral-5"
+                                            : "bg-danger-3/90 text-neutral-5",
+                                    )}
+                                >
+                                    {isPublic ? "عمومی" : "خصوصی"}
                                 </div>
                             </div>
                         </div>
@@ -129,7 +133,7 @@ function PollDetailsDialog({
                                     )}
                                 </div>
                                 {/* title */}
-                                <span className="min-w-[70px] text-right text-base text-neutral-1">
+                                <span className="min-w-17.5 text-right text-base text-neutral-1">
                                     {option.title}
                                 </span>
 
@@ -152,6 +156,17 @@ function PollDetailsDialog({
                             </div>
                         ))}
                     </div>
+
+                    {isManager && (
+                        <div className="flex justify-center pt-2">
+                            <CustomButton
+                                className="bg-danger-3 hover:bg-danger-2 cursor-pointer"
+                                icon={Trash}
+                            >
+                                حذف نظرسنجی
+                            </CustomButton>
+                        </div>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

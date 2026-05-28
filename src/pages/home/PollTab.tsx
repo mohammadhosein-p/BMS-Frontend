@@ -1,7 +1,6 @@
 // pages/PollsPage.tsx
+import CreatePollDialog from "@/components/poll/CeatePollDialog";
 import PollCard from "@/components/poll/PollCard";
-import CustomButton from "@/components/ui/CustomeButton";
-import { Plus } from "lucide-react";
 
 const activePolls = [
     {
@@ -11,6 +10,9 @@ const activePolls = [
             { id: 1, title: "گزینه گزینه گزینه گزینه گزینه 1", percent: 100 },
             { id: 2, title: "گزینه 2", percent: 10 },
             { id: 3, title: "گزینه 3", percent: 0 },
+            { id: 4, title: "گزینه 4", percent: 0 },
+            { id: 4, title: "گزینه 4", percent: 0 },
+            { id: 4, title: "گزینه 4", percent: 0 },
             { id: 4, title: "گزینه 4", percent: 0 },
         ],
     },
@@ -34,6 +36,7 @@ const activePolls = [
             { id: 4, title: "گزینه 4", percent: 5 },
         ],
     },
+
 ];
 
 
@@ -42,10 +45,8 @@ function PollTab() {
         <div className="custom-scrollbar h-full overflow-y-auto bg-neutral-5 p-6">
             {/* top section */}
             <div className="mb-6 flex items-center justify-between">
-                <CustomButton icon={Plus} className="rtl bg-secondary-blue-3 h-13 cursor-pointer hover:bg-secondary-blue-3/80">
-                    ساخت نظرسنجی
-                </CustomButton>
-                {/* <CreatePollDialog /> */}
+                
+                <CreatePollDialog />
 
                 <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl ">
                     نظرسنجی‌های فعال
