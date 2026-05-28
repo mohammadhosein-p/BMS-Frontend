@@ -86,27 +86,27 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
     const { mutate: deleteTicket } = useDeleteTicket();
 
     const tickets: UiTicket[] | undefined = data?.data?.map((ticket) => ({
-        id: ticket.ID,
-        user_id: ticket.UserID,
-        title: ticket.Title,
-        date: ticket.CreatedAt,
-        category: ticket.Category,
+        id: ticket.id,
+        user_id: ticket.user_id,
+        title: ticket.title,
+        date: ticket.created_at,
+        category: ticket.category,
         // unit: ticket.unit || "نامشخص",
-        status: ticket.Status,
+        status: ticket.status,
         statusLabel:
-            ticket.Status === "open"
+            ticket.status === "open"
                 ? "باز"
-                : ticket.Status === "in-progress"
+                : ticket.status === "in-progress"
                     ? "در حال بررسی"
                     : "بسته شده",
         statusColor:
-            ticket.Status === "open"
+            ticket.status === "open"
                 ? "bg-green-100 text-green-700"
-                : ticket.Status === "in-progress"
+                : ticket.status === "in-progress"
                     ? "bg-yellow-100 text-yellow-700"
                     : "bg-red-100 text-red-700",
 
-        isPublic: ticket.Accessability === "public",
+        isPublic: ticket.accessability === "public",
     }));
 
     if (isLoading) {
