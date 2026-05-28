@@ -1,7 +1,8 @@
 import CustomButton from "@/components/ui/CustomeButton.tsx";
-import { Pin } from "lucide-react";
+import { Pin, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { AnnouncementDetails } from "./AnnouncementDetails";
+import { motion } from "framer-motion";
 
 type AnnouncementCardProps = {
   color: "red" | "green" | "yellow";
@@ -24,6 +25,7 @@ export function AnnouncementCard({ color, title, content, created, isPinned = fa
     setShowDetails(true);
   };
 
+
   return (
     <>
       <div className="flex flex-row gap-2 bg-white shadow-lg rounded-2xl overflow-hidden">
@@ -45,7 +47,16 @@ export function AnnouncementCard({ color, title, content, created, isPinned = fa
           <p className="text-sm text-gray-500">2025-02-14</p>
         </div>
 
-        <div className="flex items-center pl-4">
+        <div className="flex items-center pl-4 gap-2">
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {}}
+            className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
+          >
+            <Trash2 size={18} className="text-danger-2" />
+          </motion.button>
           <CustomButton variant="primary" styleType="outline" onClick={onDetailClick}>
             مشاهده جزئیات
           </CustomButton>

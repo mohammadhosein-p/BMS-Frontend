@@ -1,9 +1,20 @@
 import { Separator } from "@/components/ui/separator.tsx";
+import CustomButton from "../ui/CustomeButton";
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
+import CreateAnnouncementDialog from "./CreateAnnouncementDialog";
 
 export function AnnouncementHeader() {
+    const [showCreateForm, setShowCreateForm] = useState(false)
+
+
+    const onCreateClick = () => {
+    setShowCreateForm(!showCreateForm);
+  }
+
   return (
     <div className="flex flex-row justify-between py-4 px-4 text-2xl font-semibold">
-      <h2>اطلاعیه ها</h2>
+
       <div className="flex flex-col border-2 p-1 border-gray-200 rounded-xl">
         <p className="text-center text-sm font-bold">جدول رنگ ها</p>
         <Separator className="h-0.5 w-[95%] self-center mb-2" />
@@ -29,6 +40,12 @@ export function AnnouncementHeader() {
           </div>
         </div>
       </div>
+
+      <CustomButton icon={PlusCircle} className="h-13 cursor-pointer self-center" onClick={onCreateClick}>
+        ثبت اعلامیه جدید
+      </CustomButton>
+
+      <CreateAnnouncementDialog open={showCreateForm} onOpenChange={onCreateClick} />
     </div>
   );
 }
