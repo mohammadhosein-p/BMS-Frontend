@@ -16,22 +16,46 @@ import { cn } from "@/lib/utils";
 import CustomButton from "../ui/CustomeButton";
 import CustomField from "../ui/CutsomeFiled";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash2 } from "lucide-react";
+import { createPollSchema, type CreatePollFormData } from "@/utils/pollSchema";
 
 export default function CreatePollDialog() {
     const [isOpen, setIsOpen] = useState(false);
 
-    const [options, setOptions] = useState([""]);
+    const {
+        control,
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<CreatePollFormData>({
+        resolver: zodResolver(createPollSchema),
 
-    const addOption = () => {
-        setOptions((prev) => [...prev, ""]);
-    };
+        defaultValues: {
+            title: "",
+            description: "",
+            expires_at: new Date(),
+            is_votes_public: true,
+            options: [{ value: "" }, { value: "" }],
+        },
+    });
 
-    const handleOptionChange = (index: number, value: string) => {
-        const updated = [...options];
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "options",
+    });
+    
+    const onSubmit = (data: CreatePollFormData) => {
+        const payload = {
+            title: data.title,
+            description: data.description,
+            expires_at: new Date(data.expires_at).toISOString(),
+            is_votes_public: data.is_votes_public,
+            options: data.options.map((option) => option.value),
+        };
 
-        updated[index] = value;
-
-        setOptions(updated);
+        console.log(payload);
     };
 
     return (
@@ -70,82 +94,138 @@ export default function CreatePollDialog() {
                 </DialogHeader>
 
                 {/* Body */}
-                <div className="space-y-4 p-6">
-                    {/* title */}
-                    <CustomField
-                        placeholder="سوال خود را بنویسید"
-                        direction="rtl"
-                        variant="default"
-                        className="focus-visible:border-primary-2"
-                    />
-
-                    {/* description */}
-                    <CustomField
-                        as="textarea"
-                        placeholder="توضحیات نظرسنجی خود را اینجا بنویسید..."
-                        direction="rtl"
-                        variant="default"
-                        className="text-sm placeholder:text-sm focus-visible:border-primary-2"
-                    />
-
-                    {/* options */}
-                    <div className="rounded-2xl border border-zinc-300 bg-neutral-5/60 p-3">
-                        <div className="space-y-3">
-                            {options.map((option, index) => (
-                                <CustomField
-                                    key={index}
-                                    value={option}
-                                    onChange={(e) =>
-                                        handleOptionChange(
-                                            index,
-                                            e.target.value,
-                                        )
-                                    }
-                                    placeholder={`گزینه ${index + 1}`}
-                                    className="h-12 focus-visible:border-primary-2"
-                                />
-                            ))}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="space-y-4 p-6">
+                        <div className="space-y-1">
+                            {/* title */}
+                            <CustomField
+                                placeholder="سوال خود را بنویسید"
+                                direction="rtl"
+                                variant="default"
+                                className="focus-visible:border-primary-2"
+                                {...register("title")}
+                            />
+                            {errors.title && (
+                                <p className="text-xs text-danger-2 text-right">
+                                    {errors.title.message}
+                                </p>
+                            )}
                         </div>
 
-                        {/* add option */}
-                        <button
-                            onClick={addOption}
-                            className="mt-4 flex cursor-pointer items-center gap-2 text-secondary-blue-2 transition-all hover:text-secondary-blue-3 hover:opacity-80"
-                        >
-                            <CirclePlus className="h-5 w-5" />
-
-                            <span className="text-sm font-medium">
-                                افزودن گزینه جدید
-                            </span>
-                        </button>
-
-                        <div className="h-10" />
-                    </div>
-
-                    <DatePicker
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD HH:mm"
-                        calendarPosition="bottom-center"
-                        inputClass="w-full h-12 rounded-xl text-center border border-zinc-300 bg-neutral-5 px-4 text-sm outline-none focus:border-primary-1 transition-all focus:bg-white focus-visible:shadow-[0_0_0_4px_var(--color-primary-5)]"
-                        containerClassName="w-full"
-                        plugins={[<TimePicker position="right" />]}
-                        placeholder="تاریخ پایان نظرسنجی"
-                    />
-
-                    {/* submit */}
-                    <div className="flex justify-center pt-2">
-                        <CustomButton
-                            icon={Send}
-                            className={cn(
-                                "flex items-center gap-3 rounded-2xl px-6 py-3 text-lg text-white",
-                                "cursor-pointer bg-secondary-blue-3 transition-all hover:bg-secondary-blue-2 hover:opacity-90",
+                        <div className="space-y-1">
+                            {/* description */}
+                            <CustomField
+                                as="textarea"
+                                placeholder="توضحیات نظرسنجی خود را اینجا بنویسید..."
+                                direction="rtl"
+                                variant="default"
+                                className="text-sm placeholder:text-sm focus-visible:border-primary-2"
+                                {...register("description")}
+                            />
+                            {errors.description && (
+                                <p className="text-xs text-danger-2 text-right">
+                                    {errors.description.message}
+                                </p>
                             )}
-                        >
-                            ارسال
-                        </CustomButton>
+                        </div>
+
+                        <div className="space-y-1">
+                            <div className="rounded-2xl border border-zinc-300 bg-neutral-5/60 p-3">
+                                <div className="space-y-3">
+                                    {fields.map((field, index) => (
+                                        <div
+                                            key={field.id}
+                                            className="flex items-center gap-2 transition-all"
+                                        >
+                                            <CustomField
+                                                placeholder={`گزینه ${index + 1}`}
+                                                className="h-12 focus-visible:border-primary-2"
+                                                {...register(
+                                                    `options.${index}.value`,
+                                                )}
+                                            />
+
+                                            {fields.length > 2 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        remove(index)
+                                                    }
+                                                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger-5 text-danger-2 transition-all hover:bg-danger-4"
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* add option */}
+                                <button
+                                    type="button"
+                                    onClick={() => append({ value: "" })}
+                                    className="mt-4 flex cursor-pointer items-center gap-2 text-secondary-blue-2 transition-all hover:text-secondary-blue-3 hover:opacity-80"
+                                >
+                                    <CirclePlus className="h-5 w-5" />
+
+                                    <span className="text-sm font-medium">
+                                        افزودن گزینه جدید
+                                    </span>
+                                </button>
+
+                                <div className="h-10" />
+                            </div>
+                            {errors.options && (
+                                <p className="text-xs text-danger-2 text-right">
+                                    {errors.options.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-1">
+                            <Controller
+                                control={control}
+                                name="expires_at"
+                                render={({ field }) => (
+                                    <DatePicker
+                                        calendar={persian}
+                                        locale={persian_fa}
+                                        format="YYYY/MM/DD HH:mm"
+                                        calendarPosition="bottom-center"
+                                        plugins={[
+                                            <TimePicker position="right" />,
+                                        ]}
+                                        value={field.value}
+                                        onChange={(date) =>
+                                            field.onChange(date?.toDate())
+                                        }
+                                        inputClass="w-full h-12 rounded-xl text-center border border-zinc-300 bg-neutral-5 px-4 text-sm outline-none focus:border-primary-1 transition-all focus:bg-white focus-visible:shadow-[0_0_0_4px_var(--color-primary-5)]"
+                                        containerClassName="w-full"
+                                        placeholder="تاریخ پایان نظرسنجی"
+                                    />
+                                )}
+                            />
+                            {errors.expires_at && (
+                                <p className="text-xs text-danger-2 text-right">
+                                    {errors.expires_at.message}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* submit */}
+                        <div className="flex justify-center pt-2">
+                            <CustomButton
+                                icon={Send}
+                                className={cn(
+                                    "flex items-center gap-3 rounded-2xl px-6 py-3 text-lg text-white",
+                                    "cursor-pointer bg-secondary-blue-3 transition-all hover:bg-secondary-blue-2 hover:opacity-90",
+                                )}
+                            >
+                                ارسال
+                            </CustomButton>
+                        </div>
                     </div>
-                </div>
+                </form>
             </DialogContent>
         </Dialog>
     );
