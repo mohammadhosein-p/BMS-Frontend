@@ -75,10 +75,10 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
     const activeError = getErrorMessage();
 
     const validation = useMemo(() => {
-        if (inviteCode.length === 0) return { variant: "default", isValid: false };
+        if (inviteCode.length === 0) return { variant: "default", isValid: false } as const;
 
-        if (verifyCodeMutation.isError) return { variant: "error", isValid: false };
-        return { variant: "success", isValid: true };
+        if (verifyCodeMutation.isError) return { variant: "error", isValid: false } as const;
+        return { variant: "success", isValid: true } as const;
 
     }, [inviteCode, verifyCodeMutation.isError]);
 
