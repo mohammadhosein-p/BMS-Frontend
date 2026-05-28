@@ -97,7 +97,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                             {ticket?.title}
                                         </DialogTitle>
 
-                                        {ticket?.accessability === "public" ? (
+                                        {ticket?.accessibility === "public" ? (
                                             <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
                                                 <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
                                             </div>
@@ -157,7 +157,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                 >
                                     {ticket?.comments?.map((comment) => {
                                         const isCommentOwner =
-                                            currentUser === comment.user.id;
+                                            currentUser === comment.user_id;
                                         return (
                                             <div
                                                 key={comment.id}
@@ -170,10 +170,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                 <div>
                                                     <Avatar className="h-10 w-10 shrink-0">
                                                         <AvatarImage
-                                                            src={
-                                                                comment.user
-                                                                    .profile_image_url
-                                                            }
+                                                            src={""}
                                                             className="h-full w-full object-cover"
                                                         />
 

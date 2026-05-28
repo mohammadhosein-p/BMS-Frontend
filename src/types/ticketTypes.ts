@@ -9,7 +9,7 @@ export interface Comment {
     user: {
         username: string;
         profile_image_url: string;
-        id: string;
+        user_id: string;
         first_name: string;
         last_name: string;
     };
@@ -22,19 +22,19 @@ export interface Ticket {
     description: string;
     body: string;
     category: string;
-    accessability: "private" | "public";
+    accessibility: "private" | "public";
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
     status: "open" | "close" | "in-progress";
-    comments: Comment[]
+    comments: Comment[];
 }
 export interface CreateTicketPayload {
     title: string;
     description: string;
     body: string;
     category: string;
-    accessability: "private" | "public";
+    accessibility: "private" | "public";
 }
 
 export interface AllTicketResponse {
@@ -47,5 +47,5 @@ export interface UpdateTicketStatusPayload {
 }
 
 export interface TicketFullyDetailsResponse {
-    data: Ticket
+    data: Ticket;
 }
