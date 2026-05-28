@@ -11,7 +11,7 @@ export const homeItems: {
     color: string;
     border_color: string;
     text_color: string;
-    roles : string[];
+    roles: string[];
     component: React.ReactNode;
 }[] = [
         {
@@ -22,7 +22,7 @@ export const homeItems: {
             color: "from-[var(--secondary-blue-3)] to-[var(--secondary-blue-2)]",
             border_color: "border-[var(--secondary-blue-2)]",
             text_color: "text-[var(--secondary-blue-2)]",
-            roles: ["admin" ,"manager", "resident"],
+            roles: ["admin", "manager", "resident"],
             component: <p>announcement</p>,
         },
         {
@@ -44,7 +44,7 @@ export const homeItems: {
             color: "from-[var(--primary-3)] to-[var(--primary-1)]",
             border_color: "border-[var(--primary-1)]",
             text_color: "text-[var(--primary-1)]",
-            roles: ["admin" ,"manager", "resident"],
+            roles: ["admin", "manager", "resident"],
             component: <TicketTab />,
         },
         {
@@ -52,9 +52,9 @@ export const homeItems: {
             title: "اعضا",
             subtitle: "مدیریت اعضا",
             icon: Users,
-            color: "from-[var(--success-op2-3)] to-[var(--success-op2-2)]",
-            border_color: "border-[var(--success-op2-2)]",
-            text_color: "text-[var(--success-op2-2)]",
+            color: "from-[var(--orange-3)] to-[var(--orange-2)]",
+            border_color: "border-[var(--orange-3)]/40",
+            text_color: "text-[var(--orange-2)]",
             roles: ["manager"],
             component: <ManagerUsers />,
         },
@@ -66,7 +66,7 @@ export const homeItems: {
             color: "from-[var(--danger-3)] to-[var(--danger-1)]",
             border_color: "border-[var(--danger-3)]",
             text_color: "text-[var(--danger-3)]",
-            roles: ["admin" ,"manager", "resident"],
+            roles: ["admin", "manager", "resident"],
             component: <p>rules</p>,
         },
     ];
