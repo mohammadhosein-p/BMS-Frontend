@@ -1,7 +1,4 @@
-// components/PollDetailsDialog.tsx
-
 import { useState } from "react";
-
 import { BadgeCheck, CircleHelp, Trash, X } from "lucide-react";
 
 import {
@@ -11,27 +8,11 @@ import {
     DialogTitle,
     DialogClose,
 } from "../ui/CustomeDialog";
-
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/store/useAuthStore";
 import CustomButton from "../ui/CustomeButton";
-
-interface PollOption {
-    id: number;
-    title: string;
-    percent: number;
-    isVoted?: boolean;
-}
-
-interface PollDetailsDialogProps {
-    trigger: React.ReactNode;
-    title: string;
-    description?: string;
-    isActive?: boolean;
-    isPublic?: boolean;
-    options: PollOption[];
-}
+import type { PollDetailsDialogProps } from "@/types/PollTypes";
 
 function PollDetailsDialog({
     trigger,
@@ -143,8 +124,8 @@ function PollDetailsDialog({
                                         <Progress
                                             value={option.percent}
                                             className={cn(
-                                                "h-5 rounded-md border border-neutral-3 bg-white",
-                                                "[&>div]:rounded-md [&>div]:bg-secondary-blue-2",
+                                                "h-5 rounded-md bg-white",
+                                                "[&>div]:rounded-md [&>div]:bg-secondary-blue-3",
                                             )}
                                         />
 
