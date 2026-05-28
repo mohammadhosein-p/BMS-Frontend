@@ -1,0 +1,29 @@
+import { useMutation } from "@tanstack/react-query";
+import getQueryClient from "./queryClient";
+import type { CreatePollBody } from "@/types/PollTypes";
+import { createPollService } from "@/services/pollService";
+import { toast } from "sonner";
+import type { AxiosError } from "axios";
+
+export const useCreatePoll = (apartment_id: string) => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: (data: CreatePollBody) => createPollService(data, apartment_id),
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ["poll"],
+            });
+            toast.success("نظرسنجی با موفقیت آغاز شد.");
+        },
+
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            toast.error(err.response?.data?.message || "خطا در ایجاد نظرسنجی");
+        },
+    });
+};

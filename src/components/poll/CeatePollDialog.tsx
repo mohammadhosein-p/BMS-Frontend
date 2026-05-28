@@ -20,14 +20,20 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2 } from "lucide-react";
 import { createPollSchema, type CreatePollFormData } from "@/utils/pollSchema";
+import { useCreatePoll } from "@/hooks/usePoll";
+import useAuthStore from "@/store/useAuthStore";
+import type { CreatePollBody } from "@/types/PollTypes";
+import { Spinner } from "../ui/spinner";
 
 export default function CreatePollDialog() {
     const [isOpen, setIsOpen] = useState(false);
+    const apartment_id = useAuthStore(store => store.user?.apartment_id) || ""
 
     const {
         control,
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<CreatePollFormData>({
         resolver: zodResolver(createPollSchema),
@@ -45,16 +51,20 @@ export default function CreatePollDialog() {
         control,
         name: "options",
     });
-    
-    const onSubmit = (data: CreatePollFormData) => {
-        const payload = {
+    const { mutateAsync, isPending } = useCreatePoll(apartment_id);
+
+    const onSubmit = async (data: CreatePollFormData) => {
+        const payload: CreatePollBody = {
             title: data.title,
             description: data.description,
             expires_at: new Date(data.expires_at).toISOString(),
             is_votes_public: data.is_votes_public,
             options: data.options.map((option) => option.value),
         };
-
+        await mutateAsync(payload);
+    
+        reset();
+        setIsOpen(false);
         console.log(payload);
     };
 
@@ -214,15 +224,21 @@ export default function CreatePollDialog() {
 
                         {/* submit */}
                         <div className="flex justify-center pt-2">
-                            <CustomButton
-                                icon={Send}
-                                className={cn(
-                                    "flex items-center gap-3 rounded-2xl px-6 py-3 text-lg text-white",
-                                    "cursor-pointer bg-secondary-blue-3 transition-all hover:bg-secondary-blue-2 hover:opacity-90",
-                                )}
-                            >
-                                ارسال
-                            </CustomButton>
+                            {isPending ? (
+                                <div className="text-white p-3 px-4 rounded-xl bg-secondary-blue-2">
+                                    <Spinner className="w-5 h-5" />
+                                </div>
+                            ) : (
+                                <CustomButton
+                                    icon={Send}
+                                    className={cn(
+                                        "flex items-center gap-3 rounded-2xl px-6 py-3 text-lg text-white",
+                                        "cursor-pointer bg-secondary-blue-3 transition-all hover:bg-secondary-blue-2 hover:opacity-90",
+                                    )}
+                                >
+                                    ارسال
+                                </CustomButton>
+                            )}
                         </div>
                     </div>
                 </form>

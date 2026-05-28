@@ -13,3 +13,11 @@ export interface PollDetailsDialogProps {
     isPublic?: boolean;
     options: PollOption[];
 }
+
+export interface CreatePollBody{
+    title: string;
+    description: string;
+    expires_at: string;
+    is_votes_public: boolean;
+    options: string[]
+}
