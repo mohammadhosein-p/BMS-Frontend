@@ -1,4 +1,4 @@
-export interface PollOption {
+export interface CreatePollOption {
     id: number;
     title: string;
     percent: number;
@@ -11,13 +11,39 @@ export interface PollDetailsDialogProps {
     description?: string;
     isActive?: boolean;
     isPublic?: boolean;
-    options: PollOption[];
+    options: CreatePollOption[];
 }
 
-export interface CreatePollBody{
+export interface CreatePollBody {
     title: string;
     description: string;
     expires_at: string;
     is_votes_public: boolean;
-    options: string[]
+    options: string[];
+}
+
+export interface AllPolls {
+    id: string;
+    title: string;
+    description: string;
+    expires_at: string;
+    total_votes: number;
+    options: PollOption[];
+}
+
+export interface PollOption {
+    id: string;
+    text: string;
+    votes_count: number;
+}
+export interface PollCardProp {
+    id: string;
+    isActive: boolean
+    title: string;
+    options: PollOption[];
+    expires_at: string;
+}
+
+export interface GetAllPollsResponse {
+    data: AllPolls[];
 }

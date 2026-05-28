@@ -1,61 +1,114 @@
-// components/PollCard.tsx
-
 import { AlarmClock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import PollDetailsDialog from "./PollDetailDialog";
-
-interface PollOption {
-    id: number;
-    title: string;
-    percent: number;
-}
-
-interface PollCardProps {
-    title: string;
-    options: PollOption[];
-    isActive?: boolean;
-}
+import type { PollCardProp } from "@/types/PollTypes";
+import { useEffect, useState } from "react";
+import { getPollTimeLeftParts } from "@/utils/pollTimer";
+import getQueryClient from "@/hooks/queryClient";
+import useAuthStore from "@/store/useAuthStore";
 
 export default function PollCard({
     title,
     options,
-    isActive = true,
-}: PollCardProps) {
+    expires_at,
+    id,
+    isActive,
+}: PollCardProp) {
+    const [timeLeft, setTimeLeft] = useState(() =>
+        getPollTimeLeftParts(expires_at),
+    );
+    const queryClient = getQueryClient();
+    const apartment_id = useAuthStore(store => store.user?.apartment_id) || ""
+
+    useEffect(() => {
+        if (!isActive) return;
+
+        const intervalId = setInterval(() => {
+            const newTimeLeft = getPollTimeLeftParts(expires_at);
+            setTimeLeft(newTimeLeft);
+
+            if (
+                newTimeLeft.days === 0 &&
+                newTimeLeft.hours === 0 &&
+                newTimeLeft.minutes === 0
+            ) {
+                clearInterval(intervalId);
+
+                const timeoutId = setTimeout(() => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["polls", apartment_id],
+                    });
+                }, 60_000);
+
+                return () => clearTimeout(timeoutId);
+            }
+        }, 60_000);
+
+        return () => clearInterval(intervalId);
+    }, [expires_at, isActive, id, queryClient]);
+
+
+    const totalVotes = options.reduce(
+        (sum, option) => sum + option.votes_count,
+        0,
+    );
+
+    const normalizedOptions = options.map((option) => {
+        const percent =
+            totalVotes > 0
+                ? Math.round((option.votes_count / totalVotes) * 100)
+                : 0;
+
+        return {
+            ...option,
+            percent,
+        };
+    });
+
     return (
         <div className="w-full">
             {/* timer */}
-            <div className="mb-3 flex items-center justify-right px-4 gap-2">
-                <div className="flex items-center gap-3">
-                    <AlarmClock className="h-6 w-6 text-zinc-400" />
-                    <div className="flex items-center gap-1">
-                        <span className="text-lg font-bold leading-none text-zinc-800">
-                            01
-                        </span>
-                        <span className="pb-0.75 text-md font-bold text-zinc-800">
-                            روز
-                        </span>
-                    </div>
+            {isActive && (
+                <div className="mb-3 flex items-center justify-right px-4 gap-2">
+                    <div className="flex items-center gap-3">
+                        <AlarmClock className="h-6 w-6 text-zinc-400" />
+                        {/* نمایش روز */}
+                        {timeLeft.days > 0 && (
+                            <div className="flex items-center gap-1">
+                                <span className="text-lg font-bold leading-none text-zinc-800">
+                                    {String(timeLeft.days).padStart(2, "0")}
+                                </span>
+                                <span className="pb-0.75 text-md font-bold text-zinc-800">
+                                    روز
+                                </span>
+                            </div>
+                        )}
 
-                    <div className="flex items-center gap-1">
-                        <span className="text-lg font-bold leading-none text-zinc-800">
-                            10
-                        </span>
-                        <span className="pb-0.75 text-md font-bold text-zinc-800">
-                            ساعت
-                        </span>
-                    </div>
+                        {/* نمایش ساعت */}
+                        {timeLeft.hours > 0 && (
+                            <div className="flex items-center gap-1">
+                                <span className="text-lg font-bold leading-none text-zinc-800">
+                                    {String(timeLeft.hours).padStart(2, "0")}
+                                </span>
+                                <span className="pb-0.75 text-md font-bold text-zinc-800">
+                                    ساعت
+                                </span>
+                            </div>
+                        )}
 
-                    <div className="flex items-center gap-1">
-                        <span className="text-lg font-bold leading-none text-zinc-800">
-                            20
-                        </span>
-                        <span className="pb-0.75 text-md font-bold text-zinc-800">
-                            دقیقه
-                        </span>
+                        {/* نمایش دقیقه */}
+                        <div className="flex items-center gap-1">
+                            <span className="text-lg font-bold leading-none text-zinc-800">
+                                {String(timeLeft.minutes).padStart(2, "0")}
+                            </span>
+                            <span className="pb-0.75 text-md font-bold text-zinc-800">
+                                دقیقه
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* card */}
             <div className="overflow-hidden rounded-[28px] bg-white shadow-md">
@@ -85,14 +138,14 @@ export default function PollCard({
                 {/* body */}
                 <div className="px-6 py-8">
                     <div className="space-y-6">
-                        {options.map((option) => (
+                        {normalizedOptions.map((option) => (
                             <div
                                 key={option.id}
                                 className="flex items-center gap-2"
                             >
                                 {/* title */}
-                                <span className="w-21.25 line-clamp-1 text-right text-md text-zinc-900">
-                                    {option.title}
+                                <span className="w-30 line-clamp-1 text-right text-md text-zinc-900">
+                                    {option.text}
                                 </span>
 
                                 {/* progress */}
@@ -130,24 +183,8 @@ export default function PollCard({
                             title={title}
                             isActive={isActive}
                             isPublic
-                            description="سلام وقتتون بخیر من به شدت نیاز دارم راهرو طبقه سوم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک ووم تمیز بشه چون همسایمون زده به تعویض همسری و هست لطفا هر چه زودتر پیگیری کنین چون به شدت محیط تاریک و ترسناکی داره"
+                            description="سلاره"
                             options={[
-                                {
-                                    id: 1,
-                                    title: "گزینه 1",
-                                    percent: 30,
-                                    isVoted: true,
-                                },
-                                {
-                                    id: 2,
-                                    title: "گزینه 2",
-                                    percent: 30,
-                                },
-                                {
-                                    id: 3,
-                                    title: "گزینه 3",
-                                    percent: 30,
-                                },
                                 {
                                     id: 4,
                                     title: "گزینه 4",

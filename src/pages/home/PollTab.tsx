@@ -1,51 +1,19 @@
 // pages/PollsPage.tsx
 import CreatePollDialog from "@/components/poll/CeatePollDialog";
 import PollCard from "@/components/poll/PollCard";
-
-const activePolls = [
-    {
-        id: 1,
-        title: "تصمیم گیری درباره ساختمان",
-        options: [
-            { id: 1, title: "گزینه گزینه گزینه گزینه گزینه 1", percent: 100 },
-            { id: 2, title: "گزینه 2", percent: 10 },
-            { id: 3, title: "گزینه 3", percent: 0 },
-            { id: 4, title: "گزینه 4", percent: 0 },
-            { id: 4, title: "گزینه 4", percent: 0 },
-            { id: 4, title: "گزینه 4", percent: 0 },
-            { id: 4, title: "گزینه 4", percent: 0 },
-        ],
-    },
-    {
-        id: 2,
-        title: "تصمیم گیری درباره ساختمان",
-        options: [
-            { id: 1, title: "گزینه 1", percent: 50 },
-            { id: 2, title: "گزینه 2", percent: 15 },
-            { id: 3, title: "گزینه 3", percent: 30 },
-            { id: 4, title: "گزینه 4", percent: 5 },
-        ],
-    },
-    {
-        id: 3,
-        title: "تصمیم گیری درباره ساختمان",
-        options: [
-            { id: 1, title: "گزینه 1", percent: 50 },
-            { id: 2, title: "گزینه 2", percent: 15 },
-            { id: 3, title: "گزینه 3", percent: 30 },
-            { id: 4, title: "گزینه 4", percent: 5 },
-        ],
-    },
-
-];
+import { Spinner } from "@/components/ui/spinner";
+import { useGetAllPoll } from "@/hooks/usePoll";
+import useAuthStore from "@/store/useAuthStore";
 
 
 function PollTab() {
+    const apartment_id =
+        useAuthStore((store) => store.user?.apartment_id) || "";
+    const { data, isPending } = useGetAllPoll(apartment_id);
     return (
         <div className="custom-scrollbar h-full overflow-y-auto bg-neutral-5 p-6">
             {/* top section */}
             <div className="mb-6 flex items-center justify-between">
-                
                 <CreatePollDialog />
 
                 <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl ">
@@ -58,14 +26,36 @@ function PollTab() {
                 className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
                 dir="rtl"
             >
-                {activePolls.map((poll) => (
+                {isPending ? (
+                    <Spinner />
+                ) : data ? (
+                    data.data
+                        .filter(
+                            (poll) =>
+                                new Date(poll.expires_at).getTime() >
+                                Date.now(),
+                        )
+                        .map((poll) => (
+                            <PollCard
+                                key={poll.id}
+                                id={poll.id}
+                                expires_at={poll.expires_at}
+                                options={poll.options}
+                                title={poll.title}
+                                isActive
+                            />
+                        ))
+                ) : (
+                    <p>no polls found</p>
+                )}
+                {/* {activePolls.map((poll) => (
                     <PollCard
                         key={poll.id}
                         title={poll.title}
                         options={poll.options}
                         isActive
                     />
-                ))}
+                ))} */}
             </div>
 
             {/* finished title */}
@@ -80,32 +70,28 @@ function PollTab() {
                 className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
                 dir="rtl"
             >
-                <PollCard
-                    title="تصمیم گیری درباره ساختمان"
-                    isActive={false}
-                    options={[
-                        {
-                            id: 1,
-                            title: "گزینه 1",
-                            percent: 50,
-                        },
-                        {
-                            id: 2,
-                            title: "گزینه 2",
-                            percent: 15,
-                        },
-                        {
-                            id: 3,
-                            title: "گزینه 3",
-                            percent: 30,
-                        },
-                        {
-                            id: 4,
-                            title: "گزینه 4",
-                            percent: 5,
-                        },
-                    ]}
-                />
+                {isPending ? (
+                    <Spinner />
+                ) : data ? (
+                    data.data
+                        .filter(
+                            (poll) =>
+                                new Date(poll.expires_at).getTime() <
+                                Date.now(),
+                        )
+                        .map((poll) => (
+                            <PollCard
+                                key={poll.id}
+                                id={poll.id}
+                                expires_at={poll.expires_at}
+                                options={poll.options}
+                                title={poll.title}
+                                isActive={false}
+                            />
+                        ))
+                ) : (
+                    <p>no polls found</p>
+                )}
             </div>
         </div>
     );
