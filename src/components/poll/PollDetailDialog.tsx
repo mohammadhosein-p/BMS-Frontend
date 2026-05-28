@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/store/useAuthStore";
 import CustomButton from "../ui/CustomeButton";
-import { useGetPollByID } from "@/hooks/usePoll";
+import { useDeletePollByID, useGetPollByID } from "@/hooks/usePoll";
 import { Spinner } from "../ui/spinner";
 
 function PollDetailsDialog({
@@ -28,7 +28,9 @@ function PollDetailsDialog({
     const apartment_id =
         useAuthStore((store) => store.user?.apartment_id) || "";
 
-    const { data, isPending } = useGetPollByID(apartment_id, id);
+    const { data, isPending } = useGetPollByID(apartment_id, id, isOpen);
+    const { mutate: deletePoll, isPending: isPendingDeletePoll } =
+        useDeletePollByID(apartment_id, id, () => setIsOpen(false));
 
     const isManager = useAuthStore((store) => store.user?.role == "manager");
 
@@ -184,12 +186,17 @@ function PollDetailsDialog({
 
                     {isManager && (
                         <div className="flex justify-center pt-2">
-                            <CustomButton
-                                className="bg-danger-3 hover:bg-danger-2 cursor-pointer"
-                                icon={Trash}
-                            >
-                                حذف نظرسنجی
-                            </CustomButton>
+                            {isPendingDeletePoll ? (
+                                <Spinner />
+                            ) : (
+                                <CustomButton
+                                    className="bg-danger-3 hover:bg-danger-2 cursor-pointer"
+                                    icon={Trash}
+                                    onClick={() => deletePoll()}
+                                >
+                                    حذف نظرسنجی
+                                </CustomButton>
+                            )}
                         </div>
                     )}
                 </div>

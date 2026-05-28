@@ -1,7 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
 import type { CreatePollBody } from "@/types/PollTypes";
-import { createPollService, getAllPollService, getPollByIdService } from "@/services/pollService";
+import {
+    createPollService,
+    deletePollByIdService,
+    getAllPollService,
+    getPollByIdService,
+} from "@/services/pollService";
 import { toast } from "sonner";
 import type { AxiosError } from "axios";
 
@@ -37,10 +42,35 @@ export const useGetAllPoll = (apartment_id: string) => {
     });
 };
 
-export const useGetPollByID = (apartment_id: string, poll_id: string) => {
+export const useGetPollByID = (apartment_id: string, poll_id: string, enabled:boolean) => {
     return useQuery({
         queryFn: () => getPollByIdService(apartment_id, poll_id),
 
         queryKey: ["polls", apartment_id, poll_id],
+        enabled
+    });
+};
+
+export const useDeletePollByID = (
+    apartment_id: string,
+    poll_id: string,
+    onSuccess: () => void,
+) => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: () => deletePollByIdService(apartment_id, poll_id),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id, poll_id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id],
+            });
+
+            toast.success("نظرسنجی با موفقیت حذف شد");
+            onSuccess();
+        },
     });
 };

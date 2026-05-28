@@ -3,7 +3,7 @@ import type {
     GetAllPollsResponse,
     GetSinglePollResponse,
 } from "@/types/PollTypes";
-import { getData, postData } from "./services";
+import { deleteData, getData, postData } from "./services";
 
 export const createPollService = async (
     pollData: CreatePollBody,
@@ -32,3 +32,11 @@ export const getPollByIdService = async (
     });
 };
 
+export const deletePollByIdService = async (
+    apartment_id: string,
+    poll_id: string,
+): Promise<void> => {
+    return deleteData({
+        endPoint: `/apartments/${apartment_id}/polls/${poll_id}`,
+    });
+};
