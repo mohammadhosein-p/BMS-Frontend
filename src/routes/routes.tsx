@@ -5,6 +5,7 @@ import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
+import Error404 from "@/pages/Error404";
 import ProfileTab from "@/pages/home/profileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
@@ -13,9 +14,9 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: <PublicLayout />,
-        // errorElement: (
-        // 	<Error404 />
-        // ),
+        errorElement: (
+        	<Error404 />
+        ),
         children: [
             {
                 index: true,
