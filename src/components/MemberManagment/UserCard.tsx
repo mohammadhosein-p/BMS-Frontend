@@ -5,10 +5,13 @@ import { translateDate } from '@/utils/translateDate';
 import { translateNumber } from '@/utils/translateNumber';
 import type { UserInManagement } from '@/services/userManagmentService';
 import CustomButton from '../ui/CustomeButton';
+import { changeProfileImageUrl } from '@/utils/formatProfileImage';
+import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
+
 
 interface UserCardProps {
     user: UserInManagement;
-    onDelete: (id: number) => void;
+    onDelete: (id: string) => void;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
@@ -23,18 +26,22 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
             <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-3">
                 <div className="flex items-center gap-3">
                     <img
-                        src={user.profile_image_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100"}
+                        src={changeProfileImageUrl(user.profile_image_url) || DefaultProfileImg}
                         alt={`${user.first_name} ${user.last_name}`}
-                        className="w-11 h-11 rounded-full object-cover shadow-md ring-2 ring-teal-400/70 p-0.5"
+                        className="w-11 h-11 rounded-full object-cover shadow-md ring-2 ring-teal-400/70 p-0.5 shrink-0"
                     />
-                    <div className="flex flex-col">
-                        <span className="font-bold text-gray-800 text-sm">{`${user.first_name} ${user.last_name}`}</span>
-                        <span className="text-xs text-gray-400" dir="ltr">{user.username ? `@${user.username}` : ''}</span>
+                    <div className="flex flex-col items-start text-right min-w-0">
+                        <span className="font-bold text-gray-800 text-sm truncate w-full">
+                            {`${user.first_name} ${user.last_name}`}
+                        </span>
+                        <span className="text-xs text-gray-400 text-right w-full mt-0.5" dir="ltr">
+                            {user.username ? `@${user.username}` : ''}
+                        </span>
                     </div>
                 </div>
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md font-extrabold text-xs border border-indigo-100/50">
                     <Hash size={12} />
-                    واحد {translateNumber(user.unit_number)}
+                    {user.unit ? `واحد ${translateNumber(user.unit.unit_number)}` : 'واحد نامشخص'}
                 </span>
             </div>
 
@@ -45,7 +52,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
                 </div>
                 <div className="flex items-center justify-between">
                     <span className="text-gray-400 flex items-center gap-1"><Mail size={13} /> ایمیل:</span>
-                    <span className="font-medium max-w-[180px] truncate">{user.email}</span>
+                    <span className="font-medium max-w-45 truncate">{user.email}</span>
                 </div>
                 <div className="flex items-center justify-between">
                     <span className="text-gray-400 flex items-center gap-1"><Calendar size={13} /> تاریخ ورود:</span>
@@ -61,7 +68,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
                     variant="danger"
                     styleType="soft"
                     icon={Trash2}
-                    onClick={() => onDelete(user.id)}
+                    onClick={() => onDelete(user.user_id)}
                     className="w-full sm:w-auto text-xs font-semibold cursor-pointer"
                     title="حذف این عضو"
                 >

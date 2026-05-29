@@ -1,19 +1,12 @@
-// src/components/ManagerUsers/ManagerUsers.tsx
 import React, { useState, useMemo } from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
-import CustomField from '@/components/ui/CutsomeFiled';
+import CustomField from '@/components/ui/CutsomeFiled'; 
 import useAuthStore from '@/store/useAuthStore';
 import { getApartmentUsers } from '@/services/userManagmentService';
 import { UserCard } from '@/components/MemberManagment/UserCard';
 import { UserTableRow } from '@/components/MemberManagment/UserTableRow';
-
-const mockUsers = [
-    { id: 1, first_name: "علی", last_name: "نقی نژاد", username: "AliNaghiNjad", unit_number: "12", phone: "09938246242", email: "naghinjadali@gmail.com", created_at: "1402/05/10", profile_image_url: "" },
-    { id: 2, first_name: "محمد", last_name: "رضایی", username: "MohammadRezaei", unit_number: "15", phone: "09123456789", email: "mohammad.rezaei@gmail.com", created_at: "1401/11/25", profile_image_url: "" },
-    { id: 3, first_name: "رضا", last_name: "احمدی", username: "RazaAhmadi", unit_number: "11", phone: "09123456780", email: "reza.ahmadi@gmail.com", created_at: "1403/01/15", profile_image_url: "" }
-];
 
 type SortField = 'unitNumber' | 'joinDate' | null;
 type SortDirection = 'asc' | 'desc';
@@ -32,8 +25,11 @@ const ManagerUsers: React.FC = () => {
     });
 
     const users = useMemo(() => {
-        if (Array.isArray(apiData)) return apiData;
-        return mockUsers; 
+        console.log('API Data:', apiData);
+        if (apiData?.success && apiData?.data?.users && Array.isArray(apiData.data.users)) {
+            return apiData.data.users;
+        }
+        return apiData; 
     }, [apiData]);
 
     const handleSort = (field: SortField) => {
@@ -50,11 +46,12 @@ const ManagerUsers: React.FC = () => {
         return users.filter(user => {
             const query = searchQuery.toLowerCase().trim();
             const fullName = `${user.first_name || ''} ${user.last_name || ''}`.toLowerCase();
+            const unitNumber = user.unit?.unit_number || '';
             
             return (
                 fullName.includes(query) ||
                 (user.username && user.username.toLowerCase().includes(query)) ||
-                (user.unit_number && user.unit_number.includes(query)) ||
+                unitNumber.includes(query) ||
                 (user.email && user.email.toLowerCase().includes(query)) ||
                 (user.phone && user.phone.includes(query))
             );
@@ -65,13 +62,13 @@ const ManagerUsers: React.FC = () => {
         if (!sortField) return filteredUsers;
 
         return [...filteredUsers].sort((a, b) => {
-            const valueA = sortField === 'unitNumber' ? a.unit_number : a.created_at;
-            const valueB = sortField === 'unitNumber' ? b.unit_number : b.created_at;
+            const valueA = sortField === 'unitNumber' ? (a.unit?.unit_number || '') : a.created_at;
+            const valueB = sortField === 'unitNumber' ? (b.unit?.unit_number || '') : b.created_at;
 
             if (sortField === 'unitNumber') {
-                return sortDirection === 'asc'
-                    ? parseInt(valueA || '0') - parseInt(valueB || '0')
-                    : parseInt(valueB || '0') - parseInt(valueA || '0');
+                const intA = parseInt(valueA, 10) || 0;
+                const intB = parseInt(valueB, 10) || 0;
+                return sortDirection === 'asc' ? intA - intB : intB - intA;
             }
 
             return sortDirection === 'asc'
@@ -89,8 +86,8 @@ const ManagerUsers: React.FC = () => {
             : <ArrowDown size={14} className="text-indigo-600" />;
     };
 
-    const handleDelete = (id: number) => {
-        console.log(`Delete user with id: ${id}`);
+    const handleDelete = (id: string) => {
+        console.log(`Delete user with user_id: ${id}`);
     };
 
     if (!apartmentId && !isLoading) {
@@ -104,9 +101,9 @@ const ManagerUsers: React.FC = () => {
     }
 
     return (
-        <div className="w-full px-4 sm:px-6 py-4" dir="rtl">
-            {/* بخش سرچ و فیلتر موبایل */}
-            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="w-full px-4 sm:px-6 py-2.5" dir="rtl">
+            {/* Search and Filters Section */}
+            <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="max-w-md w-full">
                     <CustomField
                         type="text"
@@ -150,13 +147,13 @@ const ManagerUsers: React.FC = () => {
                 </div>
             )}
 
-            {/* ۱. خروجی نمای کارتی موبایل */}
+            {/* Mobile View */}
             {!isLoading && (
                 <div className="block md:hidden space-y-3">
                     <AnimatePresence>
-                        {sortedUsers.length > 0 ? (
+                        ={sortedUsers.length > 0 ? (
                             sortedUsers.map((user) => (
-                                <UserCard key={user.id} user={user} onDelete={handleDelete} />
+                                <UserCard key={user.user_id} user={user} onDelete={handleDelete} />
                             ))
                         ) : (
                             <div className="text-center py-8 text-sm text-gray-400 bg-white border border-gray-200 rounded-xl">
@@ -167,14 +164,14 @@ const ManagerUsers: React.FC = () => {
                 </div>
             )}
 
-            {/* ۲. خروجی نمای جدول دسکتاپ */}
+            {/* Desktop Table View */}
             {!isLoading && (
                 <div className="hidden md:block bg-[#f3f4f6]/60 rounded-2xl border border-gray-200/80 shadow-md max-h-125 overflow-y-auto overflow-x-hidden backdrop-blur-sm
-            [&::-webkit-scrollbar]:w-1.5
-            [&::-webkit-scrollbar-track]:bg-transparent
-            [&::-webkit-scrollbar-thumb]:bg-gray-200
-            [&::-webkit-scrollbar-thumb]:rounded-full
-            hover:[&::-webkit-scrollbar-thumb]:bg-gray-300">
+                [&::-webkit-scrollbar]:w-1.5
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:bg-gray-200
+                [&::-webkit-scrollbar-thumb]:rounded-full
+                hover:[&::-webkit-scrollbar-thumb]:bg-gray-300">
                     <table className="w-full text-right border-collapse">
                         <thead>
                             <tr className="sticky top-0 z-10 bg-[#eaedf1] border-b border-gray-200 select-none">
@@ -199,7 +196,7 @@ const ManagerUsers: React.FC = () => {
                         <tbody>
                             {sortedUsers.length > 0 ? (
                                 sortedUsers.map((user) => (
-                                    <UserTableRow key={user.id} user={user} onDelete={handleDelete} />
+                                    <UserTableRow key={user.user_id} user={user} onDelete={handleDelete} />
                                 ))
                             ) : (
                                 <tr>
