@@ -30,5 +30,7 @@ export const profileSchema = z.object({
     first_name: baseAuthFields.first_name,
     last_name: baseAuthFields.last_name,
     email: baseAuthFields.email.or(z.literal("")), 
-    phone: baseAuthFields.phone,
 });
+
+export type UpdateProfileInput = z.infer<typeof profileSchema>;
+

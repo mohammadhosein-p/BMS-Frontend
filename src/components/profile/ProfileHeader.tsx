@@ -37,16 +37,17 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const uploadImageMutation = useMutation({
         mutationFn: uploadProfileImageService,
         onSuccess: (response) => {
-            console.log(response);
+            const serverImageUrl = response?.data?.profile_image_url;
 
-            // const serverImageUrl = response?.data?.url || response?.url;
-
-            // if (serverImageUrl) {
-            //     updateUser({ profile_image_url: serverImageUrl });
-            // } else if (previewImage) {
+            if (serverImageUrl) {
+                updateUser({ profile_image_url: serverImageUrl });
+            } else if (previewImage) {
                 updateUser({ profile_image_url: previewImage });
-            // }
+            }
 
+            if (previewImage) {
+                URL.revokeObjectURL(previewImage);
+            }
             setPreviewImage(null);
 
             toast.custom(() => (
@@ -59,7 +60,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
             ));
         },
         onError: (error: AxiosBackendError) => {
-            console.log(error)
+            console.log(error);
             if (previewImage) {
                 URL.revokeObjectURL(previewImage);
                 setPreviewImage(null);
@@ -95,7 +96,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
     const handleConfirmLogout = () => {
         handleLogout(() => {
             setIsLogoutDialogOpen(false);
-            console.log(1212121212)
+            console.log(1212121212);
             toast.custom(() => (
                 <CustomToast
                     title="خروج موفق"
@@ -139,7 +140,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         variant="danger"
                         styleType="outline"
                         icon={LogOut}
-                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none"
+                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none cursor-pointer"
                         onClick={() => setIsLogoutDialogOpen(true)}
                     >
                         خروج از حساب
@@ -149,7 +150,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
                         variant="success2"
                         styleType="outline"
                         icon={KeyRound}
-                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none"
+                        className="h-10 px-3 text-xs rounded-lg flex-1 md:flex-none cursor-pointer"
                         onClick={() => setIsChangePassOpen(true)}
                     >
                         تغییر رمز عبور

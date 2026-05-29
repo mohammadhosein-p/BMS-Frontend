@@ -1,3 +1,4 @@
+import type { UpdateProfileInput } from "@/utils/authSchema";
 import type { ApiResponse, User } from "../types/authTypes";
 import { getData, putData, patchData, deleteData, postImageData } from "./services"; 
 
@@ -27,12 +28,14 @@ export const getUserByIdService = async (userId: string): Promise<User> => {
  * PUT {{base_url}}/user/me
  * Updates the fields of the currently authenticated user
  */
-export const updateMyProfileService = async (userData: Partial<User>): Promise<User> => {
-    const res: ApiResponse<User> = await putData({
+export const updateMyProfileService = async (userData: UpdateProfileInput): Promise<ApiResponse<User>> => {
+    const res = await putData({
         endPoint: `/user/me`,
         data: userData,
     });
-    return res.data;
+    
+    // Return the entire response object so mutation handlers can safely access res.data
+    return res;
 };
 
 /**

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { User as UserIcon, Mail, Edit, Save, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner"; 
-
 import CustomField from "@/components/ui/CutsomeFiled";
 import CustomButton from "../ui/CustomeButton";
 
@@ -71,14 +70,16 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     const updateProfileMutation = useMutation({
         mutationFn: updateMyProfileService,
         onSuccess: (res) => {
-            console.log(res)
-            updateUser({
-                username: formData.username,
-                email: formData.email,
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                phone: formData.phone,
-            });
+            const updatedData = res?.data;
+
+            if (updatedData) {
+                updateUser({
+                    username: updatedData.username,
+                    email: updatedData.email,
+                    first_name: updatedData.first_name,
+                    last_name: updatedData.last_name,
+                });
+            }
 
             setIsEditing(false);
 
@@ -156,7 +157,6 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                 email: formData.email,
                 first_name: formData.first_name,
                 last_name: formData.last_name,
-                phone: formData.phone
             });
             return;
         }
@@ -263,8 +263,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             type="tel"
                             inputMode="numeric"
                             value={translateNumber(formData.phone)}
+                            disabled={true}
                             onChange={handleInputChange}
-                            disabled={!isEditing || updateProfileMutation.isPending}
                             variant={errors.phone ? "error" : "default"}
                         />
                         {errors.phone && <span className="text-red-500 text-xs mt-1 px-1">{errors.phone}</span>}
