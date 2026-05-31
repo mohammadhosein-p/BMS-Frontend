@@ -12,7 +12,12 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import useAuthStore from "@/store/useAuthStore";
 import CustomButton from "../ui/CustomeButton";
-import { useDeletePollByID, useGetPollByID } from "@/hooks/usePoll";
+import {
+    useDeletePollByID,
+    useDeleteVote,
+    useGetPollByID,
+    usePostVote,
+} from "@/hooks/usePoll";
 import { Spinner } from "../ui/spinner";
 
 function PollDetailsDialog({
@@ -31,16 +36,35 @@ function PollDetailsDialog({
     const { data, isPending } = useGetPollByID(apartment_id, id, isOpen);
     const { mutate: deletePoll, isPending: isPendingDeletePoll } =
         useDeletePollByID(apartment_id, id, () => setIsOpen(false));
+    const { mutate: postVoteMutate, isPending: isSubmitVotePending } =
+        usePostVote(apartment_id, data?.data.id || "");
+    const { mutate: deleteVoteMutate, isPending: isDeleteVotePending } =
+        useDeleteVote(apartment_id, data?.data.id || "");
 
     const isManager = useAuthStore((store) => store.user?.role == "manager");
 
-    if (isPending) return <Spinner />;
+    if (isPending)
+        return (
+            <button
+                onClick={() => setIsOpen(true)}
+                className={cn(
+                    "rounded-2xl border-[3px] px-4 py-1.25 text-md cursor-pointer hover:scale-105 transition-all",
+                    isActive
+                        ? "border-secondary-blue-2 text-secondary-blue-2"
+                        : "border-zinc-500 text-zinc-700",
+                )}
+            >
+                مشاهده نتایج و جزئیات
+            </button>
+        );
 
     if (!data)
         return (
             <Dialog open={isOpen}>
                 <DialogContent isOpen={isOpen}>
-                    <div>جزئیات نظرسنجی دریافت نشد. دوباره تلاش کنید</div>
+                    <div className="text-black">
+                        جزئیات نظرسنجی دریافت نشد. دوباره تلاش کنید
+                    </div>
                 </DialogContent>
             </Dialog>
         );
@@ -62,6 +86,15 @@ function PollDetailsDialog({
         };
     });
 
+    const submitVote = (optionId: string) => {
+        if (data.data.user_voted_option_id == optionId) {
+            deleteVoteMutate();
+            return;
+        }
+
+        postVoteMutate({ option_id: optionId });
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             {/* Trigger */}
@@ -70,7 +103,7 @@ function PollDetailsDialog({
                 className={cn(
                     "rounded-2xl border-[3px] px-4 py-1.25 text-md cursor-pointer hover:scale-105 transition-all",
                     isActive
-                        ? "border-secondary-blue-2 text-seconborder-secondary-blue-2"
+                        ? "border-secondary-blue-2 text-secondary-blue-2"
                         : "border-zinc-500 text-zinc-700",
                 )}
             >
@@ -152,11 +185,18 @@ function PollDetailsDialog({
                             <div
                                 key={option.id}
                                 className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-105 cursor-pointer"
+                                onClick={() => submitVote(option.id)}
                             >
                                 {/* voted */}
                                 <div className="h-5 w-5 fill-secondary-blue-2 text-white">
-                                    {true && (
-                                        <BadgeCheck className="h-5 w-5 fill-secondary-blue-2 text-white" />
+                                    {isSubmitVotePending ||
+                                    isDeleteVotePending ? (
+                                        <Spinner />
+                                    ) : (
+                                        data.data.user_voted_option_id ==
+                                            option.id && (
+                                            <BadgeCheck className="h-5 w-5 fill-secondary-blue-2 text-white" />
+                                        )
                                     )}
                                 </div>
                                 {/* title */}

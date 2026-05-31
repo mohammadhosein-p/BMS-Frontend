@@ -20,6 +20,7 @@ export interface AllPolls {
     expires_at: string;
     total_votes: number;
     options: PollOption[];
+    user_voted_option_id?: string;
 }
 
 export interface PollOption {
@@ -41,4 +42,8 @@ export interface GetAllPollsResponse {
 
 export interface GetSinglePollResponse {
     data: AllPolls;
+}
+
+export interface PostVoteBody {
+    option_id: string;
 }

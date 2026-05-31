@@ -2,6 +2,7 @@ import type {
     CreatePollBody,
     GetAllPollsResponse,
     GetSinglePollResponse,
+    PostVoteBody,
 } from "@/types/PollTypes";
 import { deleteData, getData, postData } from "./services";
 
@@ -38,5 +39,25 @@ export const deletePollByIdService = async (
 ): Promise<void> => {
     return deleteData({
         endPoint: `/apartments/${apartment_id}/polls/${poll_id}`,
+    });
+};
+
+export const postVoteService = async (
+    option_data: PostVoteBody,
+    apartment_id: string,
+    poll_id: string,
+): Promise<void> => {
+    await postData({
+        endPoint: `/apartments/${apartment_id}/polls/${poll_id}/votes`,
+        data: option_data,
+    });
+};
+
+export const deleteVoteService = async (
+    apartment_id: string,
+    poll_id: string,
+): Promise<void> => {
+    await deleteData({
+        endPoint: `/apartments/${apartment_id}/polls/${poll_id}/votes`,
     });
 };

@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
-import type { CreatePollBody } from "@/types/PollTypes";
+import type { CreatePollBody, PostVoteBody } from "@/types/PollTypes";
 import {
     createPollService,
     deletePollByIdService,
+    deleteVoteService,
     getAllPollService,
     getPollByIdService,
+    postVoteService,
 } from "@/services/pollService";
 import { toast } from "sonner";
 import type { AxiosError } from "axios";
@@ -42,12 +44,16 @@ export const useGetAllPoll = (apartment_id: string) => {
     });
 };
 
-export const useGetPollByID = (apartment_id: string, poll_id: string, enabled:boolean) => {
+export const useGetPollByID = (
+    apartment_id: string,
+    poll_id: string,
+    enabled: boolean,
+) => {
     return useQuery({
         queryFn: () => getPollByIdService(apartment_id, poll_id),
 
         queryKey: ["polls", apartment_id, poll_id],
-        enabled
+        enabled,
     });
 };
 
@@ -74,3 +80,44 @@ export const useDeletePollByID = (
         },
     });
 };
+
+export const usePostVote = (apartment_id: string, poll_id: string) => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: (option_data: PostVoteBody) =>
+            postVoteService(option_data, apartment_id, poll_id),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id, poll_id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id],
+            });
+
+            toast.success("رای شما با موفقیت ثبت شد");
+        },
+    });
+};
+
+export const useDeleteVote = (apartment_id: string, poll_id: string) => {
+    const queryClient = getQueryClient();
+
+    return useMutation({
+        mutationFn: () =>
+            deleteVoteService( apartment_id, poll_id),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id, poll_id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["polls", apartment_id],
+            });
+
+            toast.success("رای شما با موفقیت پس گرفته شد");
+        },
+    });
+};
+
