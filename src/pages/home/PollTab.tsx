@@ -48,14 +48,6 @@ function PollTab() {
                 ) : (
                     <p>no polls found</p>
                 )}
-                {/* {activePolls.map((poll) => (
-                    <PollCard
-                        key={poll.id}
-                        title={poll.title}
-                        options={poll.options}
-                        isActive
-                    />
-                ))} */}
             </div>
 
             {/* finished title */}

@@ -27,7 +27,8 @@ import { Spinner } from "../ui/spinner";
 
 export default function CreatePollDialog() {
     const [isOpen, setIsOpen] = useState(false);
-    const apartment_id = useAuthStore(store => store.user?.apartment_id) || ""
+    const apartment_id =
+        useAuthStore((store) => store.user?.apartment_id) || "";
 
     const {
         control,
@@ -62,7 +63,7 @@ export default function CreatePollDialog() {
             options: data.options.map((option) => option.value),
         };
         await mutateAsync(payload);
-    
+
         reset();
         setIsOpen(false);
         console.log(payload);
@@ -145,26 +146,36 @@ export default function CreatePollDialog() {
                                     {fields.map((field, index) => (
                                         <div
                                             key={field.id}
-                                            className="flex items-center gap-2 transition-all"
+                                            className="transition-all"
                                         >
-                                            <CustomField
-                                                placeholder={`گزینه ${index + 1}`}
-                                                className="h-12 focus-visible:border-primary-2"
-                                                {...register(
-                                                    `options.${index}.value`,
-                                                )}
-                                            />
+                                            <div className="flex items-center gap-2 ">
+                                                <CustomField
+                                                    placeholder={`گزینه ${index + 1}`}
+                                                    className="h-12 focus-visible:border-primary-2"
+                                                    {...register(
+                                                        `options.${index}.value`,
+                                                    )}
+                                                />
 
-                                            {fields.length > 2 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        remove(index)
+                                                {fields.length > 2 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            remove(index)
+                                                        }
+                                                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger-5 text-danger-2 transition-all hover:bg-danger-4"
+                                                    >
+                                                        <Trash2 className="h-5 w-5" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {errors.options?.[index]?.value && (
+                                                <p className="mt-1 text-right text-xs text-danger-2">
+                                                    {
+                                                        errors.options[index]
+                                                            ?.value?.message
                                                     }
-                                                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger-5 text-danger-2 transition-all hover:bg-danger-4"
-                                                >
-                                                    <Trash2 className="h-5 w-5" />
-                                                </button>
+                                                </p>
                                             )}
                                         </div>
                                     ))}
