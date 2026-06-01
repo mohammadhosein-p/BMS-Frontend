@@ -13,14 +13,14 @@ interface OTPVerifyProps {
     OnRegister: () => void;
     onHomePage: () => void;
     onInviteCode: () => void;
-    isUserExists?: boolean;
     phoneNumber: string;
 }
 
-export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, isUserExists = false, phoneNumber }: OTPVerifyProps) => {
+export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, phoneNumber }: OTPVerifyProps) => {
     const [value, setValue] = useState("");
     const [timer, setTimer] = useState(10);
-    const setAuth = useAuthStore((state) => state.setAuth);
+    const { setAuth } = useAuthStore((state) => state);
+    const isUserExists = false;
 
     const verifyOtpMutation = useMutation({
         mutationFn: verifyOtpService,

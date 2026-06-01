@@ -1,5 +1,5 @@
 import type { ApiResponse } from "@/types/authTypes";
-import { getData } from "./services";
+import { getData, patchData } from "./services";
 
 export interface NestedUnit {
     id: string;
@@ -34,8 +34,23 @@ export interface ApartmentData {
     users: UserInManagement[];
 }
 
+export interface RemoveUserFromUnitParams {
+    apartment_id: string;
+    unit_id: string;
+}
+
 export const getApartmentUsers = async (apartment_id: string): Promise<ApiResponse<ApartmentData>> => {
     return getData({
         endPoint: `/apartments/${apartment_id}/users`,
+    });
+};
+
+export const removeUserFromUnitService = async ({ 
+    apartment_id, 
+    unit_id 
+}: RemoveUserFromUnitParams): Promise<ApiResponse<any>> => {
+    return patchData({
+        endPoint: `/apartments/${apartment_id}/units/${unit_id}`,
+        data: {},
     });
 };

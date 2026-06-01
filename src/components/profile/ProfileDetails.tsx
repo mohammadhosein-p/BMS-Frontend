@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { User as UserIcon, Mail, Edit, Save, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 import CustomField from "@/components/ui/CutsomeFiled";
 import CustomButton from "../ui/CustomeButton";
 
 import type { User } from "@/types/authTypes";
 import { translateNumber } from "@/utils/translateNumber";
 import { profileSchema } from "@/utils/authSchema";
-import { updateMyProfileService } from "@/services/userService"; 
+import { updateMyProfileService } from "@/services/userService";
 import useAuthStore from "@/store/useAuthStore";
 import CustomToast from "../Custom/CustomToast";
 import type { AxiosBackendError } from "@/types/apiTypes";
@@ -166,8 +166,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
     };
 
     return (
-        <div className="w-full flex flex-col md:flex-row items-start gap-6 md:gap-8 flex-1 md:h-full md:overflow-hidden">
-            
+        <div className="w-full h-full flex flex-col md:flex-row items-start gap-6 md:gap-8 flex-1 min-h-0">
+
             <div className="pl-0 md:pl-1 flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-30 justify-start z-10">
                 {isEditing ? (
                     <>
@@ -175,7 +175,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             variant="secondary"
                             onClick={toggleEdit}
                             icon={Save}
-                            disabled={updateProfileMutation.isPending} 
+                            disabled={updateProfileMutation.isPending}
                             className="flex-1 md:w-full rounded-lg"
                         >
                             {updateProfileMutation.isPending ? "حفظ..." : "ذخیره"}
@@ -185,7 +185,7 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                             styleType="outline"
                             onClick={handleCancel}
                             icon={X}
-                            disabled={updateProfileMutation.isPending} 
+                            disabled={updateProfileMutation.isPending}
                             className="flex-1 md:w-full rounded-lg"
                         >
                             انصراف
@@ -202,7 +202,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
                 )}
             </div>
 
-            <div className="flex-1 w-full md:h-full md:overflow-y-auto pl-2 pr-1 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-600 scrollbar-track-transparent pb-6">
+            <div className="flex-1 w-full h-full min-h-0 overflow-y-auto pl-3 pr-2 pb-6
+  scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-neutral-600 scrollbar-track-transparent">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 md:gap-x-10 gap-y-4 md:gap-y-5 w-full" dir="rtl">
 
                     <div className="flex flex-col">

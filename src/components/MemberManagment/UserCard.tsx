@@ -11,7 +11,7 @@ import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 
 interface UserCardProps {
     user: UserInManagement;
-    onDelete: (id: string) => void;
+    onDelete: () => void;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
@@ -68,7 +68,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
                     variant="danger"
                     styleType="soft"
                     icon={Trash2}
-                    onClick={() => onDelete(user.user_id)}
+                    onClick={onDelete}
                     className="w-full sm:w-auto text-xs font-semibold cursor-pointer"
                     title="حذف این عضو"
                 >

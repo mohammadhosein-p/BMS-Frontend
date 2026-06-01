@@ -1,12 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2, AlertCircle } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
+
 import CustomField from '@/components/ui/CutsomeFiled'; 
 import useAuthStore from '@/store/useAuthStore';
-import { getApartmentUsers } from '@/services/userManagmentService';
+import { getApartmentUsers, removeUserFromUnitService } from '@/services/userManagmentService';
 import { UserCard } from '@/components/MemberManagment/UserCard';
 import { UserTableRow } from '@/components/MemberManagment/UserTableRow';
+import CustomToast from '@/components/Custom/CustomToast';
 
 type SortField = 'unitNumber' | 'joinDate' | null;
 type SortDirection = 'asc' | 'desc';
@@ -16,6 +19,7 @@ const ManagerUsers: React.FC = () => {
     const [sortField, setSortField] = useState<SortField>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
+    const queryClient = useQueryClient();
     const apartmentId = useAuthStore((state) => state.user?.apartment_id);
 
     const { data: apiData, isLoading, isError } = useQuery({
@@ -24,12 +28,37 @@ const ManagerUsers: React.FC = () => {
         enabled: !!apartmentId,
     });
 
+    const deleteUserMutation = useMutation({
+        mutationFn: removeUserFromUnitService,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['apartmentUsers', apartmentId] });
+            
+            toast.custom(() => (
+                <CustomToast
+                    title="عملیات موفق"
+                    message="کاربر مورد نظر با موفقیت از واحد مربوطه خارج شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        },
+        onError: (error: any) => {
+            toast.custom(() => (
+                <CustomToast
+                    title="خطا در عملیات"
+                    message={error?.response?.data?.message || "مشکلی در حذف کاربر رخ داده است"}
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+        }
+    });
+
     const users = useMemo(() => {
-        console.log('API Data:', apiData);
         if (apiData?.success && apiData?.data?.users && Array.isArray(apiData.data.users)) {
             return apiData.data.users;
         }
-        return apiData; 
+        return []; 
     }, [apiData]);
 
     const handleSort = (field: SortField) => {
@@ -86,8 +115,25 @@ const ManagerUsers: React.FC = () => {
             : <ArrowDown size={14} className="text-indigo-600" />;
     };
 
-    const handleDelete = (id: string) => {
-        console.log(`Delete user with user_id: ${id}`);
+    const handleDelete = (userId: string, unitId?: string) => {
+        if (!apartmentId) return;
+        
+        if (!unitId) {
+            toast.custom(() => (
+                <CustomToast
+                    title="خطا در عملیات"
+                    message="این کاربر در حال حاضر به هیچ واحدی متصل نیست."
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+            return;
+        }
+
+        deleteUserMutation.mutate({
+            apartment_id: apartmentId,
+            unit_id: unitId
+        });
     };
 
     if (!apartmentId && !isLoading) {
@@ -136,24 +182,30 @@ const ManagerUsers: React.FC = () => {
             {isError && (
                 <div className="mb-3 p-3 rounded-xl text-xs text-rose-600 bg-rose-50 border border-rose-100 flex items-center gap-2">
                     <AlertCircle size={16} />
-                    <span>⚠️ اتصال به سرور ناموفق بود؛ در حال نمایش داده‌های لوکال مخزن موقت.</span>
+                    <span>⚠️ اتصال به سرور ناموفق بود؛ لطفا اتصال خود را بررسی کنید.</span>
                 </div>
             )}
 
-            {isLoading && (
+            {(isLoading || deleteUserMutation.isPending) && (
                 <div className="w-full bg-white/80 rounded-2xl border border-gray-200/80 p-12 shadow-sm flex flex-col items-center justify-center gap-3">
                     <Loader2 className="animate-spin text-indigo-600" size={28} />
-                    <span className="text-sm text-gray-500 font-medium">در حال دریافت اطلاعات کاربران...</span>
+                    <span className="text-sm text-gray-500 font-medium">
+                        {deleteUserMutation.isPending ? "در حال حذف و بروزرسانی اطلاعات..." : "در حال دریافت اطلاعات کاربران..."}
+                    </span>
                 </div>
             )}
 
             {/* Mobile View */}
-            {!isLoading && (
+            {!isLoading && !deleteUserMutation.isPending && (
                 <div className="block md:hidden space-y-3">
                     <AnimatePresence>
-                        ={sortedUsers.length > 0 ? (
+                        {sortedUsers.length > 0 ? (
                             sortedUsers.map((user) => (
-                                <UserCard key={user.user_id} user={user} onDelete={handleDelete} />
+                                <UserCard 
+                                    key={user.user_id} 
+                                    user={user} 
+                                    onDelete={() => handleDelete(user.user_id, user.unit?.id)} 
+                                />
                             ))
                         ) : (
                             <div className="text-center py-8 text-sm text-gray-400 bg-white border border-gray-200 rounded-xl">
@@ -165,7 +217,7 @@ const ManagerUsers: React.FC = () => {
             )}
 
             {/* Desktop Table View */}
-            {!isLoading && (
+            {!isLoading && !deleteUserMutation.isPending && (
                 <div className="hidden md:block bg-[#f3f4f6]/60 rounded-2xl border border-gray-200/80 shadow-md max-h-125 overflow-y-auto overflow-x-hidden backdrop-blur-sm
                 [&::-webkit-scrollbar]:w-1.5
                 [&::-webkit-scrollbar-track]:bg-transparent
@@ -196,7 +248,11 @@ const ManagerUsers: React.FC = () => {
                         <tbody>
                             {sortedUsers.length > 0 ? (
                                 sortedUsers.map((user) => (
-                                    <UserTableRow key={user.user_id} user={user} onDelete={handleDelete} />
+                                    <UserTableRow 
+                                        key={user.user_id} 
+                                        user={user} 
+                                        onDelete={() => handleDelete(user.user_id, user.unit?.id)} 
+                                    />
                                 ))
                             ) : (
                                 <tr>

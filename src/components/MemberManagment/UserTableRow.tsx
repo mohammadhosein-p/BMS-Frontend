@@ -9,13 +9,13 @@ import { changeProfileImageUrl } from '@/utils/formatProfileImage';
 
 interface UserTableRowProps {
     user: UserInManagement;
-    onDelete: (id: string) => void;
+    onDelete: () => void;
 }
 
 export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete }) => {
     return (
         <tr className="bg-white hover:bg-gray-50/80 transition-colors border-b border-gray-100 last:border-0">
-            <td className="px-6 py-4 whitespace-nowrap text-center w-1/4 max-w-[250px]">
+            <td className="px-6 py-4 whitespace-nowrap text-center w-1/4 max-w-62.5">
                 <div className="flex items-center justify-start gap-3 pr-4">
                     <img
                         src={changeProfileImageUrl(user.profile_image_url) || DefaultProfileImg}
@@ -62,7 +62,7 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete }) =>
                         type="button"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => onDelete(user.user_id)}
+                        onClick={onDelete}
                         className="bg-white border border-red-200/60 p-2.5 rounded-lg text-red-500 flex items-center justify-center transition-colors hover:bg-red-100/70 cursor-pointer shadow-sm"
                         title="حذف کاربر"
                     >
