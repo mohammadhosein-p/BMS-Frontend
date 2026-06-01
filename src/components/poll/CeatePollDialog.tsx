@@ -24,6 +24,27 @@ import { useCreatePoll } from "@/hooks/usePoll";
 import useAuthStore from "@/store/useAuthStore";
 import type { CreatePollBody } from "@/types/PollTypes";
 import { Spinner } from "../ui/spinner";
+import { AnimatePresence, motion } from "framer-motion";
+
+const AnimatedError = ({ message }: { message?: string }) => {
+    return (
+        <AnimatePresence>
+            {message && (
+                <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto", marginTop: 4 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                >
+                    <p className="text-xs text-danger-2 text-right">
+                        {message}
+                    </p>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
 
 export default function CreatePollDialog() {
     const [isOpen, setIsOpen] = useState(false);
@@ -69,6 +90,17 @@ export default function CreatePollDialog() {
         console.log(payload);
     };
 
+    const handleClose = () => {
+        setIsOpen(false);
+        reset({
+            title: "",
+            description: "",
+            expires_at: new Date(),
+            is_votes_public: true,
+            options: [{ value: "" }, { value: "" }],
+        });
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             {/* Trigger */}
@@ -94,19 +126,20 @@ export default function CreatePollDialog() {
                             type="button"
                             className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer rounded-full border-none bg-white/20 p-1.5 outline-none transition-all hover:bg-white/30"
                             aria-label="Close"
+                            onClick={handleClose}
                         >
                             <X className="h-4 w-4 text-white" strokeWidth={3} />
                         </button>
                     </DialogClose>
 
-                    <DialogTitle className="w-full text-center text-xl font-bold text-white md:text-2xl md:font-extrabold">
+                    <DialogTitle className="text-center text-xl font-bold text-white md:text-2xl md:font-extrabold">
                         ارسال نظرسنجی
                     </DialogTitle>
                 </DialogHeader>
 
                 {/* Body */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="space-y-4 p-6">
+                    <div className="space-y-2 p-4">
                         <div className="space-y-1">
                             {/* title */}
                             <CustomField
@@ -116,11 +149,7 @@ export default function CreatePollDialog() {
                                 className="focus-visible:border-primary-2"
                                 {...register("title")}
                             />
-                            {errors.title && (
-                                <p className="text-xs text-danger-2 text-right">
-                                    {errors.title.message}
-                                </p>
-                            )}
+                            <AnimatedError message={errors.title?.message} />
                         </div>
 
                         <div className="space-y-1">
@@ -133,74 +162,58 @@ export default function CreatePollDialog() {
                                 className="text-sm placeholder:text-sm focus-visible:border-primary-2"
                                 {...register("description")}
                             />
-                            {errors.description && (
-                                <p className="text-xs text-danger-2 text-right">
-                                    {errors.description.message}
-                                </p>
-                            )}
+                            <AnimatedError message={errors.description?.message} />
                         </div>
 
                         <div className="space-y-1">
-                            <div className="rounded-2xl border border-zinc-300 bg-neutral-5/60 p-3">
-                                <div className="space-y-3">
-                                    {fields.map((field, index) => (
-                                        <div
-                                            key={field.id}
-                                            className="transition-all"
-                                        >
-                                            <div className="flex items-center gap-2 ">
-                                                <CustomField
-                                                    placeholder={`گزینه ${index + 1}`}
-                                                    className="h-12 focus-visible:border-primary-2"
-                                                    {...register(
-                                                        `options.${index}.value`,
-                                                    )}
-                                                />
+                            <div className="rounded-2xl border border-zinc-300 bg-neutral-5/60 p-2">
+                                <div className="space-y-1 max-h-38 overflow-y-auto overflow-x-hidden custom-scrollbar px-1">
+                                    <AnimatePresence initial={false} mode="popLayout">
+                                        {fields.map((field, index) => (
+                                            <motion.div
+                                                key={field.id}
+                                                layout
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, x: 0, height: "auto" }}
+                                                exit={{ opacity: 0, x: -10, height: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                            >
+                                                <div className="py-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <CustomField
+                                                            placeholder={`گزینه ${index + 1}`}
+                                                            className="h-12 focus-visible:border-primary-2"
+                                                            {...register(`options.${index}.value`)}
+                                                        />
 
-                                                {fields.length > 2 && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            remove(index)
-                                                        }
-                                                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger-5 text-danger-2 transition-all hover:bg-danger-4"
-                                                    >
-                                                        <Trash2 className="h-5 w-5" />
-                                                    </button>
-                                                )}
-                                            </div>
-                                            {errors.options?.[index]?.value && (
-                                                <p className="mt-1 text-right text-xs text-danger-2">
-                                                    {
-                                                        errors.options[index]
-                                                            ?.value?.message
-                                                    }
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
+                                                        {fields.length > 2 && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => remove(index)}
+                                                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-danger-5 text-danger-2 transition-all hover:bg-danger-4 cursor-pointer"
+                                                            >
+                                                                <Trash2 className="h-5 w-5" />
+                                                            </button>
+                                                        )}
+                                                    </div>
+
+                                                    <AnimatedError message={errors.options?.[index]?.value?.message} />
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
                                 </div>
 
-                                {/* add option */}
+                                {/* add option button */}
                                 <button
                                     type="button"
                                     onClick={() => append({ value: "" })}
-                                    className="mt-4 flex cursor-pointer items-center gap-2 text-secondary-blue-2 transition-all hover:text-secondary-blue-3 hover:opacity-80"
+                                    className="mt-2 p-2 flex cursor-pointer items-center gap-2 text-secondary-blue-2 transition-all hover:text-secondary-blue-3 hover:opacity-80"
                                 >
                                     <CirclePlus className="h-5 w-5" />
-
-                                    <span className="text-sm font-medium">
-                                        افزودن گزینه جدید
-                                    </span>
+                                    <span className="text-sm font-medium">افزودن گزینه جدید</span>
                                 </button>
-
-                                <div className="h-10" />
                             </div>
-                            {errors.options && (
-                                <p className="text-xs text-danger-2 text-right">
-                                    {errors.options.message}
-                                </p>
-                            )}
                         </div>
 
                         <div className="space-y-1">
@@ -226,11 +239,7 @@ export default function CreatePollDialog() {
                                     />
                                 )}
                             />
-                            {errors.expires_at && (
-                                <p className="text-xs text-danger-2 text-right">
-                                    {errors.expires_at.message}
-                                </p>
-                            )}
+                            <AnimatedError message={errors.expires_at?.message} />
                         </div>
 
                         {/* submit */}

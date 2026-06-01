@@ -199,7 +199,7 @@ function PollDetailsDialog({
                                                     )}
                                                 />
 
-                                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-neutral-1">
+                                                <span className="absolute left-2 top-1/2 -translate-y-1/2 font-medium text-xs text-neutral-1">
                                                     %{option.percent}
                                                 </span>
                                             </div>
