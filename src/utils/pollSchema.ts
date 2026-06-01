@@ -14,7 +14,8 @@ export const createPollSchema = z
                     value: z.string().min(1, "گزینه نمی‌تواند خالی باشد"),
                 }),
             )
-            .min(2, "حداقل دو گزینه لازم است"),
+            .min(2, "حداقل دو گزینه لازم است")
+            .max(5, "حداکثر می توانید 5 گزینه داشته باشید"),
     })
     .superRefine((data, ctx) => {
         const seen = new Map<string, number>();

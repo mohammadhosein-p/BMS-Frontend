@@ -34,6 +34,7 @@ export interface PollCardProp {
     title: string;
     options: PollOption[];
     expires_at: string;
+    onExpire: () => void;
 }
 
 export interface GetAllPollsResponse {

@@ -6,7 +6,6 @@ import type { PollCardProp } from "@/types/PollTypes";
 import { useEffect, useState } from "react";
 import { getPollTimeLeftParts } from "@/utils/pollTimer";
 import getQueryClient from "@/hooks/queryClient";
-import useAuthStore from "@/store/useAuthStore";
 
 export default function PollCard({
     title,
@@ -14,13 +13,12 @@ export default function PollCard({
     expires_at,
     id,
     isActive,
+    onExpire,
 }: PollCardProp) {
     const [timeLeft, setTimeLeft] = useState(() =>
         getPollTimeLeftParts(expires_at),
     );
     const queryClient = getQueryClient();
-    const apartment_id =
-        useAuthStore((store) => store.user?.apartment_id) || "";
 
     useEffect(() => {
         if (!isActive) return;
@@ -36,13 +34,7 @@ export default function PollCard({
             ) {
                 clearInterval(intervalId);
 
-                const timeoutId = setTimeout(() => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["polls", apartment_id],
-                    });
-                }, 60_000);
-
-                return () => clearTimeout(timeoutId);
+                onExpire();
             }
         }, 60_000);
 

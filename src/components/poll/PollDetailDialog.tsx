@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BadgeCheck, CircleHelp, Trash, X } from "lucide-react";
 
 import {
@@ -43,51 +43,28 @@ function PollDetailsDialog({
 
     const isManager = useAuthStore((store) => store.user?.role == "manager");
 
-    if (isPending)
+    const normalizedOptions = useMemo(() => {
+        const totalVotes =
+            data?.data.options.reduce(
+                (sum, option) => sum + option.votes_count,
+                0,
+            ) || 0;
+
         return (
-            <button
-                onClick={() => setIsOpen(true)}
-                className={cn(
-                    "rounded-2xl border-[3px] px-4 py-1.25 text-md cursor-pointer hover:scale-105 transition-all",
-                    isActive
-                        ? "border-secondary-blue-2 text-secondary-blue-2"
-                        : "border-zinc-500 text-zinc-700",
-                )}
-            >
-                مشاهده نتایج و جزئیات
-            </button>
+            data?.data.options.map((option) => ({
+                ...option,
+                percent:
+                    totalVotes > 0
+                        ? Math.round((option.votes_count / totalVotes) * 100)
+                        : 0,
+            })) || []
         );
-
-    if (!data)
-        return (
-            <Dialog open={isOpen}>
-                <DialogContent isOpen={isOpen}>
-                    <div className="text-black">
-                        جزئیات نظرسنجی دریافت نشد. دوباره تلاش کنید
-                    </div>
-                </DialogContent>
-            </Dialog>
-        );
-
-    const totalVotes = data.data.options.reduce(
-        (sum, option) => sum + option.votes_count,
-        0,
-    );
-
-    const normalizedOptions = data.data.options.map((option) => {
-        const percent =
-            totalVotes > 0
-                ? Math.round((option.votes_count / totalVotes) * 100)
-                : 0;
-
-        return {
-            ...option,
-            percent,
-        };
-    });
+    }, [data]);
 
     const submitVote = (optionId: string) => {
-        if (data.data.user_voted_option_id == optionId) {
+        if (isSubmitVotePending || isDeleteVotePending || !isActive) return;
+
+        if (data?.data.user_voted_option_id == optionId) {
             deleteVoteMutate();
             return;
         }
@@ -133,110 +110,125 @@ function PollDetailsDialog({
 
                 {/* Body */}
                 <div className="space-y-4 px-4 pb-5">
-                    {/* Info Box */}
-                    <div className="rounded-3xl border border-neutral-4 bg-neutral-5 p-4">
-                        {/* top */}
-                        <div className="mb-3 flex items-start justify-between gap-3">
-                            {/* icon */}
-                            <CircleHelp className="h-8 w-8 text-primary-2" />
-
-                            {/* title */}
-                            <div className="flex-1 text-right">
-                                <h2 className="text-xl font-bold text-neutral-1">
-                                    {data?.data.title}
-                                </h2>
-                            </div>
-
-                            {/* badges */}
-                            <div className="flex items-center gap-2">
-                                <div
-                                    className={cn(
-                                        "rounded-lg px-5 py-1.25 text-sm font-bold",
-                                        isActive
-                                            ? "bg-secondary-blue-3/90 text-neutral-5"
-                                            : "bg-neutral-3 text-neutral-5",
-                                    )}
-                                >
-                                    {isActive ? "فعال" : "غیرفعال"}
-                                </div>
-
-                                <div
-                                    className={cn(
-                                        "rounded-lg px-5 py-1.25 text-sm font-bold",
-                                        isPublic
-                                            ? "bg-success-op1-3/90 text-neutral-5"
-                                            : "bg-danger-3/90 text-neutral-5",
-                                    )}
-                                >
-                                    {isPublic ? "عمومی" : "خصوصی"}
-                                </div>
-                            </div>
+                    {isPending ? (
+                        <div className="flex justify-center items-center my-10">
+                            <Spinner className="size-12 text-primary-1" />
                         </div>
+                    ) : data ? (
+                        <>
+                            {/* Info Box */}
+                            <div className="rounded-3xl border border-neutral-4 bg-neutral-5 p-4">
+                                {/* top */}
+                                <div className="mb-3 flex items-start justify-between gap-3">
+                                    {/* icon */}
+                                    <CircleHelp className="h-8 w-8 text-primary-2" />
 
-                        {/* description */}
-                        <p className="text-center text-sm leading-7 text-neutral-2">
-                            {data.data.description}
-                        </p>
-                    </div>
+                                    {/* title */}
+                                    <div className="flex-1 text-right">
+                                        <h2 className="text-xl font-bold text-neutral-1">
+                                            {data?.data.title}
+                                        </h2>
+                                    </div>
 
-                    {/* Options */}
-                    <div className="space-y-3 rounded-3xl border border-neutral-4 bg-neutral-5 p-4">
-                        {normalizedOptions.map((option) => (
-                            <div
-                                key={option.id}
-                                className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-105 cursor-pointer"
-                                onClick={() => submitVote(option.id)}
-                            >
-                                {/* voted */}
-                                <div className="h-5 w-5 fill-secondary-blue-2 text-white">
-                                    {isSubmitVotePending ||
-                                    isDeleteVotePending ? (
-                                        <Spinner />
-                                    ) : (
-                                        data.data.user_voted_option_id ==
-                                            option.id && (
-                                            <BadgeCheck className="h-5 w-5 fill-secondary-blue-2 text-white" />
-                                        )
-                                    )}
-                                </div>
-                                {/* title */}
-                                <span className="w-48 text-right text-base text-neutral-1">
-                                    {option.text}
-                                </span>
-
-                                {/* progress */}
-                                <div className="flex-1">
-                                    <div className="relative">
-                                        <Progress
-                                            value={option.percent}
+                                    {/* badges */}
+                                    <div className="flex items-center gap-2">
+                                        <div
                                             className={cn(
-                                                "h-5 rounded-md bg-white",
-                                                "[&>div]:rounded-md [&>div]:bg-secondary-blue-3",
+                                                "rounded-lg px-5 py-1.25 text-sm font-bold",
+                                                isActive
+                                                    ? "bg-secondary-blue-3/90 text-neutral-5"
+                                                    : "bg-neutral-3 text-neutral-5",
                                             )}
-                                        />
+                                        >
+                                            {isActive ? "فعال" : "غیرفعال"}
+                                        </div>
 
-                                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-neutral-1">
-                                            %{option.percent}
-                                        </span>
+                                        <div
+                                            className={cn(
+                                                "rounded-lg px-5 py-1.25 text-sm font-bold",
+                                                isPublic
+                                                    ? "bg-success-op1-3/90 text-neutral-5"
+                                                    : "bg-danger-3/90 text-neutral-5",
+                                            )}
+                                        >
+                                            {isPublic ? "عمومی" : "خصوصی"}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
 
-                    {isManager && (
-                        <div className="flex justify-center pt-2">
-                            {isPendingDeletePoll ? (
-                                <Spinner />
-                            ) : (
-                                <CustomButton
-                                    className="bg-danger-3 hover:bg-danger-2 cursor-pointer"
-                                    icon={Trash}
-                                    onClick={() => deletePoll()}
-                                >
-                                    حذف نظرسنجی
-                                </CustomButton>
+                                {/* description */}
+                                <p className="text-center text-sm leading-7 text-neutral-2">
+                                    {data?.data.description}
+                                </p>
+                            </div>
+
+                            {/* Options */}
+                            <div className="space-y-3 rounded-3xl border border-neutral-4 bg-neutral-5 p-4">
+                                {normalizedOptions.map((option) => (
+                                    <div
+                                        key={option.id}
+                                        className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-105 cursor-pointer"
+                                        onClick={() => submitVote(option.id)}
+                                    >
+                                        {/* voted */}
+                                        <div className="h-5 w-5 fill-secondary-blue-2 text-white">
+                                            {isSubmitVotePending ||
+                                            isDeleteVotePending ? (
+                                                <Spinner />
+                                            ) : (
+                                                data?.data
+                                                    .user_voted_option_id ==
+                                                    option.id && (
+                                                    <BadgeCheck className="h-5 w-5 fill-secondary-blue-2 text-white" />
+                                                )
+                                            )}
+                                        </div>
+                                        {/* title */}
+                                        <span className="w-48 text-right text-base text-neutral-1">
+                                            {option.text}
+                                        </span>
+
+                                        {/* progress */}
+                                        <div className="flex-1">
+                                            <div className="relative">
+                                                <Progress
+                                                    value={option.percent}
+                                                    className={cn(
+                                                        "h-5 rounded-md bg-white",
+                                                        "[&>div]:rounded-md [&>div]:bg-secondary-blue-3",
+                                                    )}
+                                                />
+
+                                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-neutral-1">
+                                                    %{option.percent}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {isManager && (
+                                <div className="flex justify-center pt-2">
+                                    {isPendingDeletePoll ? (
+                                        <Spinner />
+                                    ) : (
+                                        <CustomButton
+                                            className="bg-danger-3 hover:bg-danger-2 cursor-pointer"
+                                            icon={Trash}
+                                            onClick={() => deletePoll()}
+                                        >
+                                            حذف نظرسنجی
+                                        </CustomButton>
+                                    )}
+                                </div>
                             )}
+                        </>
+                    ) : (
+                        <div className="flex justify-center items-center my-10">
+                            <div className="text-primary-1">
+                                جزئیات نظرسنجی دریافت نشد. دوباره تلاش کنید
+                            </div>
                         </div>
                     )}
                 </div>
