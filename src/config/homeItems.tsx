@@ -1,5 +1,6 @@
 import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
+import PollTab from "@/pages/home/PollTab";
 
 export const homeItems: {
     path: string;
@@ -32,7 +33,7 @@ export const homeItems: {
             border_color: "border-[var(--success-op2-3)]",
             text_color: "text-[var(--success-op2-3)]",
             roles: ["admin" ,"manager", "resident"],
-            component: <p>voting</p>,
+            component: <PollTab />,
         },
         {
             path: "ticket",
