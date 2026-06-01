@@ -14,9 +14,7 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: <PublicLayout />,
-        errorElement: (
-        	<Error404 />
-        ),
+        // errorElement: <Error404 />,
         children: [
             {
                 index: true,
@@ -47,19 +45,22 @@ export const router = createBrowserRouter([
                             })),
                             {
                                 path: "profile",
-                                element: ( <ProfileTab />)
-                            }
+                                element: <ProfileTab />,
+                            },
                         ],
                     },
                 ],
             },
-
             // {
             // 	path: "/AboutUs",
             // 	element: <AboutUs />,
             // },
             // {
         ],
+    },
+    {
+        path: "*",
+        element: <Error404 />,
     },
     // {
     // 	element: <PrivateLayout />,

@@ -16,20 +16,20 @@ const Error404 = () => {
       />
 
       {/* Title */}
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 font-sans">
-        اوه نه! این صفحه فرو ریخته است
+      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-3">
+        .اوه نه! این صفحه فرو ریخته است
       </h1>
       
       {/* Description */}
-      <p className="text-gray-600 text-sm md:text-base mb-8">
-        به نظر می‌رسد این آدرس را باد برده و یا از اول هم اینجا نبوده
+      <p className="text-gray-600 text-sm md:text-base mb-8 font-medium">
+        .به نظر می‌رسد این آدرس را باد برده و یا از اول هم اینجا نبوده
       </p>
 
       {/* Back to Home Button */}
       <CustomButton 
         icon={Home}
         onClick={() => navigate('/home')}
-        className="bg-[#6b73ff] hover:bg-[#5a62e0] text-white px-6 py-4 rounded-xl text-base flex-row-reverse"
+        className="bg-[#6b73ff] hover:bg-[#5a62e0] text-white px-6 py-4 rounded-xl text-base flex-row-reverse cursor-pointer transition"
       >
         بازگشت به خانه
       </CustomButton>
