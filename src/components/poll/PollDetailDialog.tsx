@@ -157,7 +157,7 @@ function PollDetailsDialog({
                                 </div>
 
                                 {/* description */}
-                                <p className="text-center text-sm leading-7 text-neutral-2">
+                                <p className="text-right text-sm leading-7 text-neutral-2">
                                     {data?.data.description}
                                 </p>
                             </div>
@@ -167,7 +167,7 @@ function PollDetailsDialog({
                                 {normalizedOptions.map((option) => (
                                     <div
                                         key={option.id}
-                                        className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-105 cursor-pointer"
+                                        className="flex items-center gap-4 rounded-2xl border border-neutral-4 bg-neutral-5 px-4 py-3 transition ease-in hover:scale-[103%] cursor-pointer"
                                         onClick={() => submitVote(option.id)}
                                     >
                                         {/* voted */}

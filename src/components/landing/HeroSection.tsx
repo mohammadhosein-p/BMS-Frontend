@@ -18,7 +18,7 @@ function HeroSection() {
             {/* Background Shapes */}
 
             <svg
-                className="absolute top-[-10px] left-[-10px] w-[95vw] min-w-[1100px] max-w-[1400px] h-auto z-0"
+                className="absolute -top-2.5 -left-2.5 w-[95vw] min-w-275 max-w-350 h-auto z-0"
                 viewBox="0 0 1875.9 1304"
                 fill="none"
             >
@@ -29,7 +29,7 @@ function HeroSection() {
             </svg>
 
             <svg
-                className="absolute top-[-80px] right-0 w-[40vw] min-w-[450px] max-w-[600px] h-auto z-10"
+                className="absolute -top-20 right-0 w-[40vw] min-w-112.5 max-w-150 h-auto z-10"
                 viewBox="0 0 993 1059"
                 fill="none"
             >
@@ -42,7 +42,7 @@ function HeroSection() {
             {/* Header */}
 
             <header className="relative z-30">
-                <div className="relative max-w-[1280px] mx-auto px-8 pt-8 flex items-center">
+                <div className="relative max-w-7xl mx-auto px-8 pt-8 flex items-center">
                     {/* Logo */}
 
                     <img src={Logo} alt="logo" className="w-0 sm:w-20" />
@@ -81,7 +81,7 @@ function HeroSection() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="absolute top-[50%] md:top-2/5 left-[3vw] md:left-[10vw] -translate-y-1/2 w-[42vw] max-w-[600px] min-w-[320px] text-white text-center"
+                    className="absolute top-[55%] md:top-2/5 left-[7vw] md:left-[10vw] -translate-y-1/2 w-[42vw] max-w-150 min-w-[320px] text-white text-center"
                 >
                     <motion.img
                         variants={itemVarients as any}

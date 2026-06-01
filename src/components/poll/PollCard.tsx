@@ -128,7 +128,7 @@ export default function PollCard({
                 </div>
 
                 {/* body */}
-                <div className="px-6 py-8">
+                <div className="px-6 py-6 h-52 overflow-y-auto custom-scrollbar">
                     <div className="space-y-6">
                         {normalizedOptions.map((option) => (
                             <div
@@ -169,10 +169,9 @@ export default function PollCard({
                             </div>
                         ))}
                     </div>
-
-                    <div className="mt-10 flex justify-center">
-                        <PollDetailsDialog id={id} isActive={isActive} />
-                    </div>
+                </div>
+                <div className="py-6 flex justify-center">
+                    <PollDetailsDialog id={id} isActive={isActive} />
                 </div>
             </div>
         </div>

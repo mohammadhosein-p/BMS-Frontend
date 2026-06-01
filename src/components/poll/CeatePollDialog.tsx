@@ -84,7 +84,7 @@ export default function CreatePollDialog() {
             <DialogContent
                 isOpen={isOpen}
                 className={cn(
-                    "max-w-2xl overflow-y-auto custom-scrollbar rounded-3xl border-none bg-white p-0",
+                    "max-w-md overflow-y-auto custom-scrollbar rounded-3xl border-none bg-white p-0",
                 )}
             >
                 {/* Header */}
