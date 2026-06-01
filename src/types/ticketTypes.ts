@@ -1,43 +1,40 @@
-// types/ticketTypes.ts
-
-
 export interface Comment {
-    ID: string;
-    CreatedAt: string;
-    UpdatedAt: string;
-    DeletedAt: string | null;
-    UserID: string;
-    TicketID: string;
-    Body: string;
-    User: {
-        Username: string;
-        ProfileImageURL: string;
-        ID: string;
-        FirstName: string;
-        LastName: string;
+    id: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    user_id: string;
+    ticket_id: string;
+    body: string;
+    user: {
+        username: string;
+        profile_image_url: string;
+        user_id: string;
+        first_name: string;
+        last_name: string;
     };
 }
 
 export interface Ticket {
-    ID: string;
-    UserID: string;
-    Title: string;
-    Description: string;
-    Body: string;
-    Category: string;
-    Accessability: "private" | "public";
-    CreatedAt: string;
-    UpdatedAt: string;
-    DeletedAt: string | null;
-    Status: "open" | "close" | "in-progress";
-    Comments: Comment[]
+    id: string;
+    user_id: string;
+    title: string;
+    description: string;
+    body: string;
+    category: string;
+    accessibility: "private" | "public";
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    status: "open" | "close" | "in-progress";
+    comments: Comment[];
 }
 export interface CreateTicketPayload {
     title: string;
     description: string;
     body: string;
     category: string;
-    accessability: "private" | "public";
+    accessibility: "private" | "public";
 }
 
 export interface AllTicketResponse {
@@ -50,5 +47,5 @@ export interface UpdateTicketStatusPayload {
 }
 
 export interface TicketFullyDetailsResponse {
-    data: Ticket
+    data: Ticket;
 }

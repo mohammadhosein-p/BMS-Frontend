@@ -1,9 +1,4 @@
-import {
-    ShieldClose,
-    ShieldUser,
-    Trash2,
-    Wrench,
-} from "lucide-react";
+import { ShieldClose, ShieldUser, Trash2, Wrench } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
@@ -35,14 +30,14 @@ interface UiTicket {
 interface Prop {
     filterState: "all" | "closed" | "in-progress";
     categoryFilter:
-    | "all"
-    | "maintenance"
-    | "plumbing"
-    | "electricity"
-    | "security"
-    | "cleaning"
-    | "parking"
-    | "other";
+        | "all"
+        | "maintenance"
+        | "plumbing"
+        | "electricity"
+        | "security"
+        | "cleaning"
+        | "parking"
+        | "other";
 }
 
 const containerVariants = {
@@ -60,13 +55,13 @@ const itemVariants = {
     show: {
         opacity: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 120, damping: 20 }
+        transition: { type: "spring", stiffness: 120, damping: 20 },
     },
     exit: {
         opacity: 0,
         x: -40,
-        transition: { duration: 0.2 }
-    }
+        transition: { duration: 0.2 },
+    },
 };
 
 function TicketTable({ filterState, categoryFilter }: Prop) {
@@ -86,27 +81,27 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
     const { mutate: deleteTicket } = useDeleteTicket();
 
     const tickets: UiTicket[] | undefined = data?.data?.map((ticket) => ({
-        id: ticket.ID,
-        user_id: ticket.UserID,
-        title: ticket.Title,
-        date: ticket.CreatedAt,
-        category: ticket.Category,
+        id: ticket.id,
+        user_id: ticket.user_id,
+        title: ticket.title,
+        date: ticket.created_at,
+        category: ticket.category,
         // unit: ticket.unit || "نامشخص",
-        status: ticket.Status,
+        status: ticket.status,
         statusLabel:
-            ticket.Status === "open"
+            ticket.status === "open"
                 ? "باز"
-                : ticket.Status === "in-progress"
-                    ? "در حال بررسی"
-                    : "بسته شده",
+                : ticket.status === "in-progress"
+                  ? "در حال بررسی"
+                  : "بسته شده",
         statusColor:
-            ticket.Status === "open"
+            ticket.status === "open"
                 ? "bg-green-100 text-green-700"
-                : ticket.Status === "in-progress"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-red-100 text-red-700",
+                : ticket.status === "in-progress"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-red-100 text-red-700",
 
-        isPublic: ticket.Accessability === "public",
+        isPublic: ticket.accessibility === "public",
     }));
 
     if (isLoading) {
@@ -226,7 +221,8 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                     </div>
                                 )} */}
                                     <div className="text-sm font-medium text-neutral-2">
-                                        {ticketCategoryItem?.label || ticket.category}
+                                        {ticketCategoryItem?.label ||
+                                            ticket.category}
                                     </div>
 
                                     {/* Admin Status Select (Mobile) */}
@@ -240,7 +236,9 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                                         status: value,
                                                     });
                                                 }}
-                                                options={ticketStatusOptions as any}
+                                                options={
+                                                    ticketStatusOptions as any
+                                                }
                                             />
                                         </div>
                                     ) : (
@@ -255,7 +253,6 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                         </div>
                                     )}
                                 </div>
-
 
                                 {/* Desktop Unit */}
                                 {/* {isManager && (
@@ -296,7 +293,8 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
 
                                 {/* Desktop Category */}
                                 <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
-                                    {ticketCategoryItem?.label || ticket.category}
+                                    {ticketCategoryItem?.label ||
+                                        ticket.category}
                                 </div>
 
                                 {/* Actions */}
@@ -306,7 +304,9 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                             type="button"
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
-                                            onClick={() => deleteTicket(ticket.id)}
+                                            onClick={() =>
+                                                deleteTicket(ticket.id)
+                                            }
                                             className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
                                         >
                                             <Trash2

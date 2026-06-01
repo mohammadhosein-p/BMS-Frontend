@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PlusCircle, Send, X } from "lucide-react";
 
@@ -43,7 +42,6 @@ const ticketSchema = z.object({
 });
 
 type TicketFormData = z.infer<typeof ticketSchema>;
-
 
 function RegisterTicketDialog() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -90,7 +88,7 @@ function RegisterTicketDialog() {
             description: data.description,
             body: data.body,
             category: data.category,
-            accessability: data.accessibility,
+            accessibility: data.accessibility,
         });
 
         reset();

@@ -34,10 +34,10 @@ export default function TicketDetailsDialog({ id }: Prop) {
 
     const ticket = data?.data;
     const ticketStatusItem = ticketStatusOptions.find(
-        (item) => item.value == ticket?.Status,
+        (item) => item.value == ticket?.status,
     );
     const ticketCategoryItem = ticketCategoryOptions.find(
-        (item) => item.value == ticket?.Category,
+        (item) => item.value == ticket?.category,
     );
     const TicketIcon = ticketCategoryItem?.icon || ShieldCheck;
 
@@ -94,10 +94,10 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                 <DialogHeader className="mb-0 gap-0 w-full">
                                     <div className="flex items-center justify-center md:justify-start gap-2">
                                         <DialogTitle className="text-xl font-bold md:text-2xl text-zinc-900">
-                                            {ticket?.Title}
+                                            {ticket?.title}
                                         </DialogTitle>
 
-                                        {ticket?.Accessability === "public" ? (
+                                        {ticket?.accessibility === "public" ? (
                                             <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
                                                 <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
                                             </div>
@@ -109,7 +109,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                     </div>
 
                                     <DialogDescription className="text-sm text-zinc-600 md:text-base mt-1">
-                                        {ticket?.Description}
+                                        {ticket?.description}
                                     </DialogDescription>
                                 </DialogHeader>
 
@@ -134,7 +134,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             <div className="w-3 shrink-0 bg-neutral-3" />
                             <div className="flex-1 pr-2 pl-2 py-2.5 md:px-4 md:py-4">
                                 <p className="text-right text-sm font-medium leading-6 text-zinc-600 md:text-base md:leading-7">
-                                    {ticket?.Body}
+                                    {ticket?.body}
                                 </p>
                             </div>
                         </div>
@@ -155,12 +155,12 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                     dir="rtl"
                                     className="space-y-4 w-full text-right"
                                 >
-                                    {ticket?.Comments?.map((comment) => {
+                                    {ticket?.comments?.map((comment) => {
                                         const isCommentOwner =
-                                            currentUser === comment.User.ID;
+                                            currentUser === comment.user_id;
                                         return (
                                             <div
-                                                key={comment.ID}
+                                                key={comment.id}
                                                 className={`flex items-end w-full gap-3 ${
                                                     isCommentOwner
                                                         ? "flex-row"
@@ -170,10 +170,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                 <div>
                                                     <Avatar className="h-10 w-10 shrink-0">
                                                         <AvatarImage
-                                                            src={
-                                                                comment.User
-                                                                    .ProfileImageURL
-                                                            }
+                                                            src={""}
                                                             className="h-full w-full object-cover"
                                                         />
 
@@ -184,8 +181,8 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                                 ${isCommentOwner ? "bg-secondary-blue-3" : "bg-neutral-3/80"}
                                                             `}
                                                         >
-                                                            {comment.User.FirstName?.[0]?.toUpperCase()}
-                                                            {comment.User.LastName?.[0]?.toUpperCase()}
+                                                            {comment.user.first_name?.[0]?.toUpperCase()}
+                                                            {comment.user.last_name?.[0]?.toUpperCase()}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                 </div>
@@ -198,16 +195,16 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                     }`}
                                                 >
                                                     <div className="mb-1 text-xs text-neutral-1 text-right">
-                                                        {comment.User.Username}
+                                                        {comment.user.username}
                                                     </div>
 
                                                     <p className="text-sm text-zinc-800 md:text-base text-right">
-                                                        {comment.Body}
+                                                        {comment.body}
                                                     </p>
 
                                                     <div className="mt-2 text-[10px] text-black text-left">
                                                         {translateDate(
-                                                            comment.CreatedAt,
+                                                            comment.created_at,
                                                         )}
                                                     </div>
                                                 </div>
@@ -215,7 +212,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                         );
                                     })}
 
-                                    {ticket?.Comments.length == 0 && (
+                                    {ticket?.comments.length == 0 && (
                                         <>
                                             <h3 className="font-extrabold text-xl text-primary-1 text-center">
                                                 کامنتی وجود ندارد
@@ -230,7 +227,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
 
                             {/* INPUT */}
-                            {(isManager || currentUser == ticket?.UserID) && (
+                            {(isManager || currentUser == ticket?.user_id) && (
                                 <div className="p-4 bg-white border-t border-zinc-100">
                                     <div className="flex items-end gap-2 w-full">
                                         <button
