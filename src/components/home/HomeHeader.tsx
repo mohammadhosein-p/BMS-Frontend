@@ -1,6 +1,6 @@
-import { Bell, Mail } from "lucide-react";
+// import { Bell, Mail } from "lucide-react";
 import MobileSidebar from "./MobileSidebar";
-import { Separator } from "../ui/separator";
+// import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 import { Link, useLocation } from "react-router-dom";
