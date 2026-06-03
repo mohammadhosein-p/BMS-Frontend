@@ -1,13 +1,15 @@
 import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, Lock } from "lucide-react";
+import { User, Lock, CheckCircle2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import useAuthStore from "@/store/useAuthStore";
 import { loginService } from "@/services/authService";
 import CustomeField from "../ui/CutsomeFiled";
 import CustomeButton from "../ui/CustomeButton";
+import { toast } from "sonner";
+import CustomToast from "../Custom/CustomToast";
 
 
 const loginSchema = z.object({
@@ -40,6 +42,16 @@ export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) 
             if (!data.user?.apartment_id || data.user?.apartment_id === null) {
                 onInviteCode();
             } else {
+                toast.custom(() => (
+                    <CustomToast
+                        title="موفقیت‌آمیز"
+                        message=" شما با موفقیت وارد شدید"
+                        variant="success"
+                        icon={<CheckCircle2 size={20} />}
+                    />
+                ));
+
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 onHomePage();
             }
         },

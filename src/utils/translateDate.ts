@@ -1,33 +1,25 @@
-export function translateDate(date: string, toEn: boolean = false): string {
-    const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-    let dateStr = date?.toString() || "";
+// @ts-ignore
+import moment from "moment-jalaali";
 
-    if (!toEn && (dateStr.includes("T") || dateStr.includes("-"))) {
-        try {
-            const parsedDate = new Date(dateStr);
-            if (!isNaN(parsedDate.getTime())) {
-                dateStr = new Intl.DateTimeFormat('fa-IR-u-nu-latn', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }).format(parsedDate); 
-            }
-        } catch (e) {
-            console.error("خطا در پارس تاریخ:", e);
+export function translateDate(date: string | null | undefined): string {
+    let dateStr = date?.toString().trim() || "";
+    if (!dateStr) return "";
+
+    try {
+        const standardizedDate = dateStr.replace(" ", "T");
+        
+        const parsedMoment = moment(standardizedDate);
+
+        if (parsedMoment.isValid()) {
+            const englishPersianDate = parsedMoment.format("jYYYY/jMM/jDD");
+            
+            return englishPersianDate.replace(/\d/g, (d: string) => 
+                new Intl.NumberFormat('fa-IR', { useGrouping: false }).format(Number(d))
+            );
         }
+    } catch (e) {
+        console.error("Problem in Convert Date in translateDate:", e);
     }
 
-    if (toEn) {
-        return dateStr
-            .replace(/[۰-۹]/g, (w) => persianDigits.indexOf(w).toString())
-            .replace(/[٠-٩]/g, (w) => "٠١٢٣٤٥٦٧٨٩".indexOf(w).toString());
-    }
-
-    return dateStr
-        .split("")
-        .map((char) => {
-            const num = parseInt(char, 10);
-            return isNaN(num) ? char : persianDigits[num];
-        })
-        .join("");
+    return dateStr;
 }

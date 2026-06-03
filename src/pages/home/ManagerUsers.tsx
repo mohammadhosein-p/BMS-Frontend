@@ -115,7 +115,7 @@ const ManagerUsers: React.FC = () => {
             : <ArrowDown size={14} className="text-indigo-600" />;
     };
 
-    const handleDelete = (userId: string, unitId?: string) => {
+    const handleDelete = (unitId?: string) => {
         if (!apartmentId) return;
         
         if (!unitId) {
@@ -204,7 +204,7 @@ const ManagerUsers: React.FC = () => {
                                 <UserCard 
                                     key={user.user_id} 
                                     user={user} 
-                                    onDelete={() => handleDelete(user.user_id, user.unit?.id)} 
+                                    onDelete={() => handleDelete(user.unit?.id)} 
                                 />
                             ))
                         ) : (
@@ -251,7 +251,7 @@ const ManagerUsers: React.FC = () => {
                                     <UserTableRow 
                                         key={user.user_id} 
                                         user={user} 
-                                        onDelete={() => handleDelete(user.user_id, user.unit?.id)} 
+                                        onDelete={() => handleDelete(user.unit?.id)} 
                                     />
                                 ))
                             ) : (

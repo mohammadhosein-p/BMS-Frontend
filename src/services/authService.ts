@@ -1,4 +1,4 @@
-import type { ApiResponse, LoginPayload, LoginResponse, RegisterPayload, User, VlidateInviteCodeResponse } from "../types/authTypes";
+import type { ApiResponse, CheckPhonePayload, ExistsResponse, LoginPayload, LoginResponse, RegisterPayload, User, VlidateInviteCodeResponse } from "../types/authTypes";
 import { postData, getData } from "./services"; 
 
 export const loginService = async (credentials: LoginPayload): Promise<LoginResponse> => {
@@ -56,5 +56,12 @@ export const logoutService = async (): Promise<ApiResponse<void>> => {
     return postData({
         endPoint: `/logout`,
         data: {},
+    });
+};
+
+export const checkPhoneExistsService = async (payload: CheckPhonePayload): Promise<ApiResponse<ExistsResponse>> => {
+    return postData({
+        endPoint: `/auth/check-phone`,
+        data: payload,
     });
 };
