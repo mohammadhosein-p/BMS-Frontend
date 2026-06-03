@@ -7,19 +7,30 @@ import RulesHeader from "@/components/rules/RulesHeader";
 import RulesBody from "@/components/rules/RulesBody";
 import MakeRule from "@/components/rules/MakeRule";
 import EditRule from "@/components/rules/EditRule";
+import DeleteRuleConfirm from "@/components/rules/DeleteRuleConfirm";
 
 export default function RulesTab() {
     // State ها
     const [rules, setRules] = useState<Rule[]>(mockRules);
-    const [isMakeRuleOpen, setIsMakeRuleOpen] = useState(false);
-    const [editRuleState, setEditRuleState] = useState<{isOpen: boolean, data: Rule | null}>({ isOpen: false, data: null });
     const [buildingInfo] = useState<BuildingInfo>(mockBuildingInfo);
     
+    // State های مربوط به مودال‌ها
+    const [isMakeRuleOpen, setIsMakeRuleOpen] = useState(false);
+    const [editRuleState, setEditRuleState] = useState<{isOpen: boolean, data: Rule | null}>({ isOpen: false, data: null });
+    const [deleteRuleState, setDeleteRuleState] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
+    
     // هندلرها
-    const handleDelete = (id: string) => {
-        if(window.confirm("آیا از حذف این قانون مطمئن هستید؟")) {
-            setRules(prev => prev.filter(r => r.id !== id));
+    const handleDeleteClick = (id: string) => {
+        // به جای پاک کردن مستقیم، مودال تایید را باز می‌کنیم
+        setDeleteRuleState({ isOpen: true, id });
+    };
+
+    const confirmDelete = () => {
+        // پاک کردن واقعی قانون
+        if (deleteRuleState.id) {
+            setRules(prev => prev.filter(r => r.id !== deleteRuleState.id));
         }
+        setDeleteRuleState({ isOpen: false, id: null });
     };
 
     const handleCreateSubmit = (data: Partial<Rule>) => {
@@ -33,7 +44,6 @@ export default function RulesTab() {
     };
 
     return (
-        // تغییر مهم: overflow-y-auto حذف و overflow-hidden جایگزین شد تا اسکرول فقط در RulesBody انجام شود
         <div className="flex flex-col h-full gap-4 p-4 bg-neutral-100 overflow-hidden">
             <RulesHeader
                 onOpenMakeRule={() => setIsMakeRuleOpen(true)}
@@ -43,7 +53,7 @@ export default function RulesTab() {
             <RulesBody 
                 rules={rules} 
                 onEdit={(rule) => setEditRuleState({ isOpen: true, data: rule })} 
-                onDelete={handleDelete} 
+                onDelete={handleDeleteClick}
             />
 
             <MakeRule 
@@ -57,6 +67,13 @@ export default function RulesTab() {
                 onClose={() => setEditRuleState({ isOpen: false, data: null })}
                 initialData={editRuleState.data}
                 onSubmit={handleEditSubmit}
+            />
+
+            {/* مودال تایید حذف */}
+            <DeleteRuleConfirm
+                isOpen={deleteRuleState.isOpen}
+                onClose={() => setDeleteRuleState({ isOpen: false, id: null })}
+                onConfirm={confirmDelete}
             />
         </div>
     );

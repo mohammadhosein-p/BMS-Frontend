@@ -12,11 +12,16 @@ interface MakeRuleProps {
 export default function MakeRule({ isOpen, onClose, onSubmit }: MakeRuleProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [showError, setShowError] = useState(false); // اضافه شدن استیت خطا
 
     const handleSubmit = () => {
-        // جلوگیری از ثبت فرم خالی
-        if (!title.trim() || !description.trim()) return; 
+        // بررسی خالی بودن فیلدها و نمایش خطا
+        if (!title.trim() || !description.trim()) {
+            setShowError(true);
+            return; 
+        }
         
+        setShowError(false); // مخفی کردن خطا در صورت درست بودن مقادیر
         onSubmit({ title, description });
         
         // پاک کردن فیلدها بعد از ارسال
@@ -27,6 +32,7 @@ export default function MakeRule({ isOpen, onClose, onSubmit }: MakeRuleProps) {
     const handleClose = () => {
         setTitle("");
         setDescription("");
+        setShowError(false); // پاک کردن خطا هنگام خروج
         onClose();
     };
 
@@ -54,7 +60,10 @@ export default function MakeRule({ isOpen, onClose, onSubmit }: MakeRuleProps) {
                     {/* فیلد عنوان */}
                     <input
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => {
+                            setTitle(e.target.value);
+                            setShowError(false); // مخفی کردن خطا هنگام تایپ
+                        }}
                         placeholder="تیتر قانون"
                         className="w-full border border-red-200 rounded-xl p-3 text-right font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all dir-rtl"
                     />
@@ -62,11 +71,21 @@ export default function MakeRule({ isOpen, onClose, onSubmit }: MakeRuleProps) {
                     {/* فیلد توضیحات */}
                     <textarea
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={(e) => {
+                            setDescription(e.target.value);
+                            setShowError(false); // مخفی کردن خطا هنگام تایپ
+                        }}
                         placeholder="توضیحات"
                         rows={5}
                         className="w-full bg-neutral-100 border-none rounded-xl p-4 text-right text-neutral-700 font-medium resize-none focus:outline-none focus:ring-2 focus:ring-red-500 transition-all dir-rtl"
                     />
+
+                    {/* نمایش پیام خطا */}
+                    {showError && (
+                        <p className="text-red-500 text-sm font-medium pr-2">
+                            عنوان و توضیحات قانون نمی‌تواند خالی باشد.
+                        </p>
+                    )}
 
                     {/* دکمه ارسال */}
                     <button

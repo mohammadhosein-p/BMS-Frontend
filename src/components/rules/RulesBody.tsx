@@ -17,8 +17,6 @@ export default function RulesBody({ rules, onEdit, onDelete }: RulesBodyProps) {
     }
 
     return (
-        // کلاس flex-1 باعث می‌شود این بخش کل فضای باقیمانده صفحه را بگیرد
-        // کلاس overflow-y-auto اسکرول عمودی را فقط برای همین بخش فعال می‌کند
         <div className="flex-1 overflow-y-auto pl-2 pr-1 space-y-3 
                         [&::-webkit-scrollbar]:w-1.5 
                         [&::-webkit-scrollbar-track]:bg-transparent 
