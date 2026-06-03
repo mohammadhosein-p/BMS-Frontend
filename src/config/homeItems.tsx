@@ -1,6 +1,7 @@
 import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
 import PollTab from "@/pages/home/PollTab";
+import RulesTab from "@/pages/home/RulesTab";
 
 export const homeItems: {
     path: string;
@@ -66,6 +67,6 @@ export const homeItems: {
             border_color: "border-[var(--danger-3)]",
             text_color: "text-[var(--danger-3)]",
             roles: ["admin" ,"manager", "resident"],
-            component: <p>rules</p>,
+            component: <RulesTab/>,
         },
     ];
