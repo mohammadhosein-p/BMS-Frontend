@@ -1,4 +1,7 @@
+import { useState, useEffect } from "react";
 import type { Rule } from "@/types/ruleTypes";
+import { Dialog, DialogContent } from "@/components/ui/CustomeDialog";
+import { X, Save } from "lucide-react";
 
 interface EditRuleProps {
     isOpen: boolean;
@@ -8,29 +11,72 @@ interface EditRuleProps {
 }
 
 export default function EditRule({ isOpen, onClose, initialData, onSubmit }: EditRuleProps) {
-    if (!isOpen || !initialData) return null;
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
+    // پر کردن فیلدها زمانی که دیتای اولیه لود می‌شود
+    useEffect(() => {
+        if (initialData) {
+            setTitle(initialData.title);
+            setDescription(initialData.description);
+        }
+    }, [initialData]);
+
+    const handleSubmit = () => {
+        onSubmit({ title, description });
+    };
+
+    if (!initialData) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
-                <div className="bg-emerald-500 p-4 flex flex-row-reverse justify-between items-center text-white">
-                    <h2 className="text-xl font-bold">ویرایش قانون</h2>
-                    <button onClick={onClose} className="text-white hover:text-gray-200">✕</button>
-                </div>
-                <div className="p-4 flex flex-col gap-4 text-right">
-                    <input defaultValue={initialData.title} placeholder="تیتر قانون" className="w-full border rounded-lg p-2 text-right dir-rtl" />
-                    <textarea defaultValue={initialData.description} placeholder="توضیحات" rows={4} className="w-full border rounded-lg p-2 text-right dir-rtl" />
-                    <select className="w-full border rounded-lg p-2 text-right dir-rtl text-blue-500">
-                        <option>قوانین عمومی</option>
-                    </select>
-                    <button 
-                        onClick={() => onSubmit({})} 
-                        className="bg-emerald-500 w-32 mx-auto py-2 rounded-xl text-white font-bold"
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent 
+                isOpen={isOpen} 
+                // استفاده از !p-0 برای حذف پدینگ پیش‌فرض CustomDialog تا هدر کامل بچسبد
+                className="!p-0 sm:max-w-md border-none"
+            >
+                {/* هدر */}
+                <div className="bg-[#20d085] p-4 flex justify-center items-center relative">
+                    <h2 className="text-2xl font-extrabold text-white">ویرایش قانون</h2>
+                    
+                    {/* دکمه خروج سمت چپ */}
+                    <button
+                        onClick={onClose}
+                        className="absolute right-4 bg-white rounded-full p-1 hover:scale-110 transition-transform shadow-sm"
                     >
-                        ذخیره
+                        <X className="w-5 h-5 text-indigo-400" strokeWidth={3} />
                     </button>
                 </div>
-            </div>
-        </div>
+
+                {/* بدنه */}
+                <div className="p-6 flex flex-col gap-4 bg-white">
+                    {/* فیلد عنوان */}
+                    <input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="تیتر قانون"
+                        className="w-full border border-[#20d085] rounded-xl p-3 text-right font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-[#20d085] transition-all"
+                    />
+                    
+                    {/* فیلد توضیحات */}
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="توضیحات"
+                        rows={5}
+                        className="w-full bg-neutral-100 border-none rounded-xl p-4 text-right text-neutral-700 font-medium resize-none focus:outline-none focus:ring-2 focus:ring-[#20d085] transition-all"
+                    />
+
+                    {/* دکمه ذخیره */}
+                    <button
+                        onClick={handleSubmit}
+                        className="bg-[#20d085] hover:bg-[#1bb875] text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 mx-auto mt-2 transition-colors w-max shadow-sm"
+                    >
+                        <Save className="w-5 h-5" />                        
+                        <span>ذخیره</span>
+                    </button>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

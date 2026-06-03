@@ -36,7 +36,7 @@ export default function RulesHeader({ info, onOpenMakeRule }: RulesHeaderProps) 
             </div>
 
             {/* سمت چپ: دکمه و اطلاعات مدیر */}
-            <div className="flex flex-col gap-5 items-end">
+            <div className="flex flex-col gap-5 items-center">
                 {/* باکس مدیریت - در موبایل مخفی و در دسکتاپ نمایش داده می‌شود */}
                 <div className="hidden md:flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-neutral-200 shadow-sm">
                     <div className="bg-black text-white p-1 rounded-full">
