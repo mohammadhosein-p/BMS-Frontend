@@ -9,11 +9,21 @@ interface RulesBodyProps {
 
 export default function RulesBody({ rules, onEdit, onDelete }: RulesBodyProps) {
     if (rules.length === 0) {
-        return <div className="text-center p-8 text-neutral-500">هیچ قانونی ثبت نشده است.</div>;
+        return (
+            <div className="flex-1 flex items-center justify-center p-8 text-neutral-500">
+                هیچ قانونی ثبت نشده است.
+            </div>
+        );
     }
 
     return (
-        <div className="mt-4">
+        // کلاس flex-1 باعث می‌شود این بخش کل فضای باقیمانده صفحه را بگیرد
+        // کلاس overflow-y-auto اسکرول عمودی را فقط برای همین بخش فعال می‌کند
+        <div className="flex-1 overflow-y-auto pl-2 pr-1 space-y-3 
+                        [&::-webkit-scrollbar]:w-1.5 
+                        [&::-webkit-scrollbar-track]:bg-transparent 
+                        [&::-webkit-scrollbar-thumb]:bg-neutral-300 
+                        [&::-webkit-scrollbar-thumb]:rounded-full">
             {rules.map((rule) => (
                 <RuleItem 
                     key={rule.id} 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Rule } from "@/types/ruleTypes";
-import { mockRules } from "@/mock/rulesMock";
+import type { Rule, BuildingInfo } from "@/types/ruleTypes";
+import { mockRules , mockBuildingInfo } from "@/mock/rulesMock";
 
 // ایمپورت کامپوننت های خرد شده
 import RulesHeader from "@/components/rules/RulesHeader";
@@ -13,7 +13,8 @@ export default function RulesTab() {
     const [rules, setRules] = useState<Rule[]>(mockRules);
     const [isMakeRuleOpen, setIsMakeRuleOpen] = useState(false);
     const [editRuleState, setEditRuleState] = useState<{isOpen: boolean, data: Rule | null}>({ isOpen: false, data: null });
-
+    const [buildingInfo] = useState<BuildingInfo>(mockBuildingInfo);
+    
     // هندلرها
     const handleDelete = (id: string) => {
         if(window.confirm("آیا از حذف این قانون مطمئن هستید؟")) {
@@ -32,8 +33,12 @@ export default function RulesTab() {
     };
 
     return (
-        <div className="flex flex-col h-full gap-4 p-4 bg-neutral-100 overflow-y-auto">
-            <RulesHeader onOpenMakeRule={() => setIsMakeRuleOpen(true)} />
+        // تغییر مهم: overflow-y-auto حذف و overflow-hidden جایگزین شد تا اسکرول فقط در RulesBody انجام شود
+        <div className="flex flex-col h-full gap-4 p-4 bg-neutral-100 overflow-hidden">
+            <RulesHeader
+                onOpenMakeRule={() => setIsMakeRuleOpen(true)}
+                info={buildingInfo}
+            />
             
             <RulesBody 
                 rules={rules} 

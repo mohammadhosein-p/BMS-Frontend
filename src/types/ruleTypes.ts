@@ -5,3 +5,11 @@ export interface Rule {
     category: string; // مثلا 'قوانین عمومی'
     ruleNumber: number;
 }
+
+export interface BuildingInfo {
+    name: string;
+    managerName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+}
