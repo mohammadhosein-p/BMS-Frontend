@@ -1,46 +1,177 @@
 import { useState } from "react";
-import type { Rule, BuildingInfo } from "@/types/ruleTypes";
-import { mockRules , mockBuildingInfo } from "@/mock/rulesMock";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 
-// ایمپورت کامپوننت های خرد شده
+import type { Rule } from "@/types/ruleTypes";
+import type { AxiosBackendError } from "@/types/apiTypes";
+import useAuthStore from "@/store/useAuthStore";
+
+import {
+    getRulesService,
+    createRuleService,
+    updateRuleService,
+    deleteRuleService,
+    getApartmentInfoService
+} from "@/services/ruleServices";
+
+// Child components
 import RulesHeader from "@/components/rules/RulesHeader";
 import RulesBody from "@/components/rules/RulesBody";
 import MakeRule from "@/components/rules/MakeRule";
 import EditRule from "@/components/rules/EditRule";
 import DeleteRuleConfirm from "@/components/rules/DeleteRuleConfirm";
+import CustomToast from "@/components/Custom/CustomToast";
 
 export default function RulesTab() {
-    // State ها
-    const [rules, setRules] = useState<Rule[]>(mockRules);
-    const [buildingInfo] = useState<BuildingInfo>(mockBuildingInfo);
+    const queryClient = useQueryClient();
     
-    // State های مربوط به مودال‌ها
+    // Extract apartment_id from user store
+    const user = useAuthStore(state => state.user);
+    const apartmentId = user?.apartment_id;
+
+    // Modal states
     const [isMakeRuleOpen, setIsMakeRuleOpen] = useState(false);
     const [editRuleState, setEditRuleState] = useState<{isOpen: boolean, data: Rule | null}>({ isOpen: false, data: null });
     const [deleteRuleState, setDeleteRuleState] = useState<{isOpen: boolean, id: string | null}>({ isOpen: false, id: null });
     
-    // هندلرها
+    // 1. Fetch Apartment Info
+    const { data: apartmentResponse, isLoading: isApartmentLoading } = useQuery({
+        queryKey: ['apartment', apartmentId],
+        queryFn: () => getApartmentInfoService(apartmentId!),
+        enabled: !!apartmentId,
+    });
+
+    // Safe mapping with fallback values
+    const rawApartmentData = apartmentResponse?.data;
+    const buildingInfo = {
+        name: rawApartmentData?.name || "-",
+        address: rawApartmentData?.address || "-",
+        city: rawApartmentData?.city || "-",
+        postalCode: rawApartmentData?.postal_code || "-"
+    };
+    
+    // 2. Fetch Rules List
+    const { data: rulesResponse, isLoading: isRulesLoading } = useQuery({
+        queryKey: ['rules', apartmentId],
+        queryFn: () => getRulesService(apartmentId!),
+        enabled: !!apartmentId,
+    });
+
+    // Support both standard and wrapped response structures
+    const rules = rulesResponse?.data || rulesResponse?.data || [];
+
+    // 3. Create Rule
+    const createMutation = useMutation({
+        mutationFn: (data: Partial<Rule>) => {
+            const payload = { ...data, category: "other" } as any;
+            return createRuleService(apartmentId!, payload);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['rules', apartmentId] });
+            setIsMakeRuleOpen(false);
+            toast.custom(() => (
+                <CustomToast
+                    title="موفقیت‌آمیز"
+                    message="قانون جدید با موفقیت اضافه شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        },
+        onError: (error: AxiosBackendError) => {
+            toast.custom(() => (
+                <CustomToast
+                    title="خطا در ثبت"
+                    message={error?.response?.data?.message || "مشکلی در افزودن قانون رخ داد"}
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+        }
+    });
+
+    // 4. Update Rule
+    const updateMutation = useMutation({
+        mutationFn: ({ id, data }: { id: string, data: Partial<Rule> }) => {
+            const payload = { ...data, category: "other" } as any;
+            return updateRuleService(apartmentId!, id, payload);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['rules', apartmentId] });
+            setEditRuleState({ isOpen: false, data: null });
+            toast.custom(() => (
+                <CustomToast
+                    title="موفقیت‌آمیز"
+                    message="قانون با موفقیت ویرایش شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        },
+        onError: (error: AxiosBackendError) => {
+            toast.custom(() => (
+                <CustomToast
+                    title="خطا در ویرایش"
+                    message={error?.response?.data?.message || "مشکلی در ویرایش قانون رخ داد"}
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+        }
+    });
+
+    // 5. Delete Rule
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => deleteRuleService(apartmentId!, id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['rules', apartmentId] });
+            setDeleteRuleState({ isOpen: false, id: null });
+            toast.custom(() => (
+                <CustomToast
+                    title="موفقیت‌آمیز"
+                    message="قانون با موفقیت حذف شد"
+                    variant="success"
+                    icon={<CheckCircle2 size={20} />}
+                />
+            ));
+        },
+        onError: (error: AxiosBackendError) => {
+            setDeleteRuleState({ isOpen: false, id: null });
+            toast.custom(() => (
+                <CustomToast
+                    title="خطا در حذف"
+                    message={error?.response?.data?.message || "مشکلی در حذف قانون رخ داد"}
+                    variant="error"
+                    icon={<AlertCircle size={20} />}
+                />
+            ));
+        }
+    });
+
+    // Handlers
     const handleDeleteClick = (id: string) => {
-        // به جای پاک کردن مستقیم، مودال تایید را باز می‌کنیم
         setDeleteRuleState({ isOpen: true, id });
     };
 
+    // Guard against missing apartmentId
     const confirmDelete = () => {
-        // پاک کردن واقعی قانون
+        if (!apartmentId) return;
         if (deleteRuleState.id) {
-            setRules(prev => prev.filter(r => r.id !== deleteRuleState.id));
+            deleteMutation.mutate(deleteRuleState.id);
         }
-        setDeleteRuleState({ isOpen: false, id: null });
     };
 
     const handleCreateSubmit = (data: Partial<Rule>) => {
-        console.log("Create data:", data);
-        setIsMakeRuleOpen(false);
+        if (!apartmentId) return;
+        createMutation.mutate(data);
     };
 
     const handleEditSubmit = (data: Partial<Rule>) => {
-        console.log("Edit data:", data);
-        setEditRuleState({ isOpen: false, data: null });
+        if (!apartmentId) return;
+        if (editRuleState.data?.id) {
+            updateMutation.mutate({ id: editRuleState.data.id, data });
+        }
     };
 
     return (
@@ -48,12 +179,14 @@ export default function RulesTab() {
             <RulesHeader
                 onOpenMakeRule={() => setIsMakeRuleOpen(true)}
                 info={buildingInfo}
+                isLoading={isApartmentLoading}
             />
             
             <RulesBody 
                 rules={rules} 
                 onEdit={(rule) => setEditRuleState({ isOpen: true, data: rule })} 
                 onDelete={handleDeleteClick}
+                isLoading={isRulesLoading} 
             />
 
             <MakeRule 
@@ -69,7 +202,6 @@ export default function RulesTab() {
                 onSubmit={handleEditSubmit}
             />
 
-            {/* مودال تایید حذف */}
             <DeleteRuleConfirm
                 isOpen={deleteRuleState.isOpen}
                 onClose={() => setDeleteRuleState({ isOpen: false, id: null })}

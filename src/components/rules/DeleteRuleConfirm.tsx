@@ -12,7 +12,6 @@ export default function DeleteRuleConfirm({ isOpen, onClose, onConfirm }: Delete
     return (
         <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
             <DialogContent isOpen={isOpen} className="!p-0 sm:max-w-sm border-none">
-                {/* هدر */}
                 <div className="bg-red-500 p-4 flex justify-center items-center relative">
                     <h2 className="text-xl font-bold text-white">حذف قانون</h2>
                     
@@ -24,13 +23,11 @@ export default function DeleteRuleConfirm({ isOpen, onClose, onConfirm }: Delete
                     </button>
                 </div>
 
-                {/* بدنه */}
                 <div className="p-6 flex flex-col gap-6 bg-white text-center">
                     <p className="text-neutral-800 font-semibold text-lg dir-rtl">
                         آیا از حذف این قانون مطمئن هستید؟
                     </p>
 
-                    {/* دکمه‌ها */}
                     <div className="flex justify-center gap-3 dir-rtl mt-2">
 
                         <CustomButton
