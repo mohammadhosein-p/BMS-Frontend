@@ -55,7 +55,7 @@ function HeroSection() {
                         </Link>
 
                         <Link
-                            to="/contact-us"
+                            to="/about-us"
                             className="transition hover:scale-115 w-24 text-center "
                         >
                             تماس با ما

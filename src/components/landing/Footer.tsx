@@ -94,7 +94,7 @@ const tabsDict = [
     },
     {
         label: "تماس با ما",
-        href: "/contact-us",
+        href: "/about-us",
     },
 ];
 

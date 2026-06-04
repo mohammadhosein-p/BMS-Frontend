@@ -40,8 +40,6 @@ const AboutUs: React.FC = () => {
               className="h-32 md:h-40 object-contain relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500 mb-6"
             />
 
-
-            {/* Enhanced Typography */}
             <div className="text-center space-y-5 relative z-10 max-w-2xl">
               <p className="text-xl md:text-2xl font-extrabold text-white leading-relaxed">
                 به پلتفرم مدیریت هوشمند ساختمان خوش آمدید. هدف ما <span className="text-[#a6fff6] bg-black/10 px-2 py-0.5 rounded-lg inline-block transform -rotate-1">هوشمندسازی</span> و تسهیل ارتباطات است.
@@ -114,7 +112,7 @@ const AboutUs: React.FC = () => {
             <div className="pt-2 flex justify-center">
               <Button 
                 onClick={() => navigate('/')} 
-                className="bg-[#717cff] hover:bg-[#5965f7] text-white rounded-xl px-8 py-6 h-auto text-base flex items-center gap-2 shadow-lg shadow-[#717cff]/30 transition-all hover:shadow-[#717cff]/50 hover:-translate-y-0.5"
+                className="bg-[#717cff] hover:bg-[#5965f7] text-white rounded-xl px-8 py-6 h-auto text-base font-bold flex items-center gap-2 shadow-lg shadow-[#717cff]/30 transition-all hover:shadow-[#717cff]/50 hover:-translate-y-0.5"
               >
                 <ArrowRight size={20} />
                 بازگشت به صفحه اصلی
