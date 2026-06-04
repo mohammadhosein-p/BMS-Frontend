@@ -1,5 +1,6 @@
 import type { BuildingInfo } from "@/types/ruleTypes";
 import { MapPin, Map, Mailbox, PlusCircle } from "lucide-react";
+import CustomButton from "@/components/ui/CustomeButton";
 
 interface RulesHeaderProps {
     info: BuildingInfo | null | undefined;
@@ -45,13 +46,14 @@ export default function RulesHeader({ info, onOpenMakeRule, isLoading, hasAdminA
             {/* Action Button - Only visible for admin/manager */}
             {hasAdminAccess && (
                 <div className="flex flex-col gap-5 items-center justify-center h-full shrink-0">
-                    <button 
+                    <CustomButton 
+                        variant="danger"
+                        icon={PlusCircle}
                         onClick={onOpenMakeRule}
-                        className="bg-[#de4444] hover:bg-red-600 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl font-bold flex items-center gap-2 transition-colors shadow-sm text-sm md:text-base"
+                        className="shadow-sm text-sm md:text-base px-4 md:px-5 py-2 md:py-2.5"
                     >
-                        <PlusCircle className="w-5 h-5" />
-                        <span>اضافه کردن قانون</span>
-                    </button>
+                        اضافه کردن قانون
+                    </CustomButton>
                 </div>
             )}
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Rule } from "@/types/ruleTypes";
 import { Dialog, DialogContent } from "@/components/ui/CustomeDialog";
 import { X, Save } from "lucide-react";
+import CustomButton from "@/components/ui/CustomeButton";
 
 interface MakeRuleProps {
     isOpen: boolean;
@@ -80,13 +81,14 @@ export default function MakeRule({ isOpen, onClose, onSubmit }: MakeRuleProps) {
                         </p>
                     )}
 
-                    <button
+                    <CustomButton
+                        variant="danger"
+                        icon={Save}
                         onClick={handleSubmit}
-                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 mx-auto mt-2 transition-colors w-max shadow-sm"
+                        className="mx-auto mt-2 px-6 py-2.5 w-max shadow-sm"
                     >
-                        <Save className="w-5 h-5" />
-                        <span>ارسال</span>
-                    </button>
+                        ارسال
+                    </CustomButton>
                 </div>
             </DialogContent>
         </Dialog>
