@@ -1,6 +1,7 @@
 import type { Rule } from "@/types/ruleTypes";
 import { Trash2 } from "lucide-react";
 import CustomButton from "@/components/ui/CustomeButton"; 
+import { translateNumber } from "@/utils/translateNumber";
 
 interface RuleItemProps {
     rule: Rule;
@@ -18,7 +19,7 @@ export default function RuleItem({ rule, index, onEdit, onDelete, hasAdminAccess
                 
                 {/* Index circle */}
                 <div className="w-10 h-10 flex items-center justify-center rounded-full border-[1.5px] border-neutral-800 text-neutral-800 font-bold text-lg shrink-0">
-                    {index + 1}
+                    {translateNumber(index + 1)}
                 </div>
                 
                 {/* Rule content */}
