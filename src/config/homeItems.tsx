@@ -1,3 +1,4 @@
+import ManagerUsers from "@/pages/home/ManagerUsers";
 import TicketTab from "@/pages/home/TicketTab";
 import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
 import PollTab from "@/pages/home/PollTab";
@@ -11,7 +12,7 @@ export const homeItems: {
     color: string;
     border_color: string;
     text_color: string;
-    roles : string[];
+    roles: string[];
     component: React.ReactNode;
 }[] = [
         {
@@ -22,7 +23,7 @@ export const homeItems: {
             color: "from-[var(--secondary-blue-3)] to-[var(--secondary-blue-2)]",
             border_color: "border-[var(--secondary-blue-2)]",
             text_color: "text-[var(--secondary-blue-2)]",
-            roles: ["admin" ,"manager", "resident"],
+            roles: ["admin", "manager", "resident"],
             component: <p>announcement</p>,
         },
         {
@@ -44,19 +45,19 @@ export const homeItems: {
             color: "from-[var(--primary-3)] to-[var(--primary-1)]",
             border_color: "border-[var(--primary-1)]",
             text_color: "text-[var(--primary-1)]",
-            roles: ["admin" ,"manager", "resident"],
+            roles: ["admin", "manager", "resident"],
             component: <TicketTab />,
         },
         {
-            path: "member",
+            path: "manage-users",
             title: "اعضا",
             subtitle: "مدیریت اعضا",
             icon: Users,
-            color: "from-[var(--success-op2-3)] to-[var(--success-op2-2)]",
-            border_color: "border-[var(--success-op2-2)]",
-            text_color: "text-[var(--success-op2-2)]",
-            roles: ["admin" ,"manager"],
-            component: <p>member</p>,
+            color: "from-[var(--orange-3)] to-[var(--orange-2)]",
+            border_color: "border-[var(--orange-3)]/40",
+            text_color: "text-[var(--orange-2)]",
+            roles: ["manager"],
+            component: <ManagerUsers />,
         },
         {
             path: "rules",

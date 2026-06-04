@@ -185,6 +185,12 @@
     --danger-3: #ef5350;
     --danger-4: #ffab91;
     --danger-5: #ffebee;
+
+    --orange-1: #b25300;
+    --orange-2: #e66a00; 
+    --orange-3: #ff841a;
+    --orange-4: #ffcc99; 
+    --orange-5: #fff0e0;
 }
 
 @theme inline {

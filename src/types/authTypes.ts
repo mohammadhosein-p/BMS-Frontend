@@ -54,3 +54,11 @@ export interface VlidateInviteCodeResponse {
     apartment_id: string ;
     unit_id : string ;
 }
+
+export interface CheckPhonePayload {
+    phone: string;
+}
+
+export interface ExistsResponse {
+    exists: boolean; 
+}

@@ -7,6 +7,7 @@ import HomePageLayout from "@/layouts/home/HomePageLayout";
 import ProtectedLayout from "@/layouts/home/ProtectedLayout";
 import Error404 from "@/pages/Error404";
 import ProfileTab from "@/pages/home/profileTab";
+import AboutUs from "@/pages/aboutUs";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
 
@@ -51,11 +52,10 @@ export const router = createBrowserRouter([
                     },
                 ],
             },
-            // {
-            // 	path: "/AboutUs",
-            // 	element: <AboutUs />,
-            // },
-            // {
+            {
+            	path: "/about-us",
+            	element: <AboutUs />,
+            },
         ],
     },
     {

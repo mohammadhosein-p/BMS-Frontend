@@ -17,4 +17,13 @@ function formatProfileImage(user: User | null): User | null {
   return user;
 }
 
+export function changeProfileImageUrl(profile_image_url: string | null): string | null {
+  if (!profile_image_url) return null;
+
+  if (!profile_image_url.startsWith("http")) {
+    return `${BASE_URL}${profile_image_url.startsWith('/') ? profile_image_url.slice(1) : profile_image_url}`;
+  }
+  return profile_image_url;
+}
+
 export default formatProfileImage;

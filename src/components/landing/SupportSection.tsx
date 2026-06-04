@@ -114,7 +114,7 @@ function SupportSection() {
                             variants={itemVariants as any}
                             className="bg-[#717cff] text-white px-12 py-4 rounded-2xl font-bold text-lg transition hover:scale-105"
                         >
-                            <Link to="/contact-us">ارتباط با پشتیبانی</Link>
+                            <Link to="/about-us">ارتباط با پشتیبانی</Link>
                         </motion.button>
                     </motion.div>
 

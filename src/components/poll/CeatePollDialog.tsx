@@ -252,7 +252,7 @@ export default function CreatePollDialog() {
                                 <CustomButton
                                     icon={Send}
                                     className={cn(
-                                        "flex items-center gap-3 rounded-2xl px-6 py-3 text-lg text-white",
+                                        "flex items-center gap-3 rounded-2xl px-5 py-3 text-lg text-white",
                                         "cursor-pointer bg-secondary-blue-3 transition-all hover:bg-secondary-blue-2 hover:opacity-90",
                                     )}
                                 >

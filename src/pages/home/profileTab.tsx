@@ -16,10 +16,10 @@ export default function ProfileTab() {
     return (
         <div className="flex flex-col h-full max-h-[calc(100vh-100px)] overflow-hidden p-4">
             <ProfileHeader user={user} />
-            
-            <div className="mt-6 flex-1 overflow-hidden">
+
+            <div className="mt-6 flex-1 min-h-0 h-full">
                 <ProfileDetails user={user} />
-            </div> 
+            </div>
         </div>
     );
 }
