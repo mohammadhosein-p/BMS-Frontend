@@ -6,9 +6,10 @@ interface RulesBodyProps {
     onEdit: (rule: Rule) => void;
     onDelete: (id: string) => void;
     isLoading?: boolean;
+    hasAdminAccess?: boolean;
 }
 
-export default function RulesBody({ rules, onEdit, onDelete, isLoading }: RulesBodyProps) {
+export default function RulesBody({ rules, onEdit, onDelete, isLoading, hasAdminAccess }: RulesBodyProps) {
     
     // Loading state
     if (isLoading) {
@@ -41,7 +42,8 @@ export default function RulesBody({ rules, onEdit, onDelete, isLoading }: RulesB
                     rule={rule}
                     index={index}
                     onEdit={onEdit} 
-                    onDelete={onDelete} 
+                    onDelete={onDelete}
+                    hasAdminAccess={hasAdminAccess}
                 />
             ))}
         </div>

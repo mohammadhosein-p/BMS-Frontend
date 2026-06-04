@@ -26,9 +26,13 @@ import CustomToast from "@/components/Custom/CustomToast";
 export default function RulesTab() {
     const queryClient = useQueryClient();
     
-    // Extract apartment_id from user store
+    // Extract apartment_id and role from user store
     const user = useAuthStore(state => state.user);
     const apartmentId = user?.apartment_id;
+    const role = user?.role;
+    
+    // Check if user has admin/manager privileges
+    const hasAdminAccess = role === "manager" || role === "admin";
 
     // Modal states
     const [isMakeRuleOpen, setIsMakeRuleOpen] = useState(false);
@@ -180,15 +184,18 @@ export default function RulesTab() {
                 onOpenMakeRule={() => setIsMakeRuleOpen(true)}
                 info={buildingInfo}
                 isLoading={isApartmentLoading}
+                hasAdminAccess={hasAdminAccess}
             />
             
             <RulesBody 
                 rules={rules} 
                 onEdit={(rule) => setEditRuleState({ isOpen: true, data: rule })} 
                 onDelete={handleDeleteClick}
-                isLoading={isRulesLoading} 
+                isLoading={isRulesLoading}
+                hasAdminAccess={hasAdminAccess}
             />
 
+            {/* Modals are conditionally rendered or logic handled, but safe to keep mounted */}
             <MakeRule 
                 isOpen={isMakeRuleOpen} 
                 onClose={() => setIsMakeRuleOpen(false)} 
