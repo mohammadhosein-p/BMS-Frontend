@@ -13,12 +13,12 @@ interface RuleItemProps {
 
 export default function RuleItem({ rule, index, onEdit, onDelete, hasAdminAccess }: RuleItemProps) {
     return (
-        <div className="flex flex-row-reverse items-center justify-between p-4 bg-white rounded-xl border border-neutral-200 shadow-sm hover:border-secondary-blue-3 transition-colors group mb-3">
+        <div className="flex flex-col md:flex-row-reverse md:items-center justify-between p-4 bg-white rounded-xl border border-neutral-200 shadow-sm hover:border-primary-3 transition-colors group mb-3">
             
             <div className="flex flex-row-reverse items-start md:items-center gap-4 w-full">
                 
                 {/* Index circle */}
-                <div className="w-10 h-10 flex items-center justify-center rounded-full border-[1.5px] border-neutral-800 text-neutral-800 font-bold text-lg shrink-0">
+                <div className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-bold text-xl shrink-0 ${!hasAdminAccess ? 'border-primary-3 text-primary-2' : 'border-danger-3 text-danger-2'}`}>
                     {translateNumber(index + 1)}
                 </div>
                 
@@ -38,7 +38,7 @@ export default function RuleItem({ rule, index, onEdit, onDelete, hasAdminAccess
 
             {/* Action buttons - Only visible for admin/manager */}
             {hasAdminAccess && (
-                <div className="flex items-center gap-3 shrink-0 mr-4 md:mr-8">
+                <div className="flex items-center justify-start md:justify-end gap-3 shrink-0 mt-4 md:mt-0 w-full md:w-auto md:mr-8">
                     <CustomButton
                         variant="success2"
                         styleType="outline"
