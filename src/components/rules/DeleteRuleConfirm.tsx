@@ -33,16 +33,17 @@ export default function DeleteRuleConfirm({ isOpen, onClose, onConfirm }: Delete
                         <CustomButton
                             variant="danger"
                             styleType="solid"
-                            icon={Trash2}
                             onClick={onConfirm}
-                            className="px-6 shadow-sm"
+                            className="w-20 cursor-pointer"
                         >
                             بله
                         </CustomButton>
 
                         <CustomButton
+                            variant="dark-gradient"
+                            styleType="outline"
                             onClick={onClose}
-                            className="bg-neutral-200 hover:bg-neutral-300 text-neutral-700 border-none ring-0 px-6 shadow-sm"
+                            className="w-20 cursor-pointer"
                         >
                             انصراف
                         </CustomButton>

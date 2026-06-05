@@ -1,5 +1,6 @@
 import type { Rule } from "@/types/ruleTypes";
 import RuleItem from "./RuleItem";
+import { AnimatePresence } from "framer-motion";
 
 interface RulesBodyProps {
     rules: Rule[];
@@ -31,11 +32,8 @@ export default function RulesBody({ rules, onEdit, onDelete, isLoading, hasAdmin
 
     // Rules list
     return (
-        <div className="flex-1 overflow-y-auto pl-2 pr-1 space-y-3 
-                        [&::-webkit-scrollbar]:w-1.5 
-                        [&::-webkit-scrollbar-track]:bg-transparent 
-                        [&::-webkit-scrollbar-thumb]:bg-neutral-300 
-                        [&::-webkit-scrollbar-thumb]:rounded-full">
+    <div className="flex-1 overflow-y-auto pt-2 pb-2 pl-2 pr-1 space-y-3 custom-scrollbar -mt-2">
+        <AnimatePresence mode="popLayout">
             {rules.map((rule, index) => (
                 <RuleItem 
                     key={rule.id} 
@@ -46,6 +44,7 @@ export default function RulesBody({ rules, onEdit, onDelete, isLoading, hasAdmin
                     hasAdminAccess={hasAdminAccess}
                 />
             ))}
-        </div>
-    );
+        </AnimatePresence>
+    </div>
+);
 }

@@ -112,6 +112,7 @@ export default function RulesTab() {
                     icon={<CheckCircle2 size={20} />}
                 />
             ));
+            
         },
         onError: (error: AxiosBackendError) => {
             toast.custom(() => (

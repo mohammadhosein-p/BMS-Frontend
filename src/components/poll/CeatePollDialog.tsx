@@ -25,26 +25,8 @@ import useAuthStore from "@/store/useAuthStore";
 import type { CreatePollBody } from "@/types/PollTypes";
 import { Spinner } from "../ui/spinner";
 import { AnimatePresence, motion } from "framer-motion";
+import AnimatedError from "../ui/AnimatedError";
 
-const AnimatedError = ({ message }: { message?: string }) => {
-    return (
-        <AnimatePresence>
-            {message && (
-                <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto", marginTop: 4 }}
-                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                >
-                    <p className="text-xs text-danger-2 text-right">
-                        {message}
-                    </p>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-};
 
 export default function CreatePollDialog() {
     const [isOpen, setIsOpen] = useState(false);
