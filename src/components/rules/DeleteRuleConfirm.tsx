@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/CustomeDialog";
 import CustomButton from "@/components/ui/CustomeButton";
-import { X, Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 
 interface DeleteRuleConfirmProps {
     isOpen: boolean;
@@ -11,7 +11,7 @@ interface DeleteRuleConfirmProps {
 export default function DeleteRuleConfirm({ isOpen, onClose, onConfirm }: DeleteRuleConfirmProps) {
     return (
         <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-            <DialogContent isOpen={isOpen} className="!p-0 sm:max-w-sm border-none">
+            <DialogContent isOpen={isOpen} className="p-0! sm:max-w-sm border-none">
                 <div className="bg-red-500 p-4 flex justify-center items-center relative">
                     <h2 className="text-xl font-bold text-white">حذف قانون</h2>
                     
