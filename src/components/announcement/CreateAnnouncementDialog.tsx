@@ -8,7 +8,22 @@ import { useCreateAnnouncement, useAllTags } from "@/hooks/useAnnouncement";
 import useAuthStore from "@/store/useAuthStore";
 import type { AnnouncementPayload } from "@/types/announcementTypes";
 
-export default function CreateAnnouncementDialog({ open, onOpenChange }) {
+interface AnnouncementCreateProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const tagNameMap: Record<string, string> = {
+  Urgent: "فوری",
+  Maintenance: "تعمیرات",
+  Notice: "اطلاعیه",
+  Event: "رویداد",
+  Plumbing: "لوله‌کشی",
+  Safety: "ایمنی",
+};
+
+
+export default function CreateAnnouncementDialog({ open, onOpenChange }: AnnouncementCreateProps) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -20,7 +35,7 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
   const { mutateAsync: createAnnouncement, isPending } = useCreateAnnouncement(apartment_id as string);
   const { data: tagsData, isLoading: tagsLoading } = useAllTags(open);
 
-  const tagOptions = [{ value: "", label: "انتخاب تگ" }, ...(tagsData ?? []).map((tag) => ({ value: tag.id, label: tag.name }))];
+  const tagOptions = [{ value: "", label: "انتخاب تگ" }, ...(tagsData ?? []).map((tag) => ({ value: tag.id, label: tagNameMap[tag.name] ?? tag.name }))];
 
   const orderOptions = [
     { value: "very_important", label: "خیلی مهم", color: "red" },
@@ -45,8 +60,6 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !body.trim()) return;
-
-    // Format as full ISO 8601 — backend parses "2006-01-02T15:04:05Z07:00"
 
     const payload: AnnouncementPayload = {
       title: title.trim(),
@@ -151,7 +164,7 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
             )}
           </div>
 
-          {/* Order / Priority */}
+          {/* Order */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-neutral-3 block text-right">سطح اولویت:</label>
             <SelectOptions

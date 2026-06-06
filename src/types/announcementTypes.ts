@@ -9,14 +9,13 @@ export interface Announcement {
     title: string;
     description: string;
     body: string;
-    order: "very_important" | "warning" | "info" | "other";
+    order: "very_important" | "warning" | "important" | "other"; // important=information
     is_pinned: boolean;
     expired_date: string;
     tags: Tag[];
     created_at: string;
 }
 
-// دیتایی که برای ساخت یا آپدیت ارسال می‌کنی
 export interface AnnouncementPayload {
     title: string;
     description: string;

@@ -8,8 +8,6 @@ import ProtectedLayout from "@/layouts/home/ProtectedLayout";
 import ProfileTab from "@/pages/home/profileTab";
 import { homeItems } from "@/config/homeItems";
 import RoleGuard from "@/components/home/RoleGaurd";
-import AnnouncementTab from "@/pages/home/announcementTab.tsx";
-import {AnnouncementDetails} from "@/components/announcement/AnnouncementDetails.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -50,10 +48,6 @@ export const router = createBrowserRouter([
                                 path: "profile",
                                 element: ( <ProfileTab />)
                             },
-                            {
-                                path: "an",
-                                element: <AnnouncementTab/>
-                            }
                         ],
                     },
                 ],
