@@ -51,7 +51,7 @@ export const router = createBrowserRouter([
                                 element: ( <ProfileTab />)
                             },
                             {
-                                path: "aa",
+                                path: "an",
                                 element: <AnnouncementTab/>
                             }
                         ],

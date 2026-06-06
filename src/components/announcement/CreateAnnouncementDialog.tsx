@@ -4,27 +4,68 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from ".
 import CustomField from "../ui/CutsomeFiled";
 import SelectOptions from "../ui/SelectOptions/SelectOptions";
 import { useState } from "react";
+import { useCreateAnnouncement, useAllTags } from "@/hooks/useAnnouncement";
+import useAuthStore from "@/store/useAuthStore";
+import type { AnnouncementPayload } from "@/types/announcementTypes";
 
 export default function CreateAnnouncementDialog({ open, onOpenChange }) {
-  const [selectedTag, setSelectedTag] = useState("general");
-  const [selectedPriority, setSelectedPriority] = useState("medium");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<AnnouncementPayload["order"]>("other");
   const [isPinned, setIsPinned] = useState(false);
 
-  const tagOptions = [
-    { value: "general", label: "عمومی", color: "gray" },
-    { value: "important", label: "مهم", color: "red" },
-    { value: "event", label: "رویداد", color: "blue" },
-    { value: "update", label: "بروزرسانی", color: "green" },
+  const apartment_id = useAuthStore((store) => store.user?.apartment_id);
+
+  const { mutateAsync: createAnnouncement, isPending } = useCreateAnnouncement(apartment_id as string);
+  const { data: tagsData, isLoading: tagsLoading } = useAllTags(open);
+
+  const tagOptions = [{ value: "", label: "انتخاب تگ" }, ...(tagsData ?? []).map((tag) => ({ value: tag.id, label: tag.name }))];
+
+  const orderOptions = [
+    { value: "very_important", label: "خیلی مهم", color: "red" },
+    { value: "warning", label: "هشدار", color: "amber" },
+    { value: "important", label: "اطلاعات", color: "blue" },
+    { value: "other", label: "متفرقه", color: "gray" },
   ];
 
-  const priorityOptions = [
-    { value: "low", label: "کم", color: "gray" },
-    { value: "medium", label: "متوسط", color: "yellow" },
-    { value: "high", label: "زیاد", color: "orange" },
-    { value: "urgent", label: "فوری", color: "red" },
-  ];
+  const handleTagChange = (tagId: string) => {
+    if (!tagId) return;
+    setSelectedTags((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]));
+  };
 
-  const onSubmit = () => {};
+  const resetForm = () => {
+    setTitle("");
+    setBody("");
+    setSelectedTags([]);
+    setSelectedOrder("other");
+    setIsPinned(false);
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !body.trim()) return;
+
+    // Format as full ISO 8601 — backend parses "2006-01-02T15:04:05Z07:00"
+
+    const payload: AnnouncementPayload = {
+      title: title.trim(),
+      description: "",
+      body: body.trim(),
+      order: selectedOrder,
+      is_pinned: isPinned,
+      expired_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+      tag_ids: selectedTags,
+    };
+
+    try {
+      await createAnnouncement(payload);
+      resetForm();
+      onOpenChange(false);
+    } catch {
+      // errors handled by hook's onError toast
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,7 +77,7 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
               type="button"
               className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-1.5 hover:bg-white/30 transition-all cursor-pointer border-none outline-none"
               aria-label="Close"
-              onClick={onOpenChange}
+              onClick={() => onOpenChange(false)}
             >
               <X className="w-4 h-4 text-white" strokeWidth={3} />
             </button>
@@ -47,34 +88,78 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className="space-y-2 p-6 bg-white">
+        <form onSubmit={onSubmit} className="space-y-3 p-6 bg-white">
+          {/* Title */}
           <div className="space-y-1">
-            <CustomField placeholder="عنوان" direction="rtl" variant="default" className="focus-visible:border-primary-2" />
+            <label className="text-sm font-bold text-neutral-3 block text-right">عنوان:</label>
+            <CustomField
+              placeholder="عنوان اعلامیه"
+              direction="rtl"
+              variant="default"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="focus-visible:border-primary-2"
+              required
+            />
           </div>
 
+          {/* Body */}
           <div className="space-y-1">
+            <label className="text-sm font-bold text-neutral-3 block text-right">متن کامل:</label>
             <CustomField
               as="textarea"
               placeholder="متن اعلامیه خود را اینجا بنویسید..."
               direction="rtl"
               variant="default"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
               className="text-sm placeholder:text-sm focus-visible:border-primary-2"
+              required
             />
           </div>
 
-          {/* Priority Select */}
+          {/* Tags */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-neutral-3 block text-right">تگ‌ها:</label>
+            <SelectOptions
+              value=""
+              onChange={handleTagChange}
+              options={tagsLoading ? [{ value: "", label: "در حال بارگذاری..." }] : (tagOptions as any)}
+            />
+            {selectedTags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 pt-1" dir="rtl">
+                {selectedTags.map((tagId) => {
+                  const tag = tagOptions.find((t) => t.value === tagId);
+                  if (!tag) return null;
+                  return (
+                    <span
+                      key={tagId}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-neutral-100 text-neutral-800 border"
+                    >
+                      {tag.label}
+                      <button
+                        type="button"
+                        onClick={() => handleTagChange(tagId)}
+                        className="hover:bg-neutral-200 rounded-full p-0.5 transition-colors cursor-pointer"
+                      >
+                        <X className="w-3 h-3 text-neutral-500" />
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Order / Priority */}
           <div className="space-y-2">
             <label className="text-sm font-bold text-neutral-3 block text-right">سطح اولویت:</label>
-
-            <SelectOptions value={selectedPriority} onChange={setSelectedPriority} options={priorityOptions as any} />
+            <SelectOptions
+              value={selectedOrder}
+              onChange={(val) => setSelectedOrder(val as AnnouncementPayload["order"])}
+              options={orderOptions as any}
+            />
           </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-neutral-3 block text-right">تگ:</label>
-
-            <SelectOptions value={selectedTag} onChange={setSelectedTag} options={tagOptions as any} />
-          </div>
-
 
           {/* Pin Checkbox */}
           <div className="flex items-center justify-start gap-2 rounded-2xl">
@@ -91,8 +176,13 @@ export default function CreateAnnouncementDialog({ open, onOpenChange }) {
           </div>
 
           <div className="flex justify-center pt-2">
-            <CustomButton icon={Send} className="ltr h-11 cursor-pointer" disabled={false}>
-              ثبت اعلامیه
+            <CustomButton
+              icon={Send}
+              type="submit"
+              className="ltr h-11 cursor-pointer"
+              disabled={isPending || !title.trim() || !body.trim()}
+            >
+              {isPending ? "در حال ارسال..." : "ثبت اعلامیه"}
             </CustomButton>
           </div>
         </form>
