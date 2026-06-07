@@ -16,6 +16,7 @@ const orderColorMap: Record<string, string> = {
 
 export function AnnouncementCard({ announcement }: { announcement: Announcement }) {
   const apartment_id = useAuthStore((store) => store.user?.apartment_id);
+  const isManager = useAuthStore((store) => store.user?.role === "manager");
 
   const [showDetails, setShowDetails] = useState(false);
   const deleteAnnouncementMutation = useDeleteAnnouncement(apartment_id as any);
@@ -43,6 +44,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-center p-2 md:pl-4 gap-2">
+          {isManager && (
           <motion.button
             type="button"
             whileHover={{ scale: 1.05 }}
@@ -52,6 +54,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
           >
             <Trash2 size={16} className="text-danger-2" />
           </motion.button>
+          )}
           <CustomButton variant="primary" styleType="outline" onClick={onDetailClick}>
             <span className="hidden sm:inline">مشاهده جزئیات</span>
             <span className="sm:hidden">جزئیات</span>

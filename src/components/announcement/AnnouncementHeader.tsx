@@ -3,9 +3,11 @@ import CustomButton from "../ui/CustomeButton";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import CreateAnnouncementDialog from "./CreateAnnouncementDialog";
+import useAuthStore from "@/store/useAuthStore";
 
 export function AnnouncementHeader() {
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const isManager = useAuthStore((store) => store.user?.role === "manager");
 
   const onCreateClick = () => {
     setShowCreateForm(!showCreateForm);
@@ -46,9 +48,11 @@ export function AnnouncementHeader() {
         </div>
       </div>
 
-      <CustomButton icon={PlusCircle} className="h-13 cursor-pointer self-center w-full md:w-auto" onClick={onCreateClick}>
-        ثبت اعلامیه جدید
-      </CustomButton>
+      {isManager && (
+        <CustomButton icon={PlusCircle} className="h-13 cursor-pointer self-center w-full md:w-auto" onClick={onCreateClick}>
+          ثبت اعلامیه جدید
+        </CustomButton>
+      )}
 
       <CreateAnnouncementDialog open={showCreateForm} onOpenChange={onCreateClick} />
     </div>
