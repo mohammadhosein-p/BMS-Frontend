@@ -25,7 +25,7 @@ export const homeItems: {
             border_color: "border-[var(--secondary-blue-2)]",
             text_color: "text-[var(--secondary-blue-2)]",
             roles: ["admin", "manager", "resident"],
-            component: <p>announcement</p>,
+            component: <AnnouncementTab/>,
         },
         {
             path: "voting",
