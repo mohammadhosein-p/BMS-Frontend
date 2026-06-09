@@ -36,7 +36,7 @@ function TicketsTab() {
         <div className="flex h-full flex-col gap-3 overflow-hidden bg-neutral-5 p-3 sm:p-4 lg:p-6">
             {/* Header */}
             <div className="flex flex-row-reverse items-center justify-between gap-3">
-                <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl md:font-black">
+                <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl">
                     تیکت های من
                 </h1>
 

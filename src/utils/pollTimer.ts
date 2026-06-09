@@ -3,7 +3,7 @@ export function getPollTimeLeftParts(expiresAt: string | Date) {
         typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
     const now = Date.now();
 
-    const diffMs = expiresDate.getTime() - now;
+    const diffMs = expiresDate.getTime() - now - 1 * 60 * 60 * 1000; // - 1 hour
 
     if (!Number.isFinite(diffMs) || diffMs <= 0) {
         return { days: 0, hours: 0, minutes: 0 };

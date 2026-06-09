@@ -8,26 +8,27 @@ import { useState } from "react";
 function PollTab() {
     const apartment_id =
         useAuthStore((store) => store.user?.apartment_id) || "";
+    const isAdmin = useAuthStore(store => store.user?.role == "manager")
     const { data, isPending, refetch } = useGetAllPoll(apartment_id);
     const [currentTime, setCurrentTime] = useState(Date.now());
 
     const activePolls =
         data?.data.filter(
             (poll) =>
-                new Date(poll.expires_at).getTime() > currentTime + 60_000,
+                new Date(poll.expires_at).getTime() > currentTime - 1 * 60 * 1000 + 1 * 60 * 60 * 1000, // - 1 minute + 1 hour
         ) ?? [];
 
     const finishedPolls =
         data?.data.filter(
             (poll) =>
-                new Date(poll.expires_at).getTime() <= currentTime + 60_000,
+                new Date(poll.expires_at).getTime() <= currentTime - 1 * 60 * 1000 + 1 * 60 * 60 * 1000, // - 1 minute + 1 hour
         ) ?? [];
 
     return (
         <div className="custom-scrollbar h-full overflow-y-auto bg-neutral-5 p-6">
             {/* Header */}
-            <div className="mb-6 flex items-center justify-between">
-                <CreatePollDialog />
+            <div className="mb-6 flex items-center justify-between text-right">
+                {isAdmin ? <CreatePollDialog /> : <div />}
 
                 <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl">
                     {activePolls.length > 0 ? "نظرسنجی های فعال" : "نظر سنجی"}

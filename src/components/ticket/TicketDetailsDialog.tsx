@@ -227,7 +227,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
 
                             {/* INPUT */}
-                            {(isManager || currentUser == ticket?.user_id) && (
+                            {ticket?.status !== "close" && (isManager || currentUser == ticket?.user_id) && (
                                 <div className="p-4 bg-white border-t border-zinc-100">
                                     <div className="flex items-end gap-2 w-full">
                                         <button
