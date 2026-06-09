@@ -39,7 +39,7 @@ export const UsernameLogin = ({ onHomePage, onInviteCode }: UsernameLoginProps) 
             await new Promise((resolve) => setTimeout(resolve, 1500));
             setAuth({ user: data.user, access_token: data.access_token, refresh_token: data.refresh_token });
 
-            if (!data.user?.apartment_id || data.user?.apartment_id === null) {
+            if ((!data.user?.apartment_id || data.user?.apartment_id === null) && data.user.role !== "admin") {
                 onInviteCode();
             } else {
                 toast.custom(() => (
