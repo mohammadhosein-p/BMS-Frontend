@@ -9,8 +9,8 @@ import {
     getPollByIdService,
     postVoteService,
 } from "@/services/pollService";
-import { toast } from "sonner";
 import type { AxiosError } from "axios";
+import { showErrorToast, showSuccessToast } from "@/utils/showToast";
 
 export const useCreatePoll = (apartment_id: string) => {
     const queryClient = getQueryClient();
@@ -23,7 +23,7 @@ export const useCreatePoll = (apartment_id: string) => {
             await queryClient.invalidateQueries({
                 queryKey: ["polls", apartment_id],
             });
-            toast.success("نظرسنجی با موفقیت آغاز شد.");
+            showSuccessToast("نظرسنجی با موفقیت آغاز شد.");
         },
 
         onError: (error) => {
@@ -31,7 +31,9 @@ export const useCreatePoll = (apartment_id: string) => {
                 message?: string;
             }>;
 
-            toast.error(err.response?.data?.message || "خطا در ایجاد نظرسنجی");
+            showErrorToast(
+                err.response?.data?.message || "خطا در ایجاد نظرسنجی",
+            );
         },
     });
 };
@@ -75,7 +77,7 @@ export const useDeletePollByID = (
                 queryKey: ["polls", apartment_id],
             });
 
-            toast.success("نظرسنجی با موفقیت حذف شد");
+            showSuccessToast("نظرسنجی با موفقیت حذف شد");
             onSuccess();
         },
     });
@@ -96,7 +98,7 @@ export const usePostVote = (apartment_id: string, poll_id: string) => {
                 queryKey: ["polls", apartment_id],
             });
 
-            toast.success("رای شما با موفقیت ثبت شد");
+            showSuccessToast("رای شما با موفقیت ثبت شد");
         },
     });
 };
@@ -105,8 +107,7 @@ export const useDeleteVote = (apartment_id: string, poll_id: string) => {
     const queryClient = getQueryClient();
 
     return useMutation({
-        mutationFn: () =>
-            deleteVoteService( apartment_id, poll_id),
+        mutationFn: () => deleteVoteService(apartment_id, poll_id),
 
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -116,8 +117,7 @@ export const useDeleteVote = (apartment_id: string, poll_id: string) => {
                 queryKey: ["polls", apartment_id],
             });
 
-            toast.success("رای شما با موفقیت پس گرفته شد");
+            showSuccessToast("رای شما با موفقیت پس گرفته شد");
         },
     });
 };
-

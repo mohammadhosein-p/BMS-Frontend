@@ -9,8 +9,8 @@ import {
 import type { CreateTicketPayload } from "@/types/ticketTypes";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import getQueryClient from "./queryClient";
-import { toast } from "sonner";
 import type { AxiosError } from "axios";
+import { showErrorToast, showSuccessToast } from "@/utils/showToast";
 
 export const useCreateTicket = () => {
     const queryClient = getQueryClient();
@@ -22,7 +22,7 @@ export const useCreateTicket = () => {
             await queryClient.invalidateQueries({
                 queryKey: ["tickets"],
             });
-            toast.success("تیکت با موفقیت ایجاد شد.");
+            showSuccessToast("تیکت با موفقیت ایجاد شد.");
         },
 
         onError: (error) => {
@@ -30,7 +30,7 @@ export const useCreateTicket = () => {
                 message?: string;
             }>;
 
-            toast.error(err.response?.data?.message || "خطا در ایجاد تیکت");
+            showErrorToast(err.response?.data?.message || "خطا در ایجاد تیکت");
         },
     });
 };
@@ -60,7 +60,7 @@ export const useUpdateTicketStatus = () => {
                 queryKey: ["tickets"],
             });
 
-            toast.success("وضعیت تیکت بروزرسانی شد");
+            showSuccessToast("وضعیت تیکت بروزرسانی شد");
         },
 
         onError: (error) => {
@@ -68,7 +68,7 @@ export const useUpdateTicketStatus = () => {
                 message?: string;
             }>;
 
-            toast.error(
+            showErrorToast(
                 err.response?.data?.message || "خطا در بروزرسانی وضعیت تیکت",
             );
         },
@@ -86,7 +86,7 @@ export const useDeleteTicket = () => {
                 queryKey: ["tickets"],
             });
 
-            toast.success("تیکت حذف شد");
+            showSuccessToast("تیکت حذف شد");
         },
 
         onError: (error) => {
@@ -94,7 +94,7 @@ export const useDeleteTicket = () => {
                 message?: string;
             }>;
 
-            toast.error(err.response?.data?.message || "خطا در حذف تیکت");
+            showErrorToast(err.response?.data?.message || "خطا در حذف تیکت");
         },
     });
 };
@@ -118,14 +118,14 @@ export const useCreateTicketComment = () => {
             queryClient.invalidateQueries({
                 queryKey: ["ticket-details", variables.id],
             });
-            toast.success("کامنت با موفقیت ارسال شد.");
+            showSuccessToast("کامنت با موفقیت ارسال شد.");
         },
         onError: (error) => {
             const err = error as AxiosError<{
                 message?: string;
             }>;
 
-            toast.error(err.response?.data?.message || "خطا در حذف تیکت");
+            showErrorToast(err.response?.data?.message || "خطا در حذف تیکت");
         },
     });
 };
