@@ -50,7 +50,7 @@ export const OTPVerify = ({ onBack, OnRegister, onHomePage, onInviteCode, phoneN
                 });
 
 
-                if (!data.user.apartment_id) {
+                if (!data.user.apartment_id && data.user.role !== "admin") {
                     onInviteCode();
                 } else {
                     toast.custom(() => (
