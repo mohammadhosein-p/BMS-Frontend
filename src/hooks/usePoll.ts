@@ -80,6 +80,16 @@ export const useDeletePollByID = (
             showSuccessToast("نظرسنجی با موفقیت حذف شد");
             onSuccess();
         },
+
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            showErrorToast(
+                err.response?.data?.message || "خطا در حذف نظرسنجی",
+            );
+        },        
     });
 };
 
@@ -100,6 +110,15 @@ export const usePostVote = (apartment_id: string, poll_id: string) => {
 
             showSuccessToast("رای شما با موفقیت ثبت شد");
         },
+        onError: (error) => {
+            const err = error as AxiosError<{
+                message?: string;
+            }>;
+
+            showErrorToast(
+                err.response?.data?.message || "خطا در ثبت رای",
+            );
+        },
     });
 };
 
@@ -107,17 +126,25 @@ export const useDeleteVote = (apartment_id: string, poll_id: string) => {
     const queryClient = getQueryClient();
 
     return useMutation({
-        mutationFn: () => deleteVoteService(apartment_id, poll_id),
+      mutationFn: () => deleteVoteService(apartment_id, poll_id),
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["polls", apartment_id, poll_id],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ["polls", apartment_id],
-            });
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["polls", apartment_id, poll_id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["polls", apartment_id],
+        });
 
-            showSuccessToast("رای شما با موفقیت پس گرفته شد");
+        showSuccessToast("رای شما با موفقیت پس گرفته شد");
         },
+      
+      onError: (error) => {
+        const err = error as AxiosError<{
+          message?: string;
+        }>;
+
+        showErrorToast(err.response?.data?.message || "خطا در پس گرفتن رای");
+      },
     });
 };
