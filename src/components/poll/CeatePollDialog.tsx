@@ -58,10 +58,13 @@ export default function CreatePollDialog() {
     const { mutateAsync, isPending } = useCreatePoll(apartment_id);
 
     const onSubmit = async (data: CreatePollFormData) => {
+        const expire_time = new Date(
+            data.expires_at.getTime() + 1 * 60 * 60 * 1000,
+        ); // + 1 hour
         const payload: CreatePollBody = {
             title: data.title,
             description: data.description,
-            expires_at: new Date(data.expires_at).toISOString(),
+            expires_at: expire_time.toISOString(),
             is_votes_public: data.is_votes_public,
             options: data.options.map((option) => option.value),
         };
