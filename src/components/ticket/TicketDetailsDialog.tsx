@@ -18,6 +18,7 @@ import {
     ticketCategoryOptions,
     ticketStatusOptions,
 } from "@/utils/ticketMapping";
+import { changeProfileImageUrl } from "@/utils/formatProfileImage";
 
 interface Prop {
     id: string;
@@ -31,6 +32,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
 
     const { data } = useTicketDetails(id, isOpen);
     const { mutate: sendComment } = useCreateTicketComment();
+    console.log(data)
 
     const ticket = data?.data;
     const ticketStatusItem = ticketStatusOptions.find(
@@ -156,56 +158,51 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                     className="space-y-4 w-full text-right"
                                 >
                                     {ticket?.comments?.map((comment) => {
-                                        const isCommentOwner =
-                                            currentUser === comment.user_id;
+                                        const isCommentOwner = currentUser === comment.user_id;
                                         return (
                                             <div
                                                 key={comment.id}
-                                                className={`flex items-end w-full gap-3 ${
-                                                    isCommentOwner
-                                                        ? "flex-row"
-                                                        : "flex-row-reverse"
-                                                }`}
+                                                dir={isCommentOwner ? "rtl" : "ltr"}
+                                                className="flex items-end w-full gap-3"
                                             >
-                                                <div>
-                                                    <Avatar className="h-10 w-10 shrink-0">
+                                                <div className="shrink-0">
+                                                    <Avatar className="h-10 w-10">
                                                         <AvatarImage
-                                                            src={""}
+                                                            src={changeProfileImageUrl(comment.user.profile_image_url)}
                                                             className="h-full w-full object-cover"
                                                         />
-
                                                         <AvatarFallback
                                                             className={`
-                                                                flex h-full w-full items-center justify-center
-                                                                rounded-full text-xs font-bold text-white
-                                                                ${isCommentOwner ? "bg-secondary-blue-3" : "bg-neutral-3/80"}
-                                                            `}
+                            flex h-full w-full items-center justify-center
+                            rounded-full text-xs font-bold text-white
+                            ${isCommentOwner ? "bg-secondary-blue-3" : "bg-neutral-3/80"}
+                        `}
                                                         >
-                                                            {comment.user.first_name?.[0]?.toUpperCase()}
-                                                            {comment.user.last_name?.[0]?.toUpperCase()}
+                                                            {comment.user.first_name?.[0]?.toUpperCase() || ""}
+                                                            {comment.user.last_name?.[0]?.toUpperCase() || ""}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                 </div>
 
                                                 <div
-                                                    className={`w-fit max-w-[85%] rounded-2xl border px-3 py-2 shadow-sm ${
-                                                        isCommentOwner
+                                                    dir="rtl"
+                                                    className={`w-fit min-w-0 max-w-[80%] rounded-2xl border px-3 py-2 shadow-sm ${isCommentOwner
                                                             ? "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"
                                                             : "bg-white border-zinc-300 rounded-bl-none"
-                                                    }`}
+                                                        }`}
                                                 >
-                                                    <div className="mb-1 text-xs text-neutral-1 text-right">
+                                                    <div className="mb-1 text-xs text-neutral-1 text-right truncate">
                                                         {comment.user.username}
                                                     </div>
 
-                                                    <p className="text-sm text-zinc-800 md:text-base text-right">
+                                                    <p className="text-sm text-zinc-800 md:text-base text-right whitespace-pre-wrap break-words [word-break:keep-all] [overflow-wrap:anywhere] leading-relaxed">
                                                         {comment.body}
                                                     </p>
 
-                                                    <div className="mt-2 text-[10px] text-black text-left">
-                                                        {translateDate(
-                                                            comment.created_at,
-                                                        )}
+                                                    <div className="mt-2 text-[10px] text-zinc-400 text-left">
+                                                        {comment.created_at && !isNaN(Date.parse(comment.created_at))
+                                                            ? translateDate(comment.created_at)
+                                                            : "تاریخ نامشخص"}
                                                     </div>
                                                 </div>
                                             </div>
@@ -227,7 +224,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
 
                             {/* INPUT */}
-                            {ticket?.status !== "close" && (isManager || currentUser == ticket?.user_id) && (
+                            {ticket?.status !== "close" && (isManager || currentUser == ticket?.user_id || ticket?.accessibility === 'public') && (
                                 <div className="p-4 bg-white border-t border-zinc-100">
                                     <div className="flex items-end gap-2 w-full">
                                         <button

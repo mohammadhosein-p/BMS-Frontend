@@ -32,19 +32,19 @@ export default function RulesBody({ rules, onEdit, onDelete, isLoading, hasAdmin
 
     // Rules list
     return (
-    <div className="flex-1 overflow-y-auto pt-2 pb-2 pl-2 pr-1 space-y-3 custom-scrollbar -mt-2">
-        <AnimatePresence mode="popLayout">
-            {rules.map((rule, index) => (
-                <RuleItem 
-                    key={rule.id} 
-                    rule={rule}
-                    index={index}
-                    onEdit={onEdit} 
-                    onDelete={onDelete}
-                    hasAdminAccess={hasAdminAccess}
-                />
-            ))}
-        </AnimatePresence>
-    </div>
-);
+        <div className="flex-1 overflow-y-auto pt-2 pb-2 pl-2 pr-1 space-y-3 custom-scrollbar -mt-2 w-full max-w-full">
+            <AnimatePresence mode="popLayout">
+                {rules.map((rule, index) => (
+                    <RuleItem 
+                        key={rule.id} 
+                        rule={rule}
+                        index={index}
+                        onEdit={onEdit} 
+                        onDelete={onDelete}
+                        hasAdminAccess={hasAdminAccess}
+                    />
+                ))}
+            </AnimatePresence>
+        </div>
+    );
 }

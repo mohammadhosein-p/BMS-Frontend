@@ -23,33 +23,31 @@ export default function RuleItem({ rule, index, onEdit, onDelete, hasAdminAccess
                 ease: "easeOut",
                 delay: Math.min(index * 0.05, 0.3) 
             }}
-            className="flex flex-col md:flex-row-reverse md:items-center justify-between p-4 bg-white rounded-xl border border-neutral-200 shadow-sm hover:border-danger-2 transition-colors duration-200 group mb-2"
+            dir="rtl"
+            className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-xl border border-neutral-200 shadow-sm hover:border-danger-2 transition-colors duration-200 group mb-2 gap-4 w-full max-w-full overflow-hidden"
         >
-            
-            <div className="flex flex-row-reverse items-start md:items-center gap-4 w-full">
+            <div className="flex flex-row items-start md:items-center gap-4 flex-1 min-w-0 w-full">
                 
-                {/* Index circle */}
-                <div className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-bold text-xl shrink-0 ${!hasAdminAccess ? 'border-primary-3 text-primary-2' : 'border-danger-3 text-danger-2'}`}>
+                <div className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-bold text-xl shrink-0 border-danger-3 text-danger-2`}>
                     {translateNumber(index + 1)}
                 </div>
                 
-                {/* Rule content */}
-                <div className="flex flex-col w-full text-right">
-                    <div className="flex justify-end items-center gap-2 mb-1">
-                        <h3 className="font-bold text-neutral-800 text-base md:text-lg">
+                <div className="flex flex-col flex-1 min-w-0 text-right w-full">
+                    <div className="flex justify-start items-center gap-2 mb-1 w-full">
+                        <h3 className="font-bold text-neutral-800 text-base md:text-lg break-all whitespace-normal w-full">
                             {rule.title}
                         </h3>
                     </div>
                     
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-neutral-500 break-all whitespace-normal w-full">
                         {rule.description}
                     </p>
                 </div>
             </div>
 
-            {/* Action buttons - Only visible for admin/manager */}
+            {/* Action buttons */}
             {hasAdminAccess && (
-                <div className="flex items-center justify-start md:justify-end gap-1 shrink-0 mt-4 md:mt-0 w-full md:w-auto md:mr-8">
+                <div className="flex items-center justify-end md:justify-end gap-1 shrink-0 mt-4 md:mt-0 w-full md:w-auto md:mr-4">
                     <CustomButton
                         variant="success2"
                         styleType="outline"
