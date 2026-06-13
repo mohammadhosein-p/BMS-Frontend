@@ -1,9 +1,10 @@
 import ManagerUsers from "@/pages/home/ManagerUsers";
 import TicketTab from "@/pages/home/TicketTab";
-import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon } from "lucide-react";
+import { Megaphone, Vote, Ticket, Users, Scale, type LucideIcon, Building } from "lucide-react";
 import PollTab from "@/pages/home/PollTab";
 import RulesTab from "@/pages/home/RulesTab";
 import AnnouncementTab from "@/pages/home/announcementTab.tsx";
+import UnitTab from "@/pages/home/UnitTab";
 
 export const homeItems: {
     path: string;
@@ -70,5 +71,16 @@ export const homeItems: {
             text_color: "text-[var(--danger-3)]",
             roles: ["admin" ,"manager", "resident"],
             component: <RulesTab/>,
+        },
+        {
+            path: "units",
+            title: "واحدها",
+            subtitle: "مدیریت واحدها",
+            icon: Building,
+            color: "from-[var(--secondary-green-2)] to-[var(--secondary-green-1)]",
+            border_color: "border-[var(--secondary-green-1)]",
+            text_color: "text-[var(--secondary-green-1)]",
+            roles: ["admin" ,"manager"],
+            component: <UnitTab/>,
         },
     ];

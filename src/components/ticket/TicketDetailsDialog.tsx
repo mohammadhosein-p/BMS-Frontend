@@ -168,7 +168,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                 <div className="shrink-0">
                                                     <Avatar className="h-10 w-10">
                                                         <AvatarImage
-                                                            src={changeProfileImageUrl(comment.user.profile_image_url)}
+                                                            src={changeProfileImageUrl(comment.user.profile_image_url) || undefined}
                                                             className="h-full w-full object-cover"
                                                         />
                                                         <AvatarFallback
