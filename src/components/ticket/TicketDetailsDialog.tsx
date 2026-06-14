@@ -85,7 +85,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                         {/* HEADER */}
                         <div className="mb-3 sm:mt-6 flex flex-col items-center gap-4 text-center md:flex-row md:items-start md:gap-4 md:text-right">
                             <div
-                                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl  md:h-24 md:w-24 ${ticketCategoryItem?.bgClass}`}
+                                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl md:h-24 md:w-24 ${ticketCategoryItem?.bgClass}`}
                             >
                                 <TicketIcon
                                     className={`h-10 w-10 text-[#9a6b00] md:h-14 md:w-14 ${ticketCategoryItem?.textClass}`}
@@ -93,24 +93,24 @@ export default function TicketDetailsDialog({ id }: Prop) {
                             </div>
 
                             <div className="flex-1 w-full flex flex-col items-center md:items-start gap-2">
-                                <DialogHeader className="mb-0 gap-0 w-full">
+                                <DialogHeader className="mb-0 gap-0 w-full text-center md:text-right">
                                     <div className="flex items-center justify-center md:justify-start gap-2">
-                                        <DialogTitle className="text-xl font-bold md:text-2xl text-zinc-900">
+                                        <DialogTitle className="text-xl font-bold md:text-2xl text-zinc-900 text-center md:text-right">
                                             {ticket?.title}
                                         </DialogTitle>
 
                                         {ticket?.accessibility === "public" ? (
-                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3 shrink-0">
                                                 <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
                                             </div>
                                         ) : (
-                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-danger-3">
+                                            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-danger-3 shrink-0">
                                                 <ShieldClose className="h-4 w-4 text-danger-3" />
                                             </div>
                                         )}
                                     </div>
 
-                                    <DialogDescription className="text-sm text-zinc-600 md:text-base mt-1">
+                                    <DialogDescription className="text-sm text-zinc-600 md:text-base mt-1 text-center md:text-right block w-full">
                                         {ticket?.description}
                                     </DialogDescription>
                                 </DialogHeader>
@@ -187,8 +187,8 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                                 <div
                                                     dir="rtl"
                                                     className={`w-fit min-w-0 max-w-[80%] rounded-2xl border px-3 py-2 shadow-sm ${isCommentOwner
-                                                            ? "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"
-                                                            : "bg-white border-zinc-300 rounded-bl-none"
+                                                        ? "border-secondary-blue-2 bg-secondary-blue-5 rounded-br-none"
+                                                        : "bg-white border-zinc-300 rounded-bl-none"
                                                         }`}
                                                 >
                                                     <div className="mb-1 text-xs text-neutral-1 text-right truncate">
@@ -244,6 +244,7 @@ export default function TicketDetailsDialog({ id }: Prop) {
                                             onChange={(e) =>
                                                 setText(e.target.value)
                                             }
+                                            withEmoji={true}
                                             containerClassName="flex-1"
                                         />
                                     </div>

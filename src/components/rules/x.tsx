@@ -28,7 +28,7 @@ export default function RulesHeader({ info, onOpenMakeRule, isLoading, hasAdminA
     return (
         <div
             dir="rtl"
-            className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 bg-[#f8f8f8] p-4 rounded-2xl border border-neutral-200/60 shrink-0"
+            className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 bg-[#f8f8f8] p-4 rounded-2xl border border-neutral-200/60 w-full shrink-0"
         >
             <div className="flex flex-col gap-3 w-full md:w-auto text-right">
                 <h1 className="text-xl md:text-2xl font-black text-neutral-800 text-center md:text-right">

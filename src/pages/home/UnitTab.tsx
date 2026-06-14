@@ -28,7 +28,7 @@ function UnitsHeader({ onOpenCreateUnit, hasAdminAccess }: UnitsHeaderProps) {
                         variant="green"
                         icon={PlusCircle}
                         onClick={onOpenCreateUnit}
-                        className="shadow-sm px-4 py-2.5 cursor-pointer flex items-center gap-2 text-sm font-bold rounded-xl"
+                        className="px-4 py-2.5 cursor-pointer"
                     >
                         ثبت واحد جدید
                     </CustomButton>

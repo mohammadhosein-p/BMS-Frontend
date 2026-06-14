@@ -1,10 +1,17 @@
-import React, { type ReactNode, useState } from "react";
+import React, { type ReactNode, useState, useRef } from "react";
 import { cn } from "../../lib/utils";
 import { Input } from "./input";
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Smile } from 'lucide-react';
 
 type FieldVariant = "default" | "success" | "error" | "disabled";
 type Direction = "rtl" | "ltr";
+
+const POPULAR_EMOJIS = [
+  "😂", "❤️", "🤣", "👍", "😭", "🙏", "😘", "🥰", "😍", "😊",
+  "🎉", "😁", "💕", "🥺", "😅", "🔥", "☺️", "🤦‍♂️", "🤦‍♀️", "🤷‍♂️",
+  "🌹", "🤔", "👏", "💘", "👌", "😜", "😎", "✨", "💙", "🌸",
+  "👀", "🙄", "📢", "🙌", "💔", "😑", "👑", "✔️", "💯", "🚀",
+];
 
 interface CustomFieldProps
   extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -15,6 +22,7 @@ interface CustomFieldProps
   containerClassName?: string;
   direction?: Direction; 
   as?: "input" | "textarea";
+  withEmoji?: boolean;
 }
 
 const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, CustomFieldProps>(
@@ -29,13 +37,19 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
       type,
       direction = "rtl", 
       as = "input", 
+      withEmoji = false,
+      onChange,
       ...props
     },
     ref
   ) => {
     const [isVisible, setIsVisible] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const internalRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
     const isPassword = type === "password";
     const isRtl = direction === "rtl";
+    const hasSuffix = isPassword || suffixIcon || withEmoji;
 
     const variantStyles: Record<FieldVariant, string> = {
       default: "border-neutral-4 bg-neutral-5 text-neutral-1",
@@ -57,7 +71,7 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
       variantStyles[variant],
       
       isRtl ? (icon ? "pr-10" : "pr-4") : (icon ? "pl-10" : "pl-4"),
-      isRtl ? ((isPassword || suffixIcon) ? "pl-12" : "pl-4") : ((isPassword || suffixIcon) ? "pr-12" : "pr-4"),
+      isRtl ? (hasSuffix ? "pl-12" : "pl-4") : (hasSuffix ? "pr-12" : "pr-4"),
       
       "text-right",
       !isRtl && "text-left",
@@ -65,11 +79,43 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
       className
     );
 
+    // مدیریت کلیک روی اموجی و درج هوشمند آن
+    const handleEmojiSelect = (emoji: string) => {
+      const input = internalRef.current;
+      if (!input) return;
+
+      const start = input.selectionStart ?? 0;
+      const end = input.selectionEnd ?? 0;
+      const text = input.value;
+      
+      const newText = text.substring(0, start) + emoji + text.substring(end);
+      input.value = newText;
+
+      if (onChange) {
+        const event = {
+          target: input,
+          currentTarget: input
+        } as React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>;
+        onChange(event);
+      }
+
+      input.focus();
+      setTimeout(() => {
+        input.setSelectionRange(start + emoji.length, start + emoji.length);
+      }, 0);
+    };
+
+    const setRef = (node: HTMLInputElement & HTMLTextAreaElement) => {
+      internalRef.current = node;
+      if (typeof ref === "function") {
+        ref(node);
+      } else if (ref) {
+        (ref as React.MutableRefObject<HTMLInputElement | HTMLTextAreaElement | null>).current = node;
+      }
+    };
+
     return (
-      <div
-        className={cn("w-full space-y-1.5", containerClassName)}
-        dir={direction}
-      >
+      <div className={cn("w-full space-y-1.5 z-0", containerClassName)} dir={direction}>
         {label && (
           <label className={cn(
             "block text-sm font-iranyekan font-medium text-neutral-2",
@@ -92,23 +138,25 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
 
           {as === "textarea" ? (
             <textarea
-              ref={ref as any}
+              ref={setRef}
               disabled={variant === "disabled" || props.disabled}
               className={sharedClassName}
+              onChange={onChange}
               {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
             />
           ) : (
             <Input
-              ref={ref as any}
+              ref={setRef}
               type={inputType}
               disabled={variant === "disabled" || props.disabled}
               className={sharedClassName}
+              onChange={onChange}
               {...props}
             />
           )}
 
           <div className={cn(
-            "absolute inset-y-0 flex items-center justify-center w-12",
+            "absolute inset-y-0 flex items-center justify-center w-12 z-20",
             isRtl ? "left-0" : "right-0",
             as === "textarea" && "top-3 bottom-auto" 
           )}>
@@ -119,7 +167,17 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
                 className='w-full h-full text-neutral-3/70 hover:text-neutral-1 flex items-center justify-center transition-colors'
               >
                 {isVisible ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
-                <span className='sr-only'>{isVisible ? 'Hide password' : 'Show password'}</span>
+              </button>
+            ) : withEmoji ? (
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className={cn(
+                  'w-full h-full cursor-pointer flex items-center justify-center transition-all duration-200 hover:scale-110',
+                  showEmojiPicker ? 'text-primary-1' : 'text-neutral-3/70 hover:text-neutral-1'
+                )}
+              >
+                <Smile size={20} />
               </button>
             ) : (
               suffixIcon && (
@@ -129,6 +187,34 @@ const CustomField = React.forwardRef<HTMLInputElement & HTMLTextAreaElement, Cus
               )
             )}
           </div>
+
+          {withEmoji && showEmojiPicker && (
+            <>
+              <div className="fixed inset-0 z-30 " onClick={() => setShowEmojiPicker(false)} />
+              <div className={cn(
+                "absolute z-40 w-64 bg-neutral-6 border border-neutral-4/60 rounded-2xl shadow-xl p-3 animate-in fade-in zoom-in-95 duration-150",
+                "bottom-full mb-2.5", 
+                isRtl ? "left-0" : "right-0"
+              )}>
+                <div className="text-[11px] font-medium text-neutral-3/80 mb-2 px-1 select-none text-right">
+                  اموجی‌های پرکاربرد
+                </div>
+                
+                <div className="grid grid-cols-8 max-h-40 overflow-y-auto custom-scrollbar justify-items-center">
+                  {POPULAR_EMOJIS.map((emoji, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleEmojiSelect(emoji)}
+                      className="w-7 h-7 flex items-center justify-center text-lg rounded-lg hover:bg-neutral-200 transition-colors duration-100 select-none active:scale-90"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
