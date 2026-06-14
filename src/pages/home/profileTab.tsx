@@ -4,6 +4,7 @@ import useAuthStore from "@/store/useAuthStore";
 
 export default function ProfileTab() {
     const { user } = useAuthStore();
+    console.log("Rendering ProfileTab with user:", user);
 
     if (!user) {
         return (

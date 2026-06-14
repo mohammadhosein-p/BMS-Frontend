@@ -38,6 +38,11 @@ interface Prop {
         | "cleaning"
         | "parking"
         | "other";
+    ticketFetchProps: {
+        data: any;
+        isLoading: boolean;
+        isError: boolean;
+    };
 }
 
 const containerVariants = {
