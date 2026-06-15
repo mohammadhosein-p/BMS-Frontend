@@ -1,11 +1,12 @@
 import CustomButton from "@/components/ui/CustomeButton.tsx";
-import { Pin, Trash2 } from "lucide-react";
+import { Calendar, Pin } from "lucide-react";
 import { useState } from "react";
 import { AnnouncementDetails } from "./AnnouncementDetails";
-import { motion } from "framer-motion";
 import type { Announcement } from "@/types/announcementTypes";
 import { useDeleteAnnouncement } from "@/hooks/useAnnouncement";
 import useAuthStore from "@/store/useAuthStore";
+import { DeleteButton } from "../ui/TrashButton";
+import { translateDate } from "@/utils/translateDate";
 
 const orderColorMap: Record<string, string> = {
   very_important: "bg-red-400",
@@ -31,29 +32,36 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
 
   return (
     <>
-      <div className="flex flex-row gap-2 bg-white shadow-lg rounded-2xl overflow-hidden">
+      <div className="flex flex-row bg-white shadow-lg rounded-2xl overflow-hidden">
         <div className={`w-2 md:w-5 ${orderColorMap[announcement.order]}`} />
 
         <div className="flex flex-col gap-1 px-2 md:px-4 py-2 flex-1 min-w-0">
-          <div className="flex flex-row gap-2 items-center">
-            {announcement.is_pinned && <Pin className="w-4 h-4 text-gray-600" />}
-            <p className="font-semibold">{announcement.title}</p>
+          <div className="group flex flex-row items-center gap-2.5">
+            {announcement.is_pinned && (
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 transition-transform duration-300 group-hover:scale-110">
+                <Pin className="h-3.5 w-3.5 rotate-45" />
+              </div>
+            )}
+            <p className="font-semibold text-slate-800 transition-colors duration-20">
+              {announcement.title}
+            </p>
           </div>
           <p className="text-gray-600 line-clamp-1 text-sm">{announcement.body}</p>
-          <p className="text-xs md:text-sm text-gray-500">{new Date(announcement.created_at).toLocaleDateString("fa-IR")}</p>
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
+            <Calendar className="h-3.5 w-3.5 stroke-[1.5]" />
+            <span className="font-medium tracking-wide">
+              {translateDate(announcement.created_at)}
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-center p-2 md:pl-4 gap-2">
           {isManager && (
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onDeleteClick}
-            className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
-          >
-            <Trash2 size={16} className="text-danger-2" />
-          </motion.button>
+            <DeleteButton
+              onDelete={onDeleteClick}
+              className="bg-white p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
+              variant="outline"
+            />
           )}
           <CustomButton variant="primary" styleType="outline" onClick={onDetailClick}>
             <span className="hidden sm:inline">مشاهده جزئیات</span>

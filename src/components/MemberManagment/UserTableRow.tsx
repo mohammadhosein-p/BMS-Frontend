@@ -1,11 +1,11 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Trash2, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { translateDate } from '@/utils/translateDate';
 import { translateNumber } from '@/utils/translateNumber';
 import type { UserInManagement } from '@/services/userManagmentService';
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 import { changeProfileImageUrl } from '@/utils/formatProfileImage';
+import { DeleteButton } from '../ui/TrashButton';
 
 interface UserTableRowProps {
     user: UserInManagement;
@@ -58,16 +58,10 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete }) =>
 
             <td className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center gap-3">
-                    <motion.button
-                        type="button"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={onDelete}
-                        className="bg-white border border-red-200/60 p-2.5 rounded-lg text-red-500 flex items-center justify-center transition-colors hover:bg-red-100/70 cursor-pointer shadow-sm"
-                        title="حذف کاربر"
-                    >
-                        <Trash2 size={18} />
-                    </motion.button>
+                    <DeleteButton
+                        onDelete={onDelete}
+                        className="p-2 rounded-lg flex items-center justify-center transition-colors duration-200"
+                    />
                 </div>
             </td>
         </tr>

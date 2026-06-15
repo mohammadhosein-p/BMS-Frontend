@@ -31,7 +31,7 @@ function PollTab() {
                 {isAdmin ? <CreatePollDialog /> : <div />}
 
                 <h1 className="text-right text-2xl font-extrabold text-neutral-1 sm:text-3xl">
-                    {activePolls.length > 0 ? "نظرسنجی های فعال" : "نظر سنجی"}
+                    {activePolls.length > 0 ? "نظرسنجی های فعال" : "نظرسنجی"}
                 </h1>
             </div>
 

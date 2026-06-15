@@ -1,4 +1,4 @@
-import { ShieldClose, ShieldUser, Trash2, Wrench } from "lucide-react";
+import { ShieldClose, ShieldUser, Wrench } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TicketDetailsDialog from "./TicketDetailsDialog";
 import useAuthStore from "@/store/useAuthStore";
@@ -14,6 +14,7 @@ import {
     ticketCategoryOptions,
     ticketStatusOptions,
 } from "@/utils/ticketMapping";
+import { DeleteButton } from "../ui/TrashButton";
 
 interface UiTicket {
     id: string;
@@ -30,14 +31,14 @@ interface UiTicket {
 interface Prop {
     filterState: "all" | "closed" | "in-progress";
     categoryFilter:
-        | "all"
-        | "maintenance"
-        | "plumbing"
-        | "electricity"
-        | "security"
-        | "cleaning"
-        | "parking"
-        | "other";
+    | "all"
+    | "maintenance"
+    | "plumbing"
+    | "electricity"
+    | "security"
+    | "cleaning"
+    | "parking"
+    | "other";
     ticketFetchProps: {
         data: any;
         isLoading: boolean;
@@ -97,14 +98,14 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
             ticket.status === "open"
                 ? "باز"
                 : ticket.status === "in-progress"
-                  ? "در حال بررسی"
-                  : "بسته شده",
+                    ? "در حال بررسی"
+                    : "بسته شده",
         statusColor:
             ticket.status === "open"
                 ? "bg-green-100 text-green-700"
                 : ticket.status === "in-progress"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-red-100 text-red-700",
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-red-100 text-red-700",
 
         isPublic: ticket.accessibility === "public",
     }));
@@ -198,15 +199,20 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                     {/* Title & Date */}
                                     <div className="min-w-0">
                                         <div className="flex gap-2 items-center">
-                                            {ticket.isPublic ? (
-                                                <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-secondary-blue-3">
-                                                    <ShieldUser className="h-4 w-4 text-secondary-blue-3" />
-                                                </div>
-                                            ) : (
-                                                <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-danger-3">
-                                                    <ShieldClose className="h-4 w-4 text-danger-3" />
-                                                </div>
-                                            )}
+                                            <div className="group relative flex items-center justify-center">
+                                                {ticket.isPublic ? (
+                                                    <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-secondary-blue-3/10 border border-secondary-blue-3/30 text-secondary-blue-3 transition-all duration-300 group-hover:bg-secondary-blue-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-secondary-blue-3/20">
+                                                        <ShieldUser className="h-4 w-4" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-danger-3/5 border border-danger-3/30 text-danger-3 transition-all duration-300 group-hover:bg-danger-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-danger-3/20">
+                                                        <ShieldClose className="h-4 w-4" />
+                                                    </div>
+                                                )}
+                                                <span className="pointer-events-none absolute bottom-full mb-1 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                                    {ticket.isPublic ? "تیکت عمومی" : "تیکت خصوصی"}
+                                                </span>
+                                            </div>
 
                                             <h3 className="truncate font-bold text-neutral-1">
                                                 {ticket.title}
@@ -306,20 +312,12 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                 {/* Actions */}
                                 <div className="flex flex-2 justify-end items-center gap-2">
                                     {ticket.user_id === user_id && (
-                                        <motion.button
-                                            type="button"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() =>
-                                                deleteTicket(ticket.id)
-                                            }
-                                            className="bg-white border-2 p-2 rounded-lg text-danger-2 border-danger-3 flex items-center justify-center transition-colors duration-200"
-                                        >
-                                            <Trash2
-                                                size={18}
-                                                className="text-danger-2"
-                                            />
-                                        </motion.button>
+                                        <DeleteButton
+                                            onDelete={() => deleteTicket(ticket.id)}
+                                            className="w-10 h-10 rounded-lg cursor-pointer"
+                                            variant="outline"
+                                        />
+
                                     )}
 
                                     <div className="flex-1 md:flex-none">

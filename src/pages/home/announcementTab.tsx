@@ -15,7 +15,7 @@ export default function AnnouncementTab() {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 min-h-0 mx-2 mb-2 md:mx-4 md:mb-4 bg-gray-200 rounded-xl overflow-hidden">
-        <div className="h-full overflow-y-auto custom-scrollbar p-2 md:p-4 space-y-3 md:space-y-4">
+        <div className="h-full overflow-y-auto custom-scrollbar p-2 md:p-4 space-y-3 md:space-y-3">
           {data?.announcements?.map((an: Announcement) => (
             <AnnouncementCard key={an.id} announcement={an} />
           ))}
