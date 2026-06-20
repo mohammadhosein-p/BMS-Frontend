@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Phone, Mail, Hash, Trash2 } from 'lucide-react';
+import { Calendar, Phone, Mail, Hash, Trash2, Info } from 'lucide-react';
 import { translateDate } from '@/utils/translateDate';
 import { translateNumber } from '@/utils/translateNumber';
 import type { UserInManagement } from '@/services/userManagmentService';
@@ -12,9 +12,10 @@ import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 interface UserCardProps {
     user: UserInManagement;
     onDelete: () => void;
+    onViewDetails?: () => void;
 }
 
-export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
+export const UserCard: React.FC<UserCardProps> = ({ user, onDelete, onViewDetails }) => {
     return (
         <motion.div
             layout
@@ -62,17 +63,30 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
                 </div>
             </div>
 
-            <div className="flex justify-end mt-3 pt-3 border-t border-gray-100">
+            <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                {onViewDetails && (
+                    <CustomButton
+                        type="button"
+                        variant="primary"
+                        styleType="soft"
+                        icon={Info}
+                        onClick={onViewDetails}
+                        className="flex-1 text-xs font-semibold cursor-pointer"
+                        title="مشاهده جزئیات"
+                    >
+                        جزئیات
+                    </CustomButton>
+                )}
                 <CustomButton
                     type="button"
                     variant="danger"
                     styleType="soft"
                     icon={Trash2}
                     onClick={onDelete}
-                    className="w-full sm:w-auto text-xs font-semibold cursor-pointer"
+                    className="flex-1 text-xs font-semibold cursor-pointer"
                     title="حذف این عضو"
                 >
-                    حذف این عضو
+                    حذف عضو
                 </CustomButton>
             </div>
         </motion.div>

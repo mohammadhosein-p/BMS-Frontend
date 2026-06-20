@@ -6,13 +6,15 @@ import type { UserInManagement } from '@/services/userManagmentService';
 import DefaultProfileImg from "@/assets/profile/defaultProfile.jpg";
 import { changeProfileImageUrl } from '@/utils/formatProfileImage';
 import { DeleteButton } from '../ui/TrashButton';
+import { DetailsButton } from '../ui/DetailsButton';
 
 interface UserTableRowProps {
     user: UserInManagement;
     onDelete: () => void;
+    onViewDetails?: () => void;
 }
 
-export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete }) => {
+export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete, onViewDetails }) => {
     return (
         <tr className="bg-white hover:bg-gray-50/80 transition-colors border-b border-gray-100 last:border-0">
             <td className="px-6 py-4 whitespace-nowrap text-center w-1/4 max-w-62.5">
@@ -58,9 +60,13 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({ user, onDelete }) =>
 
             <td className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center gap-3">
+                    {onViewDetails && (
+                        <DetailsButton
+                            onClick={onViewDetails}
+                        />
+                    )}
                     <DeleteButton
                         onDelete={onDelete}
-                        className="p-2 rounded-lg flex items-center justify-center transition-colors duration-200"
                     />
                 </div>
             </td>

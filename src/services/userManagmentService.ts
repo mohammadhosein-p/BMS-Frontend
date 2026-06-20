@@ -35,7 +35,6 @@ export interface ApartmentData {
 }
 
 export interface RemoveUserFromUnitParams {
-    apartment_id: string;
     unit_id: string;
 }
 
@@ -45,12 +44,11 @@ export const getApartmentUsers = async (apartment_id: string): Promise<ApiRespon
     });
 };
 
-export const removeUserFromUnitService = async ({ 
-    apartment_id, 
-    unit_id 
+export const removeUserFromUnitService = async ({
+    unit_id
 }: RemoveUserFromUnitParams): Promise<ApiResponse<any>> => {
     return patchData({
-        endPoint: `/apartments/${apartment_id}/units/${unit_id}`,
+        endPoint: `/apartments/units/${unit_id}`,
         data: {},
     });
 };
