@@ -13,13 +13,13 @@ function PollTab() {
     const [currentTime, setCurrentTime] = useState(Date.now());
 
     const activePolls =
-        data?.data.filter(
+        data?.data?.filter(
             (poll) =>
                 new Date(poll.expires_at).getTime() > currentTime - 1 * 60 * 1000 + 1 * 60 * 60 * 1000, // - 1 minute + 1 hour
         ) ?? [];
 
     const finishedPolls =
-        data?.data.filter(
+        data?.data?.filter(
             (poll) =>
                 new Date(poll.expires_at).getTime() <= currentTime - 1 * 60 * 1000 + 1 * 60 * 60 * 1000, // - 1 minute + 1 hour
         ) ?? [];

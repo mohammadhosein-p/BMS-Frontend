@@ -15,6 +15,8 @@ import {
     ticketStatusOptions,
 } from "@/utils/ticketMapping";
 import { DeleteButton } from "../ui/TrashButton";
+import TicketDeleteConfirm from "./TicketDeleteConfirm";
+import { useState } from "react";
 
 interface UiTicket {
     id: string;
@@ -73,6 +75,8 @@ const itemVariants = {
 function TicketTable({ filterState, categoryFilter }: Prop) {
     const isManager = useAuthStore((store) => store.user?.role === "manager");
     const user_id = useAuthStore((store) => store.user?.id);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+    const [deleteTicketId, setDeleteTicketId] = useState<string>('')
 
     const apiParams = {
         status: filterState === "all" ? undefined : filterState,
@@ -148,6 +152,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
     }
 
     return (
+        <>
         <div className="flex-1 overflow-hidden rounded-lg border border-neutral-4 bg-white relative">
             <motion.div
                 variants={containerVariants}
@@ -188,7 +193,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                             />
                                         ) : (
                                             <Wrench
-                                                className="
+                                            className="
                                                     h-7 w-7 sm:h-8 sm:w-8
                                                     text-secondary-blue-3
                                                 "
@@ -255,7 +260,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                         </div>
                                     ) : (
                                         <div
-                                            className={`
+                                        className={`
                                                 rounded-full px-3 py-1
                                                 text-xs font-bold
                                                 ${ticket.statusColor}
@@ -313,7 +318,8 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                 <div className="flex flex-2 justify-end items-center gap-2">
                                     {ticket.user_id === user_id && (
                                         <DeleteButton
-                                            onDelete={() => deleteTicket(ticket.id)}
+                                            // onDelete={() => deleteTicket(ticket.id)}
+                                            onDelete={() => { setIsDeleteModalOpen(true);  setDeleteTicketId(ticket.id)}}
                                             className="w-10 h-10 rounded-lg cursor-pointer"
                                             variant="outline"
                                         />
@@ -335,7 +341,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="flex flex-col items-center justify-center py-16 text-center"
-                    >
+                        >
                         <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-neutral-5 text-neutral-3">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -344,7 +350,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                                 strokeWidth={1.8}
-                            >
+                                >
                                 <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -366,6 +372,12 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                 )}
             </motion.div>
         </div>
+        <TicketDeleteConfirm
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={() => deleteTicket(deleteTicketId)}
+        />
+        </>
     );
 }
 
