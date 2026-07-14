@@ -5,7 +5,7 @@ import { useState, useMemo } from "react";
 import ErrorMessage from "../ui/SignUp-Login/ErrorMessage";
 import { useMutation } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
-import { validateInviteCode } from "@/services/authService";
+import { validateInviteCode, refreshTokenRequest } from "@/services/authService";
 import { toast } from "sonner";
 import CustomToast from "../Custom/CustomToast";
 import type { ApiResponse } from "@/types/authTypes";
@@ -34,6 +34,34 @@ export const BuildingInviteCode = ({ onSuccess, onBack }: BuildingInviteCodeProp
                 console.log("استور با موفقیت آپدیت شد");
             } else {
                 console.warn("دیتا از سرور دریافت شد اما فیلدهای آپارتمان یا واحد ناقص هستند. ساختار ساختار دریافتی:", response);
+            }
+
+            // Refresh tokens and update auth store using the refresh token API
+            try {
+                const currentRefreshToken = useAuthStore.getState().refresh_token;
+                if (currentRefreshToken) {
+                    const refreshResponse = await refreshTokenRequest(currentRefreshToken);
+                    const newAccess = refreshResponse.data.access_token;
+                    const newRefresh = refreshResponse.data.refresh_token;
+
+                    const currentUser = useAuthStore.getState().user;
+                    if (currentUser) {
+                        const updatedUser = (refreshResponse.data as any).user || {
+                            ...currentUser,
+                            apartment_id: innerData?.apartment_id || currentUser.apartment_id,
+                            unit_id: innerData?.unit_id || currentUser.unit_id,
+                        };
+
+                        useAuthStore.getState().setAuth({
+                            user: updatedUser,
+                            access_token: newAccess,
+                            refresh_token: newRefresh,
+                        });
+                        console.log("توکن‌ها با موفقیت رفرش و آپدیت شدند");
+                    }
+                }
+            } catch (error) {
+                console.error("خطا در رفرش کردن توکن پس از تایید کد دعوت:", error);
             }
 
             toast.custom(() => (
