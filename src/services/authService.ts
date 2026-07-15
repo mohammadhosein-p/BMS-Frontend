@@ -65,3 +65,9 @@ export const checkPhoneExistsService = async (payload: CheckPhonePayload): Promi
         data: payload,
     });
 };
+
+export const getWhoAmI = async (): Promise<User> => {
+  return getData({
+    endPoint: `/user/me`,
+  });
+};
