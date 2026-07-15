@@ -18,7 +18,7 @@ export const homeItems: {
     component: React.ReactNode;
 }[] = [
         {
-            path: "announcement",
+            path: "",
             title: "اطلاعیه‌ها",
             subtitle: "مدیریت اطلاعیه‌ها",
             icon: Megaphone,
