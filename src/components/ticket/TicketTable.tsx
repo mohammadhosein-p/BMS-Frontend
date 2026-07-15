@@ -316,7 +316,7 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
 
                                 {/* Actions */}
                                 <div className="flex flex-2 justify-end items-center gap-2">
-                                    {ticket.user_id === user_id && (
+                                    {(ticket.user_id === user_id || isManager) && (
                                         <DeleteButton
                                             // onDelete={() => deleteTicket(ticket.id)}
                                             onDelete={() => { setIsDeleteModalOpen(true);  setDeleteTicketId(ticket.id)}}
