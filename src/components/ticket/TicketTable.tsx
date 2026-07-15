@@ -168,169 +168,161 @@ function TicketTable({ filterState, categoryFilter }: Prop) {
                         const TicketIcon = ticketCategoryItem?.icon;
 
                         return (
-                            <motion.div
-                                key={ticket.id}
-                                variants={itemVariants as any}
-                                className="flex flex-col gap-4 p-4 transition hover:bg-neutral-5/60 sm:flex-row-reverse sm:items-center sm:gap-4 sm:px-6 sm:py-4 bg-white"
-                            >
-                                {/* Right Section */}
-                                <div className="flex flex-3 flex-row-reverse items-center gap-4 min-w-0 text-right">
-                                    {/* Icon */}
-                                    <div
-                                        className={`
+                          <motion.div
+                            key={ticket.id}
+                            variants={itemVariants as any}
+                            className="flex flex-col gap-4 p-4 transition hover:bg-neutral-5/60 sm:flex-row-reverse sm:items-center sm:gap-4 sm:px-6 sm:py-4 bg-white"
+                          >
+                            {/* Right Section */}
+                            <div className="flex flex-3 flex-row-reverse items-center gap-4 min-w-0 text-right">
+                              {/* Icon */}
+                              <div
+                                className={`
                                             flex h-14 w-14 sm:h-16 sm:w-16
                                             shrink-0 items-center justify-center
                                             rounded-2xl
                                             ${ticketCategoryItem?.bgClass}
                                         `}
-                                    >
-                                        {TicketIcon ? (
-                                            <TicketIcon
-                                                className={`
+                              >
+                                {TicketIcon ? (
+                                  <TicketIcon
+                                    className={`
                                                     h-7 w-7 sm:h-8 sm:w-8
                                                     ${ticketCategoryItem.textClass}
                                                 `}
-                                            />
-                                        ) : (
-                                            <Wrench
-                                            className="
+                                  />
+                                ) : (
+                                  <Wrench
+                                    className="
                                                     h-7 w-7 sm:h-8 sm:w-8
                                                     text-secondary-blue-3
                                                 "
-                                            />
-                                        )}
-                                    </div>
+                                  />
+                                )}
+                              </div>
 
-                                    {/* Title & Date */}
-                                    <div className="min-w-0">
-                                        <div className="flex gap-2 items-center">
-                                            <div className="group relative flex items-center justify-center">
-                                                {ticket.isPublic ? (
-                                                    <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-secondary-blue-3/10 border border-secondary-blue-3/30 text-secondary-blue-3 transition-all duration-300 group-hover:bg-secondary-blue-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-secondary-blue-3/20">
-                                                        <ShieldUser className="h-4 w-4" />
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-danger-3/5 border border-danger-3/30 text-danger-3 transition-all duration-300 group-hover:bg-danger-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-danger-3/20">
-                                                        <ShieldClose className="h-4 w-4" />
-                                                    </div>
-                                                )}
-                                                <span className="pointer-events-none absolute bottom-full mb-1 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                                    {ticket.isPublic ? "تیکت عمومی" : "تیکت خصوصی"}
-                                                </span>
-                                            </div>
+                              {/* Title & Date */}
+                              <div className="min-w-0">
+                                <div className="flex gap-2 items-center">
+                                  <div className="group relative flex items-center justify-center">
+                                    {ticket.isPublic ? (
+                                      <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-secondary-blue-3/10 border border-secondary-blue-3/30 text-secondary-blue-3 transition-all duration-300 group-hover:bg-secondary-blue-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-secondary-blue-3/20">
+                                        <ShieldUser className="h-4 w-4" />
+                                      </div>
+                                    ) : (
+                                      <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-danger-3/5 border border-danger-3/30 text-danger-3 transition-all duration-300 group-hover:bg-danger-3 group-hover:text-white group-hover:shadow-lg group-hover:shadow-danger-3/20">
+                                        <ShieldClose className="h-4 w-4" />
+                                      </div>
+                                    )}
+                                    <span className="pointer-events-none absolute bottom-full mb-1 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                      {ticket.isPublic ? "تیکت عمومی" : "تیکت خصوصی"}
+                                    </span>
+                                  </div>
 
-                                            <h3 className="truncate font-bold text-neutral-1">
-                                                {ticket.title}
-                                            </h3>
-                                        </div>
-
-                                        <p className="mt-1 text-sm text-neutral-3">
-                                            {translateDate(ticket.date)}
-                                        </p>
-                                    </div>
+                                  <h3 className="truncate font-bold text-neutral-1 wrap-anywhere max-w-[15vw]">{ticket.title}</h3>
                                 </div>
 
-                                {/* Mobile Info */}
-                                <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
-                                    {/* {isManager && (
+                                <p className="mt-1 text-sm text-neutral-3">{translateDate(ticket.date)}</p>
+                              </div>
+                            </div>
+
+                            {/* Mobile Info */}
+                            <div className="flex flex-wrap items-center justify-around gap-2 sm:hidden">
+                              {/* {isManager && (
                                     <div className="text-sm font-medium text-neutral-2">
                                         {ticket.unit}
                                     </div>
                                 )} */}
-                                    <div className="text-sm font-medium text-neutral-2">
-                                        {ticketCategoryItem?.label ||
-                                            ticket.category}
-                                    </div>
+                              <div className="text-sm font-medium text-neutral-2">{ticketCategoryItem?.label || ticket.category}</div>
 
-                                    {/* Admin Status Select (Mobile) */}
-                                    {isManager ? (
-                                        <div className="space-y-1 w-36">
-                                            <SelectOptions
-                                                value={ticket.status}
-                                                onChange={(value) => {
-                                                    updateTicketStatus({
-                                                        ticketId: ticket.id,
-                                                        status: value,
-                                                    });
-                                                }}
-                                                options={
-                                                    ticketStatusOptions as any
-                                                }
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div
-                                        className={`
+                              {/* Admin Status Select (Mobile) */}
+                              {isManager ? (
+                                <div className="space-y-1 w-36">
+                                  <SelectOptions
+                                    value={ticket.status}
+                                    onChange={(value) => {
+                                      updateTicketStatus({
+                                        ticketId: ticket.id,
+                                        status: value,
+                                      });
+                                    }}
+                                    options={ticketStatusOptions as any}
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  className={`
                                                 rounded-full px-3 py-1
                                                 text-xs font-bold
                                                 ${ticket.statusColor}
                                             `}
-                                        >
-                                            {ticket.statusLabel}
-                                        </div>
-                                    )}
+                                >
+                                  {ticket.statusLabel}
                                 </div>
+                              )}
+                            </div>
 
-                                {/* Desktop Unit */}
-                                {/* {isManager && (
+                            {/* Desktop Unit */}
+                            {/* {isManager && (
                                 <div className="hidden flex-2 text-center text-neutral-2 font-medium md:block">
                                     {ticket.unit}
                                 </div>
                             )} */}
 
-                                {/* Desktop Status */}
+                            {/* Desktop Status */}
 
-                                {/* Desktop Status */}
-                                {isManager ? (
-                                    <div className="hidden sm:block space-y-1 w-36">
-                                        <SelectOptions
-                                            value={ticket.status}
-                                            onChange={(value) => {
-                                                updateTicketStatus({
-                                                    ticketId: ticket.id,
-                                                    status: value,
-                                                });
-                                            }}
-                                            options={ticketStatusOptions as any}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="hidden flex-2 justify-center sm:flex">
-                                        <div
-                                            className={`
+                            {/* Desktop Status */}
+                            {isManager ? (
+                              <div className="hidden sm:block space-y-1 w-36">
+                                <SelectOptions
+                                  value={ticket.status}
+                                  onChange={(value) => {
+                                    updateTicketStatus({
+                                      ticketId: ticket.id,
+                                      status: value,
+                                    });
+                                  }}
+                                  options={ticketStatusOptions as any}
+                                />
+                              </div>
+                            ) : (
+                              <div className="hidden flex-2 justify-center sm:flex">
+                                <div
+                                  className={`
                                                 w-32 rounded-lg py-1.5
                                                 text-center text-sm font-bold
                                                 ${ticket.statusColor}
                                             `}
-                                        >
-                                            {ticket.statusLabel}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Desktop Category */}
-                                <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
-                                    {ticketCategoryItem?.label ||
-                                        ticket.category}
+                                >
+                                  {ticket.statusLabel}
                                 </div>
+                              </div>
+                            )}
 
-                                {/* Actions */}
-                                <div className="flex flex-2 justify-end items-center gap-2">
-                                    {(ticket.user_id === user_id || isManager) && (
-                                        <DeleteButton
-                                            // onDelete={() => deleteTicket(ticket.id)}
-                                            onDelete={() => { setIsDeleteModalOpen(true);  setDeleteTicketId(ticket.id)}}
-                                            className="w-10 h-10 rounded-lg cursor-pointer"
-                                            variant="outline"
-                                        />
+                            {/* Desktop Category */}
+                            <div className="hidden flex-2 text-center text-neutral-2 font-extrabold md:block">
+                              {ticketCategoryItem?.label || ticket.category}
+                            </div>
 
-                                    )}
+                            {/* Actions */}
+                            <div className="flex flex-2 justify-end items-center gap-2">
+                              {(ticket.user_id === user_id || isManager) && (
+                                <DeleteButton
+                                  // onDelete={() => deleteTicket(ticket.id)}
+                                  onDelete={() => {
+                                    setIsDeleteModalOpen(true);
+                                    setDeleteTicketId(ticket.id);
+                                  }}
+                                  className="w-10 h-10 rounded-lg cursor-pointer"
+                                  variant="outline"
+                                />
+                              )}
 
-                                    <div className="flex-1 md:flex-none">
-                                        <TicketDetailsDialog id={ticket.id} />
-                                    </div>
-                                </div>
-                            </motion.div>
+                              <div className="flex-1 md:flex-none">
+                                <TicketDetailsDialog id={ticket.id} />
+                              </div>
+                            </div>
+                          </motion.div>
                         );
                     })}
                 </AnimatePresence>

@@ -46,7 +46,7 @@ export function AnnouncementCard({ announcement }: { announcement: Announcement 
               {announcement.title}
             </p>
           </div>
-          <p className="text-gray-600 line-clamp-1 text-sm">{announcement.body}</p>
+          <p className="text-gray-600 line-clamp-1 text-sm wrap-anywhere">{announcement.body}</p>
           <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
             <Calendar className="h-3.5 w-3.5 stroke-[1.5]" />
             <span className="font-medium tracking-wide">
