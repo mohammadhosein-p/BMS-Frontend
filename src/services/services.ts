@@ -27,7 +27,8 @@ interface FailedRequest {
 }
 
 // ================= API INSTANCE =================
-export const baseURL = "http://localhost:8080";
+// export const baseURL = "http://localhost:8080";
+export const baseURL = "http://45.195.200.12";
 
 const apiClient: AxiosInstance = axios.create({
     baseURL,
