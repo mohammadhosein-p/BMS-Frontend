@@ -28,8 +28,15 @@ interface FailedRequest {
 
 // ================= API INSTANCE =================
 // export const baseURL = "http://localhost:8080";
-export const baseURL = "http://45.195.200.12/api";
-
+// export const baseURL = import.meta.env.VITE_BASE_SERVER;
+declare global {
+  interface Window {
+    RUNTIME_CONFIG: {
+      BASE_URL: string;
+    };
+  }
+}
+export const baseURL = window.RUNTIME_CONFIG.BASE_URL;
 
 const apiClient: AxiosInstance = axios.create({
     baseURL,
